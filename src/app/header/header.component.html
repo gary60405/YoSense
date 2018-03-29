@@ -1,0 +1,22 @@
+<mat-toolbar class="mat-elevation-z8 font-weight-bold fixed-top" color="primary">
+  <mat-toolbar-row>
+    <i class="material-icons mr-2">&#xE87C;</i>
+    <span>遊程氏：YoSense</span>
+    <button mat-icon-button class="ml-auto" color="accent">
+        <mat-icon>navigate_before</mat-icon>
+    </button>
+    <div class="progress len">
+      <div class="progress-bar length" role="progressbar">25%</div>
+    </div>
+    <button mat-icon-button class="mr-auto" color="accent">
+        <mat-icon>navigate_next</mat-icon>
+    </button>
+    <form *ngIf="false; else elseTmpl" class="d-flex w-40 justify-content-between">
+      <input class="form-control w-40" type="text" placeholder="帳號">
+      <input class="form-control w-40" type="password" placeholder="密碼">
+      <button class="btn btn-success my-2 my-sm-0" type="submit">登入</button>
+    </form>
+    <ng-template #elseTmpl>
+      <span>{{userName}}歡迎回來！</span>
+    </ng-template>
+  </mat-toolbar-row>
