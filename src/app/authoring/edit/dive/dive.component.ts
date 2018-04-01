@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {MatDialog } from '@angular/material';
 @Component({
   selector: 'app-dive',
   templateUrl: './dive.component.html',
@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DiveComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(public dialog: MatDialog) { }
+  @ViewChild('diveDialog') diveDialog;
   ngOnInit() {
+  }
+  open() {
+    this.dialog.open(this.diveDialog);
   }
 
 }

@@ -1,7 +1,24 @@
-<button mat-fab color="primary" class="stick mr-5 mb-5" >
-    <mat-icon >eject</mat-icon>
+<button mat-fab color="primary" class="stick mr-5 mb-5" (click)="open()">
+  <mat-icon>eject</mat-icon>
 </button>
-<iframe id="iframe" src="http://dive.nutn.edu.tw:8080/Experiment/"></iframe>
+<iframe id="iframe" src="http://dive.nutn.edu.tw:8080/Experiment/editTest_H.jsp?eid=3149"></iframe>
+
+
 
 <!-- http://bootstrap.hexschool.com/docs/4.0/components/progress/ -->
 <!-- http://dive.nutn.edu.tw:8080/Experiment/ -->
+
+<ng-template #diveDialog>
+  <h2 mat-dialog-title>專案資訊表單</h2>
+  <mat-dialog-content class="post-form">
+    <mat-form-field>
+      <input matInput maxlength="4" placeholder="專案代碼" value="1234" disabled/>
+      <mat-hint>請輸入四碼數字</mat-hint>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button color="primary">確認</button>
+    <button mat-button mat-dialog-close color="warn">取消</button>
+  </mat-dialog-actions>
+</ng-template>
