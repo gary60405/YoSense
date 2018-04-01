@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import {MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-blockly',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BlocklyComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(private dialog: MatDialog) { }
+  @ViewChild('blocklyDialog') blocklyDialog;
   ngOnInit() {
   }
-
+  open() {
+    this.dialog.open(this.blocklyDialog, {
+      width: '350px',
+    });
+  }
 }

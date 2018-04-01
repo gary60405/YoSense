@@ -1,1 +1,23 @@
+<div class="panel">
+  <button class="justfy" (click)="open()" mat-raised-button color="primary">新增積木</button>
+</div>
 <iframe id="iframe" src="https://blockly-demo.appspot.com/static/demos/blockfactory/index.html"></iframe>
+
+<ng-template #blocklyDialog>
+  <h2 mat-dialog-title>創建Blockly積木</h2>
+  <mat-dialog-content class="d-flex flex-column">
+    <mat-form-field class="w-100">
+      <input matInput placeholder="Blockly名稱">
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput class="w-100" placeholder="Block Definition" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="8"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput class="w-100" placeholder="Generator stub" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="8"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button color="primary">確認</button>
+    <button mat-button mat-dialog-close color="warn">取消</button>
+  </mat-dialog-actions>
+</ng-template>
