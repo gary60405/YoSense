@@ -2,15 +2,13 @@
   <mat-toolbar-row>
     <i class="material-icons mr-2">&#xE87C;</i>
     <span>遊程氏：YoSense</span>
-    <button mat-icon-button class="ml-auto" color="accent">
-        <mat-icon>navigate_before</mat-icon>
-    </button>
-    <div class="progress len">
-      <div class="progress-bar length" role="progressbar">25%</div>
-    </div>
-    <button mat-icon-button class="mr-auto" color="accent">
-        <mat-icon>navigate_next</mat-icon>
-    </button>
+    <div class="btn-group ml-auto mr-auto" role="group" aria-label="Basic example">
+        <button type="button" routerLink="/authoring/edit/dive" routerLinkActive="active" class="btn btn-dark">互動內容</button>
+        <button type="button" routerLink="/authoring/edit/blockly" routerLinkActive="active" class="btn btn-dark">Blockly積木</button>
+        <button type="button" routerLink="/authoring/edit/bind" routerLinkActive="active" class="btn btn-dark">綁定功能</button>
+        <button type="button" routerLink="/authoring/edit/diagnosis" routerLinkActive="active" class="btn btn-dark">學習診斷</button>
+        <button type="button" routerLink="/authoring/edit/pass" routerLinkActive="active" class="btn btn-dark">過關條件</button>
+      </div>
     <form *ngIf="false; else elseTmpl" class="d-flex w-40 justify-content-between">
       <input class="form-control w-40" type="text" placeholder="帳號">
       <input class="form-control w-40" type="password" placeholder="密碼">
