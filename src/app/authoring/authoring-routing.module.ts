@@ -1,3 +1,4 @@
+import { BindComponent } from './edit/bind/bind.component';
 import { PassComponent } from './edit/pass/pass.component';
 import { EditComponent } from './edit/edit.component';
 import { NgModule } from '@angular/core';
@@ -16,6 +17,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'dive', pathMatch: 'full'},
       {path: 'dive', component: DiveComponent},
       {path: 'blockly', component: BlocklyComponent},
+      {path: 'bind', component: BindComponent},
       {path: 'diagnosis', component: DiagnosisComponent},
       {path: 'pass', component: PassComponent}
     ]}

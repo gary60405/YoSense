@@ -10,6 +10,7 @@ import { DiveComponent } from './edit/dive/dive.component';
 import { BlocklyComponent } from './edit/blockly/blockly.component';
 import { DiagnosisComponent } from './edit/diagnosis/diagnosis.component';
 import { PassComponent } from './edit/pass/pass.component';
+import { BindComponent } from './edit/bind/bind.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { PassComponent } from './edit/pass/pass.component';
     DiveComponent,
     BlocklyComponent,
     DiagnosisComponent,
-    PassComponent
+    PassComponent,
+    BindComponent
   ]
 })
 export class AuthoringModule { }
