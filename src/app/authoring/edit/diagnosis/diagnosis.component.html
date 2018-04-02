@@ -1,3 +1,114 @@
-<p>
-  diagnosis works!
-</p>
+<div class="container-fluid position-absolute">
+  <div class="row mt-3">
+    <div class="col-3">
+      <mat-card class="mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-center ">
+          <mat-card-title>
+            <h2 class="font-weight-bold">Dive屬性</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-table #table [dataSource]="dataSource">
+            <ng-container matColumnDef="item">
+              <mat-header-cell *matHeaderCellDef> 物件 </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.item}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="attribute">
+              <mat-header-cell *matHeaderCellDef> 屬性 </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.attribute}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="code">
+              <mat-header-cell *matHeaderCellDef> 代碼 </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.code}} </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-6">
+      <mat-card class="mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-center ">
+          <mat-card-title>
+            <h2 class="font-weight-bold">小幫手內容編輯</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form>
+            <div class="form-group">
+              <label class="font-weight-bold" for="errorName">提示名稱</label>
+              <input type="text" class="form-control w-100" id="errorName" placeholder="請輸入提示名稱">
+            </div>
+            <label class="font-weight-bold">觸發條件</label>
+            <div class="form-row">
+              <div class="col">
+                <select class="form-control">
+                  <option>124234</option>
+                  <option>23534</option>
+                  <option>345</option>
+                  <option>345</option>
+                </select>
+              </div>
+              <div class="col-2">
+                <select class="form-control">
+                  <option>=</option>
+                  <option>!=</option>
+                  <option>></option>
+                  <option>>=</option>
+                  <option><</option>
+                  <option><=</option>
+                </select>
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" id="errorName" placeholder="請輸入數值">
+              </div>
+              <div class="col-1">
+                <button mat-icon-button>
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="form-row justify-content-center mt-2">
+              <button mat-icon-button>
+                <mat-icon>add_circle</mat-icon>
+              </button>
+            </div>
+            <div class="form-row">
+              <div class="col">
+                <label class="font-weight-bold" for="errorText">提示內容</label>
+                <textarea class="form-control " id="errorText"></textarea>
+              </div>
+            </div>
+            <div class="form-row justify-content-center mt-2">
+                <button type="submit" class="btn btn-primary">完成</button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-3">
+      <mat-card class="mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-center ">
+          <mat-card-title>
+            <h2 class="font-weight-bold">已完成提示</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="alert alert-info">
+            <strong>關卡說明</strong>
+            <button type="button" class="close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-info">
+            <strong>文法錯誤</strong>
+            <button type="button" class="close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
