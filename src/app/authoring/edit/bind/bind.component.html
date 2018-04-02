@@ -1,3 +1,80 @@
-<p>
-  bind works!
-</p>
+<div class="container-fluid position-absolute">
+  <div class="row mt-3">
+    <div class="col-6">
+      <mat-card class="mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-center ">
+          <mat-card-title>
+            <h2 class="font-weight-bold">Dive屬性</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-table #table [dataSource]="dataSource">
+            <ng-container matColumnDef="item">
+              <mat-header-cell *matHeaderCellDef> 物件 </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.item}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="attribute">
+              <mat-header-cell *matHeaderCellDef> 屬性 </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.attribute}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="code">
+              <mat-header-cell *matHeaderCellDef> 代碼 </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.code}} </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-6 ">
+      <mat-card class="mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-center ">
+          <mat-card-title>
+            <h2 class="font-weight-bold">積木功能綁定</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="container">
+            <div class="row">
+              <div class="col-5">Dive屬性代碼</div>
+              <div class="col-2"></div>
+              <div class="col-5">Blockly積木</div>
+            </div>
+            <div *ngFor="let blockly of blocklyItems.slice()" class="row">
+              <div class="col-5">
+                <mat-form-field>
+                  <mat-select placeholder="請選擇Dive屬性">
+                    <mat-option *ngFor="let item of  diveItems" [value]="item.value">
+                      {{ item.viewValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-2">
+                <button class="mt-1" mat-icon-button>
+                  <mat-icon>link</mat-icon>
+                </button>
+              </div>
+              <div class="col-5">
+                <mat-form-field>
+                  <mat-select placeholder="請選擇Blockly積木">
+                    <mat-option *ngFor="let blockly of blocklyItems" [value]="blockly.value">
+                      {{ blockly.viewValue }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <!-- <div class="col-1">
+                <button class="mt-1" mat-icon-button>
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div> -->
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+</div>
