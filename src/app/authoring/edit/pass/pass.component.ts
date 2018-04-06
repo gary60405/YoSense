@@ -1,35 +1,57 @@
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
+import { EditService } from '../edit.service';
 @Component({
   selector: 'app-pass',
   templateUrl: './pass.component.html',
   styleUrls: ['./pass.component.css']
 })
 export class PassComponent implements OnInit {
-  displayedColumns = ['item', 'attribute', 'code'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
-  constructor() { }
-  diveItems = [
-    {value: '11', viewValue: '11'},
-    {value: '11', viewValue: '11'},
-    {value: '11', viewValue: '11'},
-    {value: '11', viewValue: '11'}];
+  constructor(private editService: EditService) { }
+  diveItems = this.editService.getDiveDataArray();
+  operators = this.editService.getOperators();
+  passForm: FormGroup;
   ngOnInit() {
+    this.passForm = this.initForm();
   }
 
+  initForm() {
+    return new FormGroup({
+      passArray: new FormArray([
+        new FormGroup({
+          condition: new FormGroup({
+            diveAttribute: new FormControl(''),
+            operator: new FormControl(''),
+            value: new FormControl('')
+          }),
+          logical: new FormControl('')
+        })
+      ])
+    });
+  }
+  submitForm() {
+    this.editService.passConditionArray = this.passForm.value;
+    console.log(this.editService.passConditionArray);
+  }
+  onAddCondition() {
+    const controls = new FormGroup({
+      condition: new FormGroup({
+        diveAttribute: new FormControl(''),
+        operator: new FormControl(''),
+        value: new FormControl('')
+      }),
+      logical: new FormControl('')
+    });
+    (<FormArray>this.passForm.get('passArray')).push(controls);
+  }
+
+  onDeleteCondition(index) {
+    (<FormArray>this.passForm.get('passArray')).removeAt(index);
+  }
+
+  getConditionArrayForm(form: FormGroup) {
+    return form.controls;
+  }
 }
 
-export interface Element {
-  item: string;
-  attribute: string;
-  code: string;
-}
-
-const ELEMENT_DATA: Element[] = [
-  {item: '小鳥', attribute: 'Y軸的值', code: 'ax5121' },
-  {item: '小鳥', attribute: '碰地板', code: 'ax5122' },
-  {item: '小鳥', attribute: '碰障礙物', code: 'bx5121'},
-  {item: '小鳥', attribute: '開始', code: 'ax6121' },
-  {item: '背景', attribute: '移動', code: 'ax5521' },
-  {item: '背景', attribute: '結束', code: 'cx5121' },
-];

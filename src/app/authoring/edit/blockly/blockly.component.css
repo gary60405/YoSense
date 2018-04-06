@@ -21,3 +21,6 @@
   font-weight: 800;
 }
 
+.overflow {
+  overflow: auto;
+}

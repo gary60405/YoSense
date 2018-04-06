@@ -1,3 +1,4 @@
+import { EditService } from './edit/edit.service';
 import { AuthoringComponent } from './authoring.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,12 +13,15 @@ import { DiagnosisComponent } from './edit/diagnosis/diagnosis.component';
 import { PassComponent } from './edit/pass/pass.component';
 import { BindComponent } from './edit/bind/bind.component';
 import { SafePipe } from './../core/safe.pipe';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     AuthoringRoutingModule,
-    FrameworkModule
+    FrameworkModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   declarations: [
     AuthoringComponent,
@@ -29,6 +33,9 @@ import { SafePipe } from './../core/safe.pipe';
     PassComponent,
     BindComponent,
     SafePipe
+  ],
+  providers: [
+    EditService
   ]
 })
 export class AuthoringModule { }
