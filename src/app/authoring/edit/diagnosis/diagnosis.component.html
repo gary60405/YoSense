@@ -20,7 +20,7 @@
                    *ngFor="let condition of getconditionArrayForm(conditionForm.get('condition')); let i = index">
                 <div class="col">
                   <select class="form-control" formControlName="diveAttribute">
-                    <option *ngFor="let item of diveItems" [value]="item.value">
+                    <option *ngFor="let item of diveItems" [value]="item.dataValue">
                       {{ item.viewValue }}
                     </option>
                   </select>
@@ -41,12 +41,12 @@
                   </button>
                 </div>
               </div>
-            <div class="form-row justify-content-center mt-2">
-              <button mat-icon-button (click)="onAddCondition() ">
-                <mat-icon>add_circle</mat-icon>
-              </button>
+              <div class="form-row justify-content-center mt-2">
+                <button mat-icon-button (click)="onAddCondition() ">
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+              </div>
             </div>
-          </div>
             <div class="form-row">
               <div class="col">
                 <label class="font-weight-bold" for="errorText">提示內容</label>
@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="form-row justify-content-center mt-2">
-              <button class="btn btn-primary" (click)="onAddDiagnos()">{{editIndex === -1 ? '完成' : '更新'}}</button>
+              <button class="btn btn-primary" (click)="onAddDiagnos()">{{editIndex === -1 ? '新增' : '更新'}}</button>
             </div>
           </form>
         </mat-card-content>
@@ -68,13 +68,15 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div *ngFor="let condition of conditionDataArray;let i = index;"
-               class="alert alert-info"
-               (click)="onEditDiagnos(i)">
+          <div *ngFor="let condition of conditionDataArray;let i = index;" class="alert alert-info" (click)="onEditDiagnos(i)">
             <strong>{{condition.name}}</strong>
             <button type="button" class="close" (click)="onDeleteDiagnos(i)">
               <span aria-hidden="true ">&times;</span>
             </button>
+          </div>
+          <div *ngIf="conditionDataArray.length !== 0"
+               class="form-row justify-content-center mt-2">
+            <button class="btn btn-primary" routerLink="/authoring/edit/pass" (click)="onSubmit()">完成</button>
           </div>
         </mat-card-content>
       </mat-card>

@@ -14,6 +14,10 @@ import { PassComponent } from './edit/pass/pass.component';
 import { BindComponent } from './edit/bind/bind.component';
 import { SafePipe } from './../core/safe.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ManagementService } from './management/management.service';
+import { EditProjectComponent } from './management/edit-project/edit-project.component';
+import { ManageProjectComponent } from './management/manage-project/manage-project.component';
+import { SideInfoComponent } from './management/side-info/side-info.component';
 
 @NgModule({
   imports: [
@@ -32,10 +36,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DiagnosisComponent,
     PassComponent,
     BindComponent,
-    SafePipe
+    SafePipe,
+    EditProjectComponent,
+    ManageProjectComponent,
+    SideInfoComponent
   ],
   providers: [
-    EditService
+    EditService,
+    ManagementService
   ]
 })
 export class AuthoringModule { }

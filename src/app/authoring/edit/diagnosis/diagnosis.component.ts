@@ -31,6 +31,9 @@ export class DiagnosisComponent implements OnInit {
       content: new FormControl('', [Validators.required, ])
     });
   }
+  onSubmit() {
+    this.editService.conditionDataArray = this.conditionDataArray;
+  }
   onAddDiagnos() {
     if (this.editIndex === -1) {
       this.conditionDataArray.push(this.conditionForm.value);

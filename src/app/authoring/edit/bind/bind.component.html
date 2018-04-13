@@ -9,43 +9,53 @@
         </mat-card-header>
         <mat-card-content>
           <div class="container">
-            <div class="form-row">
-              <div class="col-5">Dive屬性代碼</div>
-              <div class="col-1"></div>
-              <div class="col-5">Blockly積木</div>
-              <div class="col-1"></div>
-            </div>
-            <div class="form-row mt-2"
-                *ngFor="let blockly of blocklyItems; let i = index">
-              <div class="col-5">
-                <select class="form-control" placeholder="請選擇Dive屬性" [disabled]="blockly.isDisabled">
-                  <option *ngFor="let item of  diveItems" [value]="item.value">
-                    {{ item.viewValue }}
-                  </option>
-                </select>
+            <form [formGroup]="bindingForm">
+              <div class="form-row">
+                <div class="col-5">Blockly積木</div>
+                <div class="col-2"></div>
+                <div class="col-5">Dive屬性代碼</div>
+                <!-- <div class="col-1"></div> -->
               </div>
-              <div class="col-1">
-                <button *ngIf="blockly.isDisabled" class="fix-position" (click)="toggleBindingRow(i)" mat-icon-button>
-                  <mat-icon class="fix-position">link</mat-icon>
-                </button>
-                <button *ngIf="!blockly.isDisabled" class="fix-position" (click)="toggleBindingRow(i)" mat-icon-button>
-                    <i  class="fix-position fas fa-unlink"></i>
-                  </button>
+              <div formArrayName="bindingArray">
+                <div class="form-row mt-2" [formGroupName]="i" *ngFor="let blockly of getBindingArrayForm(bindingForm.get('bindingArray')); let i = index">
+                  <div class="col-5">
+                      <input type="text" [value]="transformIndex(blockly.value.blocklyIndex)" class="form-control" disabled>
+                      <input type="hidden" [ngModel]="i" class="form-control" formControlName="blocklyIndex">
+                  </div>
+                  <div class="col-2 d-flex justify-content-center">
+                    <button *ngIf="true" class="fix-position" (click)="toggleBindingRow(i)" mat-icon-button>
+                      <mat-icon class="fix-position">link</mat-icon>
+                    </button>
+                    <!-- <button *ngIf="!blockly.isDisabled" class="fix-position" (click)="toggleBindingRow(i)" mat-icon-button>
+                      <i class="fix-position fas fa-unlink"></i>
+                    </button> -->
+                  </div>
+                  <div class="col-5">
+                    <select formControlName="diveIndex" class="form-control">
+                      <option *ngFor="let item of diveItems;let i_item = index;" [value]="i_item">
+                        {{item.viewValue}}
+                      </option>
+                    </select>
+                  </div>
+                  <!-- <div class="col-1">
+                    <mat-icon *ngIf="false" class="fix-position check-color">check_box</mat-icon>
+                  </div> -->
+                </div>
               </div>
-              <div class="col-5">
-                <select class="form-control" placeholder="請選擇Blockly積木" [disabled]="blockly.isDisabled">
-                  <option *ngFor="let blockly of blocklyItems" [value]="blockly.name">
-                    {{ blockly.name }}
-                  </option>
-                </select>
+              <div class="form-row  justify-content-center mt-3">
+                  <button class="btn btn-primary" (click)="onSubmit()" routerLink="/authoring/edit/diagnosis">完成</button>
               </div>
-              <div class="col-1">
-                  <mat-icon *ngIf="blockly.isDisabled" class="fix-position check-color">check_box</mat-icon>
-              </div>
-            </div>
+            </form>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
 </div>
+<ng-template #alt>
+  <div class="container">
+    <div class="row justify-content-center">
+      <h4 class="text-danger">請先完成Dive與Blockly的必要設定</h4>
+    </div>
+  </div>
+</ng-template>

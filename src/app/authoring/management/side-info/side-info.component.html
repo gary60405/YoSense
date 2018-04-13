@@ -1,0 +1,50 @@
+<mat-card-header class="d-flex justify-content-center ">
+    <mat-card-title>
+      <h2 class="font-weight-bold">{{managementService.editMode? '關卡' : '專案'}}資訊</h2>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <button type="button"
+                (click)="onEditProject(managementService.editStageIndex)"
+                routerLink="/authoring/edit"
+                class="btn btn-primary btn-sm"
+                *ngIf="managementService.editMode;else elseBtn">編輯關卡</button>
+        <ng-template #elseBtn>
+            <button type="button" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm">編輯專案</button>
+        </ng-template>
+      </div>
+      <div class="row">
+        <div class="col p-0">
+            <div class="cover my-3" >
+                <div class="alt-text">暫無圖片</div>
+              </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col p-0">
+          <h5>{{managementService.editMode ? '關卡' : '專案'}}名稱：</h5>
+          <p class="pl-4 py-1">{{managementService.sideInfo['name']}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col p-0">
+          <h5>{{managementService.editMode ? '關卡' : '專案'}}描述：</h5>
+          <p class="pl-4 py-1">{{managementService.sideInfo['description']}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col p-0">
+          <h5>最後修改：</h5>
+          <p class="pl-4 py-1">{{managementService.sideInfo['lastModify'] | date:'HH:mm:ss, M月d日, y年'}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col p-0">
+          <h5>建立日期：</h5>
+          <p class="pl-4 py-1">{{managementService.sideInfo['createDate'] | date:'HH:mm:ss, M月d日, y年'}}</p>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>

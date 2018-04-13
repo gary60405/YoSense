@@ -1,0 +1,14 @@
+.cover {
+  background-color: #eee;
+  width: 100%;
+  height: calc(230px - 49px);
+  cursor: pointer;
+}
+
+.alt-text {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

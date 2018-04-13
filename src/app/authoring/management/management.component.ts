@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+
 
 @Component({
   selector: 'app-management',
@@ -10,6 +11,7 @@ export class ManagementComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

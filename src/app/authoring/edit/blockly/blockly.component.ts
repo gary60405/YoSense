@@ -21,6 +21,7 @@ export class BlocklyComponent implements OnInit {
       blockGen: new FormControl('', [Validators.required, ])
     });
   }
+
   submitForm() {
     this.blocklyFormGroup.value['isDisabled'] = false;
     this.editService.blocklyDataArray.push(this.blocklyFormGroup.value);
