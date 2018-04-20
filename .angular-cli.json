@@ -22,7 +22,14 @@
         "styles.scss",
         "../node_modules/bootstrap/dist/css/bootstrap.min.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "./assets/blockly_usage.js",
+        "./assets/blockly_compressed.js",
+        "./assets/blocks_compressed.js",
+        "./assets/javascript_compressed.js",
+        "./assets/acorn_interpreter.js",
+        "./assets/zh-hant.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

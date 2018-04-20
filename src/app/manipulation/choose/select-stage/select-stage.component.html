@@ -1,0 +1,22 @@
+<mat-card-header class="d-flex justify-content-center ">
+  <mat-card-title>
+    <h2 class="font-weight-bold">關卡管理</h2>
+  </mat-card-title>
+</mat-card-header>
+<mat-card-content>
+  <div class="form-row">
+    <div *ngFor="let stage of stageData;let i = index;" class="col-3 mb-3">
+      <div class="card item">
+        <div class="card-header">
+          <h5 class="card-text text-center font-weight-bold">{{stage.name}}</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="cover" (click)="onShowSideInfo(i)">
+            <div class="alt-text">暫無圖片</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</mat-card-content>

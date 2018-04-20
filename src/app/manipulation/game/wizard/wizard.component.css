@@ -1,0 +1,7 @@
+.indent {
+  text-indent : 2rem;
+}
+
+.fix-close {
+  transform: translateY(-15%);
+}

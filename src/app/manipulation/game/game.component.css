@@ -1,0 +1,13 @@
+.dive {
+  width: 100%;
+  height: calc(100vh - 64px);
+  /* height: calc(((100vh - 64px) / 10) * 7.5); */
+  /* height: calc(50vw * 0.76024284); */
+}
+:host() {
+  background-color: #000;
+}
+/* .wiz {
+  width: 100%;
+  height: calc(100vh - 64px - (50vw * 0.76024284));
+} */

@@ -4,7 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { AuthoringComponent } from './authoring/authoring.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'authoring', pathMatch: 'full'},
+  {path: '', redirectTo: 'manipulation', pathMatch: 'full'},
   // {path: '', component: HomeComponent},
   {path: 'authoring', loadChildren: 'app/authoring/authoring.module#AuthoringModule'},
   {path: 'manipulation', loadChildren: 'app/manipulation/manipulation.module#ManipulationModule'},

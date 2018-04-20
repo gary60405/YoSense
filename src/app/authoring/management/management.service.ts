@@ -13,7 +13,7 @@ export class ManagementService {
      stage: [
       {order: 0, name: '關卡一', description: 'At nesciunt blanditiis reprehenderit quia repudiandae,',
        createDate: new Date(), lastModify: new Date, stageData: {
-         diveId: 3124, diveData: [
+         diveId: 3154, diveData: [
           {dataValue: '1504853805902', viewValue: '要旋轉角度'},
           {dataValue: '1504853547811', viewValue: '移動部署'}
          ], blocklyData: [

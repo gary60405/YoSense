@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-wizard',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WizardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
-
+  close() {
+    this.snackBar.dismiss();
+  }
 }

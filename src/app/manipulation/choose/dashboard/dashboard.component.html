@@ -9,7 +9,7 @@
       <div class="col-3 mb-3">
         <div class="card item">
           <div class="card-body">
-            <h5 class="card-text text-center font-weight-bold">新增專案</h5>
+            <h5 class="card-text text-center font-weight-bold">加入專案</h5>
           </div>
           <div class="mask" (click)="onAddProjectDialogOpen()">
             <i class="fas fa-plus add_align_center"></i>
@@ -34,18 +34,12 @@
     </div>
   </div>
 </mat-card-content>
-
 <ng-template #projectDialog>
-  <h2 mat-dialog-title>專案資訊</h2>
+  <h2 mat-dialog-title>專案代碼</h2>
   <mat-dialog-content>
-    <form [formGroup]="projectForm">
-      <mat-form-field class="w-100 mb-2">
-        <input formControlName="name" matInput maxlength="8" placeholder="專案名稱" />
-      </mat-form-field>
-      <mat-form-field class="w-100 mb-2">
-        <textarea formControlName="description" matInput placeholder="專案描述" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="5"></textarea>
-      </mat-form-field>
-    </form>
+    <mat-form-field class="w-100 mb-2">
+      <input [(ngModel)]="projectCode" matInput maxlength="8" placeholder="請輸入專案代碼" />
+    </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions>
     <button mat-button mat-dialog-close color="primary" (click)="onAddProject()">新增</button>

@@ -20,7 +20,7 @@ export class DiveComponent implements OnInit {
   confirm() {
     const code = this.code.nativeElement.value;
     this.editService.diveId = code;
-    this.url = 'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=' + '3149';
+    this.url = 'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=' + '3402';
     const solvePromise = (text, timer) => {
       return new Promise((resolve, reject) =>　{
         setTimeout(() => {

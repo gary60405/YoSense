@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { WizardComponent } from '../wizard/wizard.component';
 
 @Component({
   selector: 'app-playground',
@@ -6,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./playground.component.css']
 })
 export class PlaygroundComponent implements OnInit {
-
-  constructor() { }
+  constructor(private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
 
+  involke() {
+    this.snackBar.openFromComponent(WizardComponent, {
+      horizontalPosition: 'left',
+      verticalPosition: 'top',
+      panelClass: 'bar-position'
+    });
+  }
 }
