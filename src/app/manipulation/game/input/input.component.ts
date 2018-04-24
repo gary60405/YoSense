@@ -3,7 +3,6 @@ import { WizardComponent } from './../wizard/wizard.component';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GameService } from '../game.service';
-import { forEach } from '@angular/router/src/utils/collection';
 // import * as astEval from 'ast-eval';
 // import * as staticEval from 'static-eval';
 // import * as esprima from 'esprima';
@@ -12,7 +11,6 @@ import { forEach } from '@angular/router/src/utils/collection';
 // import { parse } from 'esprima';
 // import { generate } from 'escodegen';
 
-
 @Component({
   selector: 'app-input',
   templateUrl: './input.component.html',
@@ -20,34 +18,70 @@ import { forEach } from '@angular/router/src/utils/collection';
 })
 export class InputComponent implements OnInit {
   @ViewChild('passDialog') passDialog;
-  constructor(private gameService: GameService,
+  constructor(public gameService: GameService,
               private chooseService: ChooseService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) { }
-  myInterpreter: any;
+  intervalID: any;
+  isEnd: Boolean;
   ngOnInit() {
-    // this.myInterpreter = new Interpreter('alert();');
-    // let ast = esprima.parse('alert()');
-    // console.log(this.myInterpreter);
-    // // staticEval(ast)
-    // ast = astEval(ast);
-    // console.log(generate(ast));
-    // const code = 'let a = 1; if(a==3) {console.log(a)}; setTimeout(() => {a=3;},2000);';
-    // eval(code);
-
     // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`)`);
+    this.updateStageInfo();
   }
+
   nextStage() {
     this.gameService.moveEditStageIndex();
     // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
   }
-
+  updateStageInfo() {
+    const editStageIndex = this.chooseService.editStageIndex;
+    const sumOfStage = this.chooseService.getAllStageDataArray().length;
+    this.isEnd = sumOfStage - 1 !== editStageIndex;
+    console.log(editStageIndex, sumOfStage, this.isEnd);
+  }
   backToMenu() {
+    this.chooseService.editStageIndex = -1;
+  }
+
+  diagnosisMonitor() {
+    const diagnosis = this.gameService.getDiagnosis().map(item => {
+      return {conditions: item['conditions'], content: item['content']};
+    });
+    const diveAttribute = new Set();
+    diagnosis.forEach(items => {
+      items['conditions'].forEach(item => {
+        diveAttribute.add(item['condition']['diveAttribute']);
+      });
+    });
+    this.intervalID = setInterval(() => {
+      const diveValue = {};
+      diveAttribute.forEach(attr => {
+        // tslint:disable-next-line:no-eval
+        diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`);
+      });
+      diagnosis.forEach(items => {
+        let isTrigger = true;
+        items['conditions'].forEach(item => {
+          // tslint:disable-next-line:no-eval
+          const compareValue = eval(`${diveValue[item['diveAttribute']]} ${item.condition['operator']} ${Number(item.condition['value'])}`);
+          // tslint:disable-next-line:no-eval
+          isTrigger = eval(`${isTrigger} && ${compareValue}`);
+          // operator value
+        });
+        // isTrigger = true;
+        if (isTrigger) {
+          this.gameService.snackBarSubject.next(items['content']);
+          // setTimeout(() => { clearInterval(this.intervalID); }, 120);
+        }
+      });
+    }, 100);
   }
 
   passMonitor() {
+    this.updateStageInfo();
+    clearInterval(this.intervalID);
     const data = {diveAttribute: [], operator: [], value: [], logical: []};
     this.gameService.getPassCondition().forEach(item => {
       data['diveAttribute'].push(item['condition']['diveAttribute']);
@@ -55,27 +89,37 @@ export class InputComponent implements OnInit {
       data['value'].push(item['condition']['value']);
       data['logical'].push(item['logical']);
     });
-    // tslint:disable-next-line:no-eval
-    // const condition = [];
-    // for ( const index in data['diveAttribute']) {
-    //   if (data['diveAttribute'].hasOwnProperty(index)) {
-    //     console.log(`diveLinker.Send(${data['diveAttribute'][index]}, '${data['value'][index]}')`);
-    //     // tslint:disable-next-line:no-eval
-    //     const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
-    //     condition.push(temp === data['value'][index]);
-    //   }
-    // }
-    const condition = [true, true, true];
+    const condition = [];
+    for ( const index in data['diveAttribute']) {
+      if (data['diveAttribute'].hasOwnProperty(index)) {
+        // tslint:disable-next-line:no-eval
+        const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
+        condition.push(temp === data['value'][index]);
+      }
+    }
     let isPass = true;
+    for (const index in condition) {
+      if (condition.hasOwnProperty(index)) {
+        const element = condition[index];
+        if (index !== '0') {
+          // tslint:disable-next-line:no-eval
+          isPass = eval(`${isPass} ${data['logical'][index]} ${element}`);
+        } else {
+          isPass = isPass && element;
+        }
+      }
+    }
     condition.forEach(item => {
       isPass = isPass && item;
     });
+    // isPass = true;
     if (isPass) {
       this.dialog.open(this.passDialog);
     }
   }
 
-  async getCode() {
+ getCode() {
+   this.diagnosisMonitor();
     // tslint:disable-next-line:no-eval
     const commands = eval('getCode()').split(';').map(item => {
       return item + ';';
@@ -106,20 +150,14 @@ export class InputComponent implements OnInit {
           if (commands.length === 2) {
             code = `solvePromise('${commands[i]}', 100).then(res => res)`;
             code += ';';
-            console.log('timer:', timer);
             setTimeout(() => this.passMonitor(), timer);
           } else if (commandIndex === 0) {
             code = `solvePromise('${commands[i]}', 100).then(res => {return solvePromise('${commands[i + 2]}', ${timer})})`;
           } else if (i === commands.length - 1) {
             code += ';';
-            console.log('timer:', timer  + tempTimer);
             setTimeout(() => this.passMonitor(), timer + tempTimer);
           } else {
             code += `.then(res => {return solvePromise('${commands[i + 2]}', ${timer})})`;
-            // if (i === commands.length - 3) {
-            //   tempTimer = timer;
-            //   console.log(tempTimer);
-            // }
           }
           tempTimer += timer;
           commandIndex++;
@@ -128,10 +166,6 @@ export class InputComponent implements OnInit {
     }
     // tslint:disable-next-line:no-eval
     eval(code);
-    console.log(code);
-
-    // // tslint:disable-next-line:no-eval
-    // eval(`solvePromise('console.log("gary")').then(res => {return solvePromise('console.log("100")')}).then(res => console.log(res));`);
   }
 
 

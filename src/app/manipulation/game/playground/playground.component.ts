@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { WizardComponent } from '../wizard/wizard.component';
+import { GameService } from '../game.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-playground',
@@ -8,13 +10,19 @@ import { WizardComponent } from '../wizard/wizard.component';
   styleUrls: ['./playground.component.css']
 })
 export class PlaygroundComponent implements OnInit {
-  constructor(private snackBar: MatSnackBar) { }
-
+  constructor(private snackBar: MatSnackBar, private gameService: GameService) { }
+  snackBarSubscription: Subscription;
   ngOnInit() {
+  this.snackBarSubscription = this.gameService.snackBarSubject.subscribe(content => {
+    this.involke(content);
+  });
+
   }
 
-  involke() {
+  involke(content) {
+    console.log(content);
     this.snackBar.openFromComponent(WizardComponent, {
+      data: {content: content},
       horizontalPosition: 'left',
       verticalPosition: 'top',
       panelClass: 'bar-position'

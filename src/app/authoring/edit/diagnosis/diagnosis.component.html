@@ -14,31 +14,39 @@
               <input type="text" class="form-control w-100" id="errorName" formControlName="name" placeholder="請輸入提示名稱">
             </div>
             <label class="font-weight-bold">觸發條件</label>
-            <div formArrayName="condition">
-              <div class="form-row"
-                   [formGroupName]="i"
-                   *ngFor="let condition of getconditionArrayForm(conditionForm.get('condition')); let i = index">
-                <div class="col">
-                  <select class="form-control" formControlName="diveAttribute">
-                    <option *ngFor="let item of diveItems" [value]="item.dataValue">
-                      {{ item.viewValue }}
-                    </option>
-                  </select>
+            <div formArrayName="conditions">
+              <div [formGroupName]="i" *ngFor="let condition of conditionArray; let i = index">
+                <div *ngIf="i !== 0" class="form-row justify-content-center m-3">
+                  <div class="col-2">
+                    <select formControlName="logical" class="form-control">
+                      <option value="&&">且</option>
+                      <option value="||">或</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="col-2">
-                  <select class="form-control" formControlName="operator">
-                    <option *ngFor="let operator of operators" [value]="operator">
-                      {{ operator }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-4">
-                  <input type="text" class="form-control" id="errorName" placeholder="請輸入數值" formControlName="value">
-                </div>
-                <div class="col-1">
-                  <button mat-icon-button (click)="ondeleteCondition(i)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                <div formGroupName="condition" class="form-row">
+                  <div class="col">
+                    <select class="form-control" formControlName="diveAttribute">
+                      <option *ngFor="let item of diveItems" [value]="item.dataValue">
+                        {{ item.viewValue }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-2">
+                    <select class="form-control" formControlName="operator">
+                      <option *ngFor="let operator of operators" [value]="operator">
+                        {{ operator }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" class="form-control" id="errorName" placeholder="請輸入數值" formControlName="value">
+                  </div>
+                  <div class="col-1">
+                    <button mat-icon-button (click)="ondeleteCondition(i)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div class="form-row justify-content-center mt-2">
@@ -68,14 +76,13 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div *ngFor="let condition of conditionDataArray;let i = index;" class="alert alert-info" (click)="onEditDiagnos(i)">
-            <strong>{{condition.name}}</strong>
+          <div *ngFor="let conditions of conditionDataArray;let i = index;" class="alert alert-info" (click)="onEditDiagnos(i)">
+            <strong>{{conditions.name}}</strong>
             <button type="button" class="close" (click)="onDeleteDiagnos(i)">
               <span aria-hidden="true ">&times;</span>
             </button>
           </div>
-          <div *ngIf="conditionDataArray.length !== 0"
-               class="form-row justify-content-center mt-2">
+          <div *ngIf="conditionDataArray.length !== 0" class="form-row justify-content-center mt-2">
             <button class="btn btn-primary" routerLink="/authoring/edit/pass" (click)="onSubmit()">完成</button>
           </div>
         </mat-card-content>

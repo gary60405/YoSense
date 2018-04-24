@@ -38,6 +38,7 @@ export class ManageProjectComponent implements OnInit {
   }
   onAddProject() {
     const projectData = this.projectForm.value;
+    projectData['uid'] = this.genUID();
     projectData['createDate'] = new Date();
     projectData['lastModify'] = new Date();
     projectData['stage'] = [];
@@ -52,5 +53,18 @@ export class ManageProjectComponent implements OnInit {
     this.deleteIndex = index;
     this.dialog.open(this.deleteProjectDialog);
   }
-
+  genUID() {
+    const random = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    let id = '';
+    let i = 4;
+    const charSet = [{min: 48, max: 57}, {min: 65, max: 90}, {min: 97, max: 122}];
+    while (i !== 0) {
+      const range = charSet[random(0, 2)];
+      id += String.fromCharCode(random(range['min'], range['max']));
+      i--;
+    }
+    return id;
+  }
 }

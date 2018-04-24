@@ -1,4 +1,4 @@
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
@@ -11,6 +11,7 @@ export class PassComponent implements OnInit {
   constructor(private editService: EditService) { }
   diveItems = this.editService.getDiveDataArray();
   operators = this.editService.getOperators();
+  conditionArray: AbstractControl[];
   passForm: FormGroup;
   ngOnInit() {
     const passArray = new FormArray([]);
@@ -28,10 +29,10 @@ export class PassComponent implements OnInit {
         })
       );
     }
-    console.log(passArray);
     this.passForm = new FormGroup({
       passArray: passArray
     });
+    this.conditionArray = (<FormArray>this.passForm.controls.passArray).controls;
   }
 
   submitForm() {
@@ -52,10 +53,6 @@ export class PassComponent implements OnInit {
 
   onDeleteCondition(index) {
     (<FormArray>this.passForm.get('passArray')).removeAt(index);
-  }
-
-  getConditionArrayForm(form: FormGroup) {
-    return form.controls;
   }
 }
 

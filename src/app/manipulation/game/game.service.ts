@@ -1,24 +1,19 @@
 import { ChooseService } from './../choose/choose.service';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class GameService {
-
+  public snackBarSubject = new Subject();
   constructor(private chooseService: ChooseService) { }
   stageData = this.chooseService.getStageDataArray();
-
   moveEditStageIndex() {
-    console.log(this.stageData);
     const projectDataArray = this.chooseService.getProjectDataArray();
     const p_index = this.chooseService.getEditProjectIndex();
     const s_index = this.chooseService.getEditStageIndex();
     if (projectDataArray[p_index].stage.length !== s_index + 1) {
       this.chooseService.editStageIndex += 1;
       this.stageData = this.chooseService.getStageDataArray();
-      console.log(this.stageData);
-      return true;
-    } else {
-      return false;
     }
   }
   getPassCondition() {

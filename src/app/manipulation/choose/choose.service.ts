@@ -28,34 +28,53 @@ export class ChooseService {
          ],
          conditionData: [
           {
-            condition: [
-              {diveAttribute: '1504854853547', operator: '!=', value: 'dfg'},
-              {diveAttribute: '1511104362549', operator: '>=', value: '10'},
-              {diveAttribute: '1511104719544', operator: '==', value: '15'}
+            conditions: [
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '!=', value: '12'},
+                  logical: ''
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '>=', value: '10'},
+                  logical: '&&'
+              },
+              {
+                  condition: {diveAttribute: '1511104719544', operator: '<=', value: '5'},
+                  logical: '||'
+              }
             ],
             content: 'asd',
             name: 'df'
           },
           {
-            condition: [
-              {diveAttribute: '1504853805902', operator: '<=', value: 'dfffg'},
-              {diveAttribute: '1504853805902', operator: '=', value: 'dfff'},
+            conditions: [
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '!=', value: '10'},
+                  logical: ''
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '>=', value: '8'},
+                  logical: '&&'
+              },
+              {
+                  condition: {diveAttribute: '1511104719544', operator: '<=', value: '4'},
+                  logical: '||'
+              }
             ],
-            content: 'aaaasd',
-            name: 'dsssf'
+            content: 'wdfed',
+            name: 'df'
           }
          ], passCondition: [
           {
-            condition: {diveAttribute: '1504853805902', operator: '=', value: 'sf'},
+            condition: {diveAttribute: '1504853805902', operator: '=', value: '5'},
             logical: ''
           },
           {
             condition: {diveAttribute: '1511104362549', operator: '!=', value: '15'},
-            logical: 'and'
+            logical: '&&'
           },
           {
             condition: {diveAttribute: '1511104719544', operator: '<=', value: '10'},
-            logical: 'or'
+            logical: '||'
           }
          ]}
        },
@@ -78,21 +97,40 @@ export class ChooseService {
          ],
          conditionData: [
           {
-            condition: [
-              {diveAttribute: '1504854853547', operator: '!=', value: 'dfg'},
-              {diveAttribute: '1511104362549', operator: '>=', value: '10'},
-              {diveAttribute: '1511104719544', operator: '==', value: '15'}
+            conditions: [
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '!=', value: '12'},
+                  logical: ''
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '>=', value: '10'},
+                  logical: '&&'
+              },
+              {
+                  condition: {diveAttribute: '1511104719544', operator: '<=', value: '5'},
+                  logical: '||'
+              }
             ],
             content: 'asd',
             name: 'df'
           },
           {
-            condition: [
-              {diveAttribute: '1504853805902', operator: '<=', value: 'dfffg'},
-              {diveAttribute: '1504853805902', operator: '=', value: 'dfff'},
+            conditions: [
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '!=', value: '13'},
+                  logical: ''
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '>=', value: '6'},
+                  logical: '&&'
+              },
+              {
+                  condition: {diveAttribute: '1511104719544', operator: '<=', value: '150'},
+                  logical: '||'
+              }
             ],
-            content: 'aaaasd',
-            name: 'dsssf'
+            content: 'dcvdscds',
+            name: 'weee'
           }
          ], passCondition: [
           {
@@ -101,22 +139,23 @@ export class ChooseService {
           },
           {
             condition: {diveAttribute: '1511104362549', operator: '!=', value: '15'},
-            logical: 'and'
+            logical: '&&'
           },
           {
             condition: {diveAttribute: '1511104719544', operator: '<=', value: '10'},
-            logical: 'or'
+            logical: '||'
           }
          ]}
-       },
-      {order: 2, name: '關卡三', description: 'Culpa mollitia dolorum sequi deserunt illum sequi saepe.',
-       createDate: new Date(), lastModify: new Date, stageData: []},
+       }
      ]
   },
   ];
   constructor() { }
   getProjectDataArray() {
     return this.projectDataArray.slice();
+  }
+  getAllStageDataArray() {
+    return this.projectDataArray.slice()[this.editProjectIndex].stage;
   }
   getStageDataArray() {
     return this.projectDataArray.slice()[this.editProjectIndex].stage[this.editStageIndex].stageData;

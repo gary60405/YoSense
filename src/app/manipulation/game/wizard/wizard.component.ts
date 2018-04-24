@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-wizard',
@@ -8,9 +8,10 @@ import { MatSnackBar } from '@angular/material';
 })
 export class WizardComponent implements OnInit {
 
-  constructor(private snackBar: MatSnackBar) { }
-
+  constructor(public snackBar: MatSnackBar,  @Inject(MAT_SNACK_BAR_DATA) private snackBarData: any) { }
+  data = '';
   ngOnInit() {
+    this.data = this.snackBarData.content;
   }
   close() {
     this.snackBar.dismiss();

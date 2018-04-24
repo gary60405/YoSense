@@ -9,7 +9,7 @@ export class ManagementService {
   public editStageIndex = 0;
   public sideInfo = {};
   public projectDataArray = [
-    {name: '專案一', description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', createDate: new Date(), lastModify: new Date,
+    {name: '專案一', uid: '123a' , description: 'Lorem ipsum dolor sit amet consectetur', createDate: new Date(), lastModify: new Date,
      stage: [
       {order: 0, name: '關卡一', description: 'At nesciunt blanditiis reprehenderit quia repudiandae,',
        createDate: new Date(), lastModify: new Date, stageData: {
@@ -25,34 +25,53 @@ export class ManagementService {
          ],
          conditionData: [
           {
-            condition: [
-              {diveAttribute: '1504854853547', operator: '!=', value: 'dfg'},
-              {diveAttribute: '1504853805902', operator: '>=', value: 'df'},
-              {diveAttribute: '1504854853547', operator: '<=', value: 'afsd'}
+            conditions: [
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '!=', value: '12'},
+                  logical: ''
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '>=', value: '10'},
+                  logical: '&&'
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '<=', value: '5'},
+                  logical: '||'
+              }
             ],
             content: 'asd',
             name: 'df'
-            },
-            {
-            condition: [
-              {diveAttribute: '1504853805902', operator: '<=', value: 'dfffg'},
-              {diveAttribute: '1504853805902', operator: '=', value: 'dfff'},
+          },
+          {
+            conditions: [
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '<=', value: '3'},
+                  logical: ''
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '>=', value: '6'},
+                  logical: '&&'
+              },
+              {
+                  condition: {diveAttribute: '1504853805902', operator: '<=', value: '3'},
+                  logical: '||'
+              }
             ],
             content: 'aaaasd',
             name: 'dsssf'
-            }
+          }
          ], passCondition: [
           {
-            condition: {diveAttribute: '1504853805902', operator: '=', value: 'sf'},
+            condition: {diveAttribute: '1504853805902', operator: '=', value: '10'},
             logical: ''
           },
           {
-            condition: {diveAttribute: '1504854853547', operator: '!=', value: 'sfa'},
-            logical: 'and'
+            condition: {diveAttribute: '1511104719544', operator: '!=', value: '15'},
+            logical: '&&'
           },
           {
-            condition: {diveAttribute: '1504854853547', operator: '<=', value: 'e43'},
-            logical: 'or'
+            condition: {diveAttribute: '1511104719544', operator: '<=', value: '5'},
+            logical: '||'
           }
          ]}
        },
@@ -62,15 +81,15 @@ export class ManagementService {
        createDate: new Date(), lastModify: new Date, stageData: []},
      ]
   },
-    {name: '專案二', description: 'At nesciunt blanditiis reprehenderit quia repudiandae,', createDate: new Date(), lastModify: new Date,
+    {name: '專案二', uid: '223b' , description: 'At nesciunt blanditiis reprehenderit quia,', createDate: new Date(), lastModify: new Date,
       stage: []},
-    {name: '專案三', description: 'Obcaecati sit amet consectetur adipisicing sequi dolore', createDate: new Date(), lastModify: new Date,
+    {name: '專案三', uid: '323c' , description: 'Obcaecati sit amet consectetur adipisicing', createDate: new Date(), lastModify: new Date,
       stage: []},
-    {name: '專案四', description: 'Culpa mollitia dolorum sequi deserunt illum sequi saepe.', createDate: new Date(), lastModify: new Date,
+    {name: '專案四', uid: '423d' , description: 'Culpa mollitia dolorum sequi deserunt illum.', createDate: new Date(), lastModify: new Date,
       stage: []},
-    {name: '專案五', description: 'Reprehenderit quia repudiandae consectetur adipisicing.', createDate: new Date(), lastModify: new Date,
+    {name: '專案五', uid: '512e' , description: 'Reprehenderit quia repudiandae consectetur', createDate: new Date(), lastModify: new Date,
       stage: []},
-    {name: '專案六', description: 'temporibus odio vitae fugiat deleniti elit dolorum maxime.', createDate: new Date(), lastModify: new Date,
+    {name: '專案六', uid: '623f' , description: 'temporibus odio vitae fugiat deleniti elit.', createDate: new Date(), lastModify: new Date,
       stage: []},
   ];
 

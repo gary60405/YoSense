@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
-import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
 @Component({
   selector: 'app-diagnosis',
   templateUrl: './diagnosis.component.html',
@@ -13,19 +13,25 @@ export class DiagnosisComponent implements OnInit {
   diveItems = this.editService.getDiveDataArray();
   operators = this.editService.getOperators();
   conditionDataArray = this.editService.getConditionDataArray();
+  conditionArray: AbstractControl[];
   conditionForm: FormGroup;
   editIndex = -1;
   ngOnInit() {
     this.conditionForm = this.initForm();
+    this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
+    console.log(this.conditionArray);
   }
   initForm() {
     return new FormGroup({
       name: new FormControl('', [Validators.required, ]),
-      condition: new FormArray([
+      conditions: new FormArray([
         new FormGroup({
-          diveAttribute: new FormControl('', [Validators.required, ]),
-          operator: new FormControl('', [Validators.required, ]),
-          value: new FormControl('', [Validators.required, ]),
+          condition: new FormGroup({
+            diveAttribute: new FormControl('', [Validators.required, ]),
+            operator: new FormControl('', [Validators.required, ]),
+            value: new FormControl('', [Validators.required, ]),
+          }),
+          logical: new FormControl('', [Validators.required, ])
         })
       ]),
       content: new FormControl('', [Validators.required, ])
@@ -52,36 +58,40 @@ export class DiagnosisComponent implements OnInit {
   onEditDiagnos(index) {
     const conditions = this.conditionDataArray[index];
     const conditonArray = new FormArray([]);
-    for (const condition of conditions.condition) {
+    console.log(conditions);
+    for (const condition of conditions.conditions) {
       conditonArray.push(new FormGroup({
-        diveAttribute: new FormControl(condition.diveAttribute, [Validators.required, ]),
-        operator: new FormControl(condition.operator, [Validators.required, ]),
-        value: new FormControl(condition.value, [Validators.required, ]),
+        condition: new FormGroup({
+          diveAttribute: new FormControl(condition.condition['diveAttribute']),
+          operator: new FormControl(condition.condition['operator']),
+          value: new FormControl(condition.condition['value'])
+        }),
+        logical: new FormControl(condition['logical'])
       }));
     }
     this.conditionForm = new FormGroup({
       name: new FormControl(conditions.name, [Validators.required, ]),
-      condition: conditonArray,
+      conditions: conditonArray,
       content: new FormControl(conditions.content, [Validators.required, ])
     });
     this.editIndex = index;
+    this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
   }
 
   onAddCondition() {
     const conditionGroup = new FormGroup({
-      diveAttribute: new FormControl('', [Validators.required, ]),
-      operator: new FormControl('', [Validators.required, ]),
-      value: new FormControl('', [Validators.required, ]),
+      condition: new FormGroup({
+        diveAttribute: new FormControl('', [Validators.required, ]),
+        operator: new FormControl('', [Validators.required, ]),
+        value: new FormControl('', [Validators.required, ]),
+      }),
+      logical: new FormControl('', [Validators.required, ])
     });
-    (<FormArray>this.conditionForm.get('condition')).push(conditionGroup);
+    (<FormArray>this.conditionForm.get('conditions')).push(conditionGroup);
   }
 
   ondeleteCondition(index) {
-    (<FormArray>this.conditionForm.get('condition')).removeAt(index);
-  }
-
-  getconditionArrayForm(form: FormGroup) {
-    return form.controls;
+    (<FormArray>this.conditionForm.get('conditions')).removeAt(index);
   }
 }
 

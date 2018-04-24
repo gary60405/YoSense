@@ -23,6 +23,7 @@ export class EditService {
     const projectIndex = this.managementService.editProjectIndex;
     const stageIndex = this.managementService.editStageIndex;
     console.log(data);
+    this.managementService.projectDataArray[projectIndex].lastModify = new Date();
     this.managementService.projectDataArray[projectIndex].stage[stageIndex].stageData = data;
   }
   transDataFormat(res: any[]) {
