@@ -17,7 +17,7 @@ export class EditProjectComponent implements OnInit {
   constructor(public dialog: MatDialog,
               private managementService: ManagementService) { }
   ngOnInit() {
-    this.managementService.editMode = true;
+    this.managementService.editModeSubject.next(true);
     this.editProjectIndex = this.managementService.editProjectIndex;
     this.stageForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -31,6 +31,7 @@ export class EditProjectComponent implements OnInit {
     this.managementService.editStageIndex = index;
     console.log(this.managementService.sideInfo);
   }
+
   onCheckDelete(index) {
     this.deleteIndex = index;
     this.dialog.open(this.deleteStageDialog);

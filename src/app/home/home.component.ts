@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   progressBarSubscription = new Subscription();
   displayProgressBar = false;
   ngOnInit() {
-    // this.authService.signIn('d@1', 'dsfwf');
+    // this.authService.signIn('gary60405@gmail.com', 'zxc221345');
     this.signUpForm = new FormGroup({
       email: new FormControl(),
       password: new FormControl(),
@@ -35,6 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       .subscribe(msg => {
         this.signInMsg = msg;
         this.dialog.open(this.signInDialog);
+        this.shareService.progressBarSubject.next(false);
+        if (msg === '登入成功！') {
+
+        }
     });
     this.signUpSubscription = this.authService.singnUpSubject
       .subscribe(msg => {
@@ -50,7 +54,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.displayProgressBar = res;
       });
   }
-
+  checkSignIn() {
+    this.authService.isLoginSubject.next(true);
+  }
   onSignUp() {
     this.shareService.progressBarSubject.next(true);
     this.authService.signUp(this.signUpForm.value);

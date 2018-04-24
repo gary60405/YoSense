@@ -6,4 +6,5 @@ export class ShareService {
 
   constructor() { }
   progressBarSubject = new Subject<boolean>();
+  stepperSubject = new Subject<any>();
 }

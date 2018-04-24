@@ -2,13 +2,17 @@ import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/for
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
+import { ManagementService } from '../../management/management.service';
+import { ShareService } from '../../../share/share.service';
 @Component({
   selector: 'app-pass',
   templateUrl: './pass.component.html',
   styleUrls: ['./pass.component.css']
 })
 export class PassComponent implements OnInit {
-  constructor(private editService: EditService) { }
+  constructor(private editService: EditService,
+              private managementService: ManagementService,
+              private shareService: ShareService) { }
   diveItems = this.editService.getDiveDataArray();
   operators = this.editService.getOperators();
   conditionArray: AbstractControl[];
@@ -36,7 +40,9 @@ export class PassComponent implements OnInit {
   }
 
   submitForm() {
+    this.shareService.stepperSubject.next();
     this.editService.passConditionArray = this.passForm.value.passArray;
+    this.managementService.editModeSubject.next(false);
     this.editService.submitData();
   }
   onAddCondition() {

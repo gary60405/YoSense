@@ -1,3 +1,4 @@
+import { ShareService } from './../../../share/share.service';
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
@@ -9,7 +10,7 @@ import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '
 })
 export class DiagnosisComponent implements OnInit {
 
-  constructor(private editService: EditService, ) {}
+  constructor(private editService: EditService, private shareService: ShareService) {}
   diveItems = this.editService.getDiveDataArray();
   operators = this.editService.getOperators();
   conditionDataArray = this.editService.getConditionDataArray();

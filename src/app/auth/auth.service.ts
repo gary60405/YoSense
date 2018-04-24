@@ -9,13 +9,19 @@ export class AuthService {
   isLoginSubject = new Subject<boolean>();
   singnInSubject = new Subject<string>();
   singnUpSubject = new Subject<string>();
+  userInfo = {};
   constructor(public afAuth: AngularFireAuth,
               public afStore: AngularFirestore) {}
-
+  getUserInfo() {
+    return this.userInfo;
+  }
   signIn(email, password) {
     this.afAuth.auth.signInWithEmailAndPassword(email, password)
       .then(res => {
-        this.isLoginSubject.next(true);
+        this.afStore.collection('user').doc(email).ref.get()
+          .then(userInfo => {
+            this.userInfo = userInfo.data();
+          });
         return '登入成功！';
       })
       .catch(err => {
@@ -41,8 +47,8 @@ export class AuthService {
     const password = userInfo.password;
     this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then(res => {
-        const settings = {timestampsInSnapshots: true};
-        this.afStore.app.firestore().settings(settings);
+        // const settings = {timestampsInSnapshots: true};
+        // this.afStore.app.firestore().settings(settings);
         this.afStore.collection('user').doc(email).set({
           email: email,
           displayName: userInfo.displayName,

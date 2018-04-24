@@ -2,3 +2,14 @@
   width: 40%;
 }
 
+
+mat-list-item {
+  background-color: #0f1626;
+  font-weight: 900;
+  color: #fff !important;
+}
+
+.menuList {
+  width: 150px;
+  transform: translateY(-20%);
+}

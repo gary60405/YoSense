@@ -1,20 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { ShareService } from './../../../share/share.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ManagementService } from '../management.service';
 import { EditService } from '../../edit/edit.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-side-info',
   templateUrl: './side-info.component.html',
   styleUrls: ['./side-info.component.css']
 })
-export class SideInfoComponent implements OnInit {
+export class SideInfoComponent implements OnInit, OnDestroy {
 
   constructor(public managementService: ManagementService,
-              private editService: EditService) { }
+              private editService: EditService,
+              private shareService: ShareService) { }
   projectIndex = -1;
+  editMode = false;
+  editModeSubscription = new Subscription();
   ngOnInit() {
+    this.managementService.editModeSubject
+      .subscribe(res => {
+        this.editMode = res;
+      });
   }
   onEditProject(index) {
+    this.shareService.stepperSubject.next();
     this.projectIndex = this.managementService.editProjectIndex;
     const stageData = this.managementService.getProjectData()[this.projectIndex].stage;
     if (stageData[index]['stageData']['diveId'] === undefined) {
@@ -47,5 +57,8 @@ export class SideInfoComponent implements OnInit {
     } else {
       this.editService.passConditionArray = stageData[index]['stageData']['passCondition'];
     }
+  }
+  ngOnDestroy() {
+    this.editModeSubscription.unsubscribe();
   }
 }

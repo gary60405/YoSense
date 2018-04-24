@@ -1,6 +1,6 @@
 <mat-card-header class="d-flex justify-content-center ">
     <mat-card-title>
-      <h2 class="font-weight-bold">{{managementService.editMode? '關卡' : '專案'}}資訊</h2>
+      <h2 class="font-weight-bold">{{editMode? '關卡' : '專案'}}資訊</h2>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
@@ -10,7 +10,7 @@
                 (click)="onEditProject(managementService.editStageIndex)"
                 routerLink="/authoring/edit"
                 class="btn btn-primary btn-sm"
-                *ngIf="managementService.editMode;else elseBtn">編輯關卡</button>
+                *ngIf="editMode;else elseBtn">編輯關卡</button>
         <ng-template #elseBtn>
             <button type="button" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm">編輯專案</button>
         </ng-template>
@@ -24,13 +24,13 @@
       </div>
       <div class="row">
         <div class="col p-0">
-          <h5>{{managementService.editMode ? '關卡' : '專案'}}名稱：</h5>
+          <h5>{{editMode ? '關卡' : '專案'}}名稱：</h5>
           <p class="pl-4 py-1">{{managementService.sideInfo['name']}}</p>
         </div>
       </div>
       <div class="row">
         <div class="col p-0">
-          <h5>{{managementService.editMode ? '關卡' : '專案'}}描述：</h5>
+          <h5>{{editMode ? '關卡' : '專案'}}描述：</h5>
           <p class="pl-4 py-1">{{managementService.sideInfo['description']}}</p>
         </div>
       </div>

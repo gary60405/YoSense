@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatDialog } from '@angular/material';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { EditService } from '../edit.service';
+import { ShareService } from '../../../share/share.service';
 @Component({
   selector: 'app-blockly',
   templateUrl: './blockly.component.html',
@@ -9,7 +10,7 @@ import { EditService } from '../edit.service';
 })
 export class BlocklyComponent implements OnInit {
 
-  constructor(private dialog: MatDialog, private editService: EditService) { }
+  constructor(private dialog: MatDialog, private editService: EditService, private shareService: ShareService) { }
   @ViewChild('blocklyDialog') blocklyDialog;
   blocklyFormGroup: FormGroup;
   blocklys: any[];
@@ -20,6 +21,10 @@ export class BlocklyComponent implements OnInit {
       blockDef: new FormControl('', [Validators.required, ]),
       blockGen: new FormControl('', [Validators.required, ])
     });
+  }
+
+  moveStep() {
+    this.shareService.stepperSubject.next();
   }
 
   submitForm() {

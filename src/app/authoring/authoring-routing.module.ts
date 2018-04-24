@@ -20,7 +20,7 @@ const routes: Routes = [
       {path: 'editProject', component: EditProjectComponent}
     ]},
     {path: 'edit', component: EditComponent, children: [
-      {path: '', redirectTo: 'diagnosis', pathMatch: 'full'},
+      {path: '', redirectTo: 'dive', pathMatch: 'full'},
       {path: 'dive', component: DiveComponent},
       {path: 'blockly', component: BlocklyComponent},
       {path: 'bind', component: BindComponent},

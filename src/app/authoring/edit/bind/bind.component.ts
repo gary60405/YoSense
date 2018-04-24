@@ -1,3 +1,4 @@
+import { ShareService } from './../../../share/share.service';
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
@@ -8,7 +9,7 @@ import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
   styleUrls: ['./bind.component.css']
 })
 export class BindComponent implements OnInit {
-  constructor(private editService: EditService) { }
+  constructor(private editService: EditService, private shareService: ShareService) { }
   diveItems: any[];
   blocklyItems: any[];
   bindingForm: FormGroup;
@@ -48,6 +49,7 @@ export class BindComponent implements OnInit {
     console.log(this.bindingForm);
   }
   onSubmit() {
+    this.shareService.stepperSubject.next();
     this.editService.bindingDataArray = this.bindingForm.value.bindingArray.map(row => {
       // const compare = (row['diveIndex']).toString();
       // let i = 0;

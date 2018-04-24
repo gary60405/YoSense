@@ -1,6 +1,7 @@
 import { EditService } from './../edit.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatDialog } from '@angular/material';
+import { ShareService } from '../../../share/share.service';
 
 @Component({
   selector: 'app-dive',
@@ -9,7 +10,7 @@ import {MatDialog } from '@angular/material';
 })
 export class DiveComponent implements OnInit {
   url = 'http://dive.nutn.edu.tw:8080/Experiment/';
-  constructor(public dialog: MatDialog, private editService: EditService) { }
+  constructor(public dialog: MatDialog, private editService: EditService, private shareService: ShareService) { }
   @ViewChild('diveDialog') diveDialog;
   @ViewChild('code') code;
 
@@ -18,6 +19,7 @@ export class DiveComponent implements OnInit {
     this.dialog.open(this.diveDialog);
   }
   confirm() {
+    this.shareService.stepperSubject.next();
     const code = this.code.nativeElement.value;
     this.editService.diveId = code;
     this.url = 'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=' + '3402';
