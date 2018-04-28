@@ -1,27 +1,32 @@
 import { ShareService } from './../../../share/share.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
-import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'app-bind',
   templateUrl: './bind.component.html',
   styleUrls: ['./bind.component.css']
 })
-export class BindComponent implements OnInit {
+export class BindComponent implements OnInit, OnDestroy {
   constructor(private editService: EditService, private shareService: ShareService) { }
-  diveItems: any[];
+  diveItems = [];
   blocklyItems: any[];
+  bindingArray: AbstractControl[];
   bindingForm: FormGroup;
+  diveDataSubscription = new Subscription();
   ngOnInit() {
-    this.diveItems = this.editService.getDiveDataArray();
+    this.diveDataSubscription = this.editService.diveDataSubject
+      .subscribe(diveitem => {
+        this.diveItems = diveitem;
+      });
+    this.editService.getDiveDataArray();
     this.blocklyItems = this.editService.getBlocklyDataArray();
     const bindingArray = new FormArray([]);
     const bindingArrayData = this.editService.getBindingDataArray();
-    // console.log(this.diveItems);
     if (bindingArrayData.length === 0) {
       for (const blockly of this.blocklyItems) {
-        // console.log(blockly.name);
         bindingArray.push(
           new FormGroup({
             diveIndex: new FormControl(''),
@@ -33,7 +38,6 @@ export class BindComponent implements OnInit {
       for (const bindingData of bindingArrayData) {
         const d_index = bindingData.diveIndex;
         const b_index = bindingData.blocklyIndex;
-        // console.log(d_index, this.diveItems[d_index]['dataValue'], b_index, this.blocklyItems[b_index]['name']);
         bindingArray.push(
           new FormGroup({
             diveIndex: new FormControl(parseInt(d_index, 10)),
@@ -42,11 +46,10 @@ export class BindComponent implements OnInit {
         );
       }
     }
-    console.log(bindingArray);
     this.bindingForm = new FormGroup({
       bindingArray: bindingArray
     });
-    console.log(this.bindingForm);
+    this.bindingArray = (<FormArray>this.bindingForm.controls.bindingArray).controls;
   }
   onSubmit() {
     this.shareService.stepperSubject.next();
@@ -69,7 +72,7 @@ export class BindComponent implements OnInit {
   toggleBindingRow(index) {
 
   }
-  getBindingArrayForm(form) {
-    return form.controls;
+  ngOnDestroy() {
+    this.diveDataSubscription.unsubscribe();
   }
 }

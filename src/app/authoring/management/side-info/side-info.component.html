@@ -7,12 +7,12 @@
     <div class="container-fluid">
       <div class="row justify-content-center">
         <button type="button"
-                (click)="onEditProject(managementService.editStageIndex)"
+                (click)="onEditStage()"
                 routerLink="/authoring/edit"
                 class="btn btn-primary btn-sm"
                 *ngIf="editMode;else elseBtn">編輯關卡</button>
         <ng-template #elseBtn>
-            <button type="button" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm">編輯專案</button>
+            <button type="button" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm" (click)="onEditProject()">編輯專案</button>
         </ng-template>
       </div>
       <div class="row">
@@ -26,6 +26,12 @@
         <div class="col p-0">
           <h5>{{editMode ? '關卡' : '專案'}}名稱：</h5>
           <p class="pl-4 py-1">{{managementService.sideInfo['name']}}</p>
+        </div>
+      </div>
+      <div *ngIf="!editMode" class="row">
+        <div class="col p-0">
+          <h5>專案作者：</h5>
+          <p class="pl-4 py-1">{{managementService.sideInfo['author']}}</p>
         </div>
       </div>
       <div class="row">

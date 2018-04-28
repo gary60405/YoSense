@@ -1,8 +1,10 @@
 <mat-toolbar #toolbar class="mat-elevation-z8 font-weight-bold fixed-top" color="primary">
   <mat-toolbar-row>
-    <i class="material-icons mr-2">&#xE87C;</i>
-    <span class="mr-auto" routerLink="/">遊程氏：YoSense</span>
-    <div *ngIf="displayStepArray[0]" class="btn-group" role="group" aria-label="Basic example">
+    <a class="navbar-brand mr-auto" href="#">
+      <img src="../assets/YoSense2.svg" width="44" height="33" class="d-inline-block align-top" alt="">
+      <span class="fix-brand-title" [routerLink]="switchToHome()">遊程氏：YoSense</span>
+    </a>
+    <div *ngIf="displayStepArray[0]" class="btn-group" role="group">
       <button *ngIf="displayStepArray[0]" type="button" routerLink="/authoring/edit/dive" routerLinkActive="active" class="btn btn-dark">互動內容</button>
       <button *ngIf="displayStepArray[1]" type="button" routerLink="/authoring/edit/blockly" routerLinkActive="active" class="btn btn-dark">Blockly積木</button>
       <button *ngIf="displayStepArray[2]" type="button" routerLink="/authoring/edit/bind" routerLinkActive="active" class="btn btn-dark">綁定功能</button>

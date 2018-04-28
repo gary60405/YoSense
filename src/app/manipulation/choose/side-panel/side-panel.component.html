@@ -7,12 +7,11 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <button type="button"
-              (click)="onEditProject(chooseService.editStageIndex)"
               routerLink="/manipulation/game"
               class="btn btn-primary btn-sm"
-              *ngIf="chooseService.editMode;else elseBtn">編輯關卡</button>
+              *ngIf="chooseService.editMode;else elseBtn">開啟關卡</button>
       <ng-template #elseBtn>
-          <button type="button" routerLink="/manipulation/choose/select-stage" class="btn btn-primary btn-sm">編輯專案</button>
+          <button type="button" routerLink="/manipulation/choose/select-stage" class="btn btn-primary btn-sm">開啟專案</button>
       </ng-template>
     </div>
     <div class="row">
@@ -26,6 +25,12 @@
       <div class="col p-0">
         <h5>{{chooseService.editMode ? '關卡' : '專案'}}名稱：</h5>
         <p class="pl-4 py-1">{{chooseService.sideInfo['name']}}</p>
+      </div>
+    </div>
+    <div *ngIf="!chooseService.editMode" class="row">
+      <div class="col p-0">
+        <h5>專案作者：</h5>
+        <p class="pl-4 py-1">{{chooseService.sideInfo['author']}}</p>
       </div>
     </div>
     <div class="row">

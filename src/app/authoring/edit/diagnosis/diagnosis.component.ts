@@ -1,26 +1,32 @@
 import { ShareService } from './../../../share/share.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
 import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'app-diagnosis',
   templateUrl: './diagnosis.component.html',
   styleUrls: ['./diagnosis.component.css']
 })
-export class DiagnosisComponent implements OnInit {
+export class DiagnosisComponent implements OnInit, OnDestroy {
 
   constructor(private editService: EditService, private shareService: ShareService) {}
-  diveItems = this.editService.getDiveDataArray();
+  diveItems = [];
   operators = this.editService.getOperators();
   conditionDataArray = this.editService.getConditionDataArray();
   conditionArray: AbstractControl[];
   conditionForm: FormGroup;
   editIndex = -1;
+  diveDataSubscription = new Subscription();
   ngOnInit() {
+    this.diveDataSubscription = this.editService.diveDataSubject
+      .subscribe(diveitem => {
+        this.diveItems = diveitem;
+      });
+    this.editService.getDiveDataArray();
     this.conditionForm = this.initForm();
     this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
-    console.log(this.conditionArray);
   }
   initForm() {
     return new FormGroup({
@@ -35,11 +41,12 @@ export class DiagnosisComponent implements OnInit {
           logical: new FormControl('', [Validators.required, ])
         })
       ]),
-      content: new FormControl('', [Validators.required, ])
-    });
+      content: new FormControl('', [Validators.required, ]),
+    }, { updateOn: 'submit' });
   }
   onSubmit() {
     this.editService.conditionDataArray = this.conditionDataArray;
+    this.shareService.stepperSubject.next();
   }
   onAddDiagnos() {
     if (this.editIndex === -1) {
@@ -50,7 +57,12 @@ export class DiagnosisComponent implements OnInit {
       this.editService.conditionDataArray = this.conditionDataArray;
       this.editIndex = -1;
     }
-    this.conditionForm = this.initForm();
+    this.conditionForm.reset();
+    let num = (<FormArray>this.conditionForm.get('conditions')).length;
+    while (num - 1) {
+      (<FormArray>this.conditionForm.get('conditions')).removeAt(1);
+      num--;
+    }
   }
   onDeleteDiagnos(index) {
     this.conditionDataArray.splice(index, 1);
@@ -63,11 +75,11 @@ export class DiagnosisComponent implements OnInit {
     for (const condition of conditions.conditions) {
       conditonArray.push(new FormGroup({
         condition: new FormGroup({
-          diveAttribute: new FormControl(condition.condition['diveAttribute']),
-          operator: new FormControl(condition.condition['operator']),
-          value: new FormControl(condition.condition['value'])
+          diveAttribute: new FormControl(condition.condition['diveAttribute'], [Validators.required, ]),
+          operator: new FormControl(condition.condition['operator'], [Validators.required, ]),
+          value: new FormControl(condition.condition['value'], [Validators.required, ])
         }),
-        logical: new FormControl(condition['logical'])
+        logical: new FormControl(condition['logical'], [Validators.required, ])
       }));
     }
     this.conditionForm = new FormGroup({
@@ -93,6 +105,9 @@ export class DiagnosisComponent implements OnInit {
 
   ondeleteCondition(index) {
     (<FormArray>this.conditionForm.get('conditions')).removeAt(index);
+  }
+  ngOnDestroy() {
+    this.diveDataSubscription.unsubscribe();
   }
 }
 

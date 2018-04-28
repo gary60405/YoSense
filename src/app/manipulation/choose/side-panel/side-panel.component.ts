@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChooseService } from '../choose.service';
+import { GameService } from '../../game/game.service';
 
 @Component({
   selector: 'app-side-panel',
@@ -8,12 +9,10 @@ import { ChooseService } from '../choose.service';
 })
 export class SidePanelComponent implements OnInit {
 
-  constructor(public chooseService: ChooseService) { }
+  constructor(public chooseService: ChooseService, public gameService: GameService) { }
 
   ngOnInit() {
   }
-  onEditProject(index) {
 
-  }
 
 }

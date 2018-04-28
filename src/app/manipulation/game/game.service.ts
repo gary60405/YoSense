@@ -5,13 +5,17 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class GameService {
   public snackBarSubject = new Subject();
-  constructor(private chooseService: ChooseService) { }
-  stageData = this.chooseService.getStageDataArray();
+  public stageDataSubject = new Subject();
+  public snackBarOffSubject = new Subject();
+  public stageData = {};
+  constructor(private chooseService: ChooseService) {}
+  getStageData() {
+    this.stageData = this.chooseService.stageDataArray[this.chooseService.editStageIndex]['stageData'];
+  }
   moveEditStageIndex() {
-    const projectDataArray = this.chooseService.getProjectDataArray();
-    const p_index = this.chooseService.getEditProjectIndex();
-    const s_index = this.chooseService.getEditStageIndex();
-    if (projectDataArray[p_index].stage.length !== s_index + 1) {
+    const stageDataArray = this.chooseService.stageDataArray;
+    const index = this.chooseService.editStageIndex;
+    if (stageDataArray.length !== index + 1) {
       this.chooseService.editStageIndex += 1;
       this.stageData = this.chooseService.getStageDataArray();
     }
@@ -29,7 +33,6 @@ export class GameService {
       data['type'] = item.blockDef.split('\'')[1];
       data['content'] = item.blockDef.split('{')[2].split('}')[0];
       data['generator'] = this.rebuiltCodegen(i, item.blockDef, item.blockGen);
-      // console.log(data['generatsor']);
       i++;
       return data;
     });
@@ -54,7 +57,9 @@ export class GameService {
       }
     });
     const diveId = diveData[diveIndex].dataValue;
-    const value = genCode.split('var')[1].split(' = ')[1].slice(0, -1).replace(/"/g, '\'');
+    console.log(genCode);
+    const value = genCode.split('var')[1].split(' = ')[1].split(';')[0].replace(/"/g, '\'');
+    console.log(`return "const type=\\\`${type}\\\`;diveLinker.Send(${diveId}, " + ${value} + ");";`);
     return `return "const type=\\\`${type}\\\`;diveLinker.Send(${diveId}, " + ${value} + ");";`;
   }
 }

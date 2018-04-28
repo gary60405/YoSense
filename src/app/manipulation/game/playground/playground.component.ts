@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { WizardComponent } from '../wizard/wizard.component';
 import { GameService } from '../game.service';
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: './playground.component.html',
   styleUrls: ['./playground.component.css']
 })
-export class PlaygroundComponent implements OnInit {
+export class PlaygroundComponent implements OnInit, OnDestroy {
   constructor(private snackBar: MatSnackBar, private gameService: GameService) { }
   snackBarSubscription: Subscription;
   ngOnInit() {
@@ -27,5 +27,8 @@ export class PlaygroundComponent implements OnInit {
       verticalPosition: 'top',
       panelClass: 'bar-position'
     });
+  }
+  ngOnDestroy() {
+    this.snackBarSubscription.unsubscribe();
   }
 }

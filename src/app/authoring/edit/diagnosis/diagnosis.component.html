@@ -11,7 +11,7 @@
           <form [formGroup]="conditionForm">
             <div class="form-group">
               <label class="font-weight-bold" for="errorName">提示名稱</label>
-              <input type="text" class="form-control w-100" id="errorName" formControlName="name" placeholder="請輸入提示名稱">
+              <input type="text" class="form-control w-100" formControlName="name" placeholder="請輸入提示名稱">
             </div>
             <label class="font-weight-bold">觸發條件</label>
             <div formArrayName="conditions">
@@ -40,7 +40,7 @@
                     </select>
                   </div>
                   <div class="col-4">
-                    <input type="text" class="form-control" id="errorName" placeholder="請輸入數值" formControlName="value">
+                    <input type="text" class="form-control" placeholder="請輸入數值" formControlName="value">
                   </div>
                   <div class="col-1">
                     <button mat-icon-button (click)="ondeleteCondition(i)">

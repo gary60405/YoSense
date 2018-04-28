@@ -1,22 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChooseService } from '../choose.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-select-stage',
   templateUrl: './select-stage.component.html',
   styleUrls: ['./select-stage.component.css']
 })
-export class SelectStageComponent implements OnInit {
+export class SelectStageComponent implements OnInit, OnDestroy {
   stageData = [];
   constructor(private chooseService: ChooseService) { }
   editProjectIndex = this.chooseService.editProjectIndex;
+  stageDataSubscription = new Subscription();
   ngOnInit() {
     this.chooseService.editMode = true;
-    this.stageData = this.chooseService.projectDataArray[this.editProjectIndex].stage;
+    this.chooseService.stageDataSubject
+      .subscribe(stage => {
+        this.stageData = stage;
+      });
+    this.chooseService.getSatageData();
   }
   onShowSideInfo(index) {
-    this.chooseService.sideInfo = this.chooseService.getProjectDataArray()[this.editProjectIndex].stage[index];
+    this.chooseService.sideInfo = this.stageData[index];
     this.chooseService.editStageIndex = index;
+  }
+
+  ngOnDestroy() {
+    this.stageDataSubscription.unsubscribe();
   }
 
 }

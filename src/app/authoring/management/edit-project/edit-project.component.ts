@@ -12,22 +12,24 @@ export class EditProjectComponent implements OnInit {
   @ViewChild('deleteStageDialog') deleteStageDialog;
   stageData = [];
   stageForm: FormGroup;
-  editProjectIndex = -1;
   deleteIndex = -1;
   constructor(public dialog: MatDialog,
               private managementService: ManagementService) { }
   ngOnInit() {
     this.managementService.editModeSubject.next(true);
-    this.editProjectIndex = this.managementService.editProjectIndex;
     this.stageForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required])
     });
-    this.stageData = this.managementService.getProjectData()[this.editProjectIndex].stage;
+    this.managementService.stageDataSubject
+      .subscribe(stage => {
+        this.stageData = stage;
+      });
+    this.managementService.getStageData();
   }
 
   onShowSideInfo(index) {
-    this.managementService.sideInfo = this.managementService.getProjectData()[this.editProjectIndex]['stage'][index];
+    this.managementService.sideInfo = this.managementService.stageDataArray[index];
     this.managementService.editStageIndex = index;
     console.log(this.managementService.sideInfo);
   }
@@ -41,14 +43,13 @@ export class EditProjectComponent implements OnInit {
     stageData['order'] = this.stageData.length;
     stageData['createDate'] = new Date();
     stageData['lastModify'] = new Date();
-    stageData['stageData'] = [];
+    stageData['stageData'] = {};
     this.stageData.push(stageData);
-    this.managementService.projectDataArray[this.editProjectIndex].stage = this.stageData;
+    this.managementService.addStageData(stageData);
     this.stageForm.reset();
   }
   onDeleteStage() {
-    this.stageData.splice(this.deleteIndex, 1);
-    this.managementService.projectDataArray[this.editProjectIndex].stage = this.stageData;
+    this.managementService.deleteStageData(this.deleteIndex);
     this.deleteIndex = -1;
   }
   onAddStageDialogOpen() {

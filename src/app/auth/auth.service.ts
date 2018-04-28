@@ -6,21 +6,26 @@ import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class AuthService {
-  isLoginSubject = new Subject<boolean>();
-  singnInSubject = new Subject<string>();
-  singnUpSubject = new Subject<string>();
+  public isLoginSubject = new Subject<boolean>();
+  public singnInSubject = new Subject<string>();
+  public singnUpSubject = new Subject<string>();
+  public userInfoSubject = new Subject();
   userInfo = {};
   constructor(public afAuth: AngularFireAuth,
-              public afStore: AngularFirestore) {}
+              public afStore: AngularFirestore) {
+    const settings = {timestampsInSnapshots: true};
+    afStore.app.firestore().settings(settings);
+  }
   getUserInfo() {
     return this.userInfo;
   }
   signIn(email, password) {
     this.afAuth.auth.signInWithEmailAndPassword(email, password)
       .then(res => {
-        this.afStore.collection('user').doc(email).ref.get()
-          .then(userInfo => {
-            this.userInfo = userInfo.data();
+        this.afStore.collection('user').doc(email).valueChanges()
+          .subscribe(userInfo => {
+            this.userInfo = userInfo;
+            this.userInfoSubject.next(userInfo);
           });
         return '登入成功！';
       })
@@ -34,6 +39,8 @@ export class AuthService {
            return '找不到此帳戶';
           case 'auth/wrong-password':
            return '密碼輸入錯誤';
+          case 'auth/network-request-failed':
+           return '網路異常：請檢查網路狀態';
           default:
            return err.code;
         }
@@ -47,13 +54,12 @@ export class AuthService {
     const password = userInfo.password;
     this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then(res => {
-        // const settings = {timestampsInSnapshots: true};
-        // this.afStore.app.firestore().settings(settings);
         this.afStore.collection('user').doc(email).set({
           email: email,
           displayName: userInfo.displayName,
           identification: userInfo.identification,
-          createDate: new Date()
+          createDate: new Date(),
+          project: []
         });
        return '註冊成功！請由右上方登入';
       })
@@ -67,6 +73,8 @@ export class AuthService {
            return '本帳戶尚未啟用，請聯絡管理員';
           case 'auth/weak-password':
            return '請至少輸入六位數的密碼';
+          case 'auth/network-request-failed':
+           return '網路異常：請檢查網路狀態';
           default:
            return err.code;
         }
@@ -75,8 +83,18 @@ export class AuthService {
         this.singnUpSubject.next(message);
       });
   }
+  addUserProject(uid) {
+    const info = this.getUserInfo();
+    info['project'].push(uid);
+    this.afStore.collection('user').doc(info['email']).update({project: info['project']});
+  }
+
+
   signOut() {
     this.isLoginSubject.next(false);
-    this.afAuth.auth.signOut();
+    this.afAuth.auth.signOut()
+      .then(res => {
+        this.userInfoSubject.next({});
+      });
   }
 }

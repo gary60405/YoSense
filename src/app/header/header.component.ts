@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 export class HeaderComponent implements OnInit {
   isLogin = false;
   userName = '';
+  identification = '';
   @ViewChild('toolbar') toolbar;
   @ViewChild('menuTmpl') menuTmpl;
   signInForm: FormGroup;
@@ -37,13 +38,12 @@ export class HeaderComponent implements OnInit {
     this.authService.isLoginSubject
       .subscribe(isLogin => {
         this.isLogin = isLogin;
-        if (isLogin) {
-          this.userName = this.authService.getUserInfo()['displayName'];
-        } else {
-          this.userName = '';
-        }
       });
-      console.log(this.route.url);
+    this.authService.userInfoSubject
+      .subscribe(res => {
+        this.userName = res['displayName'];
+        this.identification = res['identification'];
+      });
     this.shareService.stepperSubject
       .subscribe(() => {
         if (this.route.url === '/authoring/management/editProject') {
@@ -70,9 +70,25 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  switchToHome() {
+    if (this.identification === 'teacher') {
+      if (this.route.url.indexOf('management') !== -1) {
+        return '/authoring';
+      } else {
+        return '/authoring/management/editProject';
+      }
+    } else if (this.identification === 'student') {
+      if (this.route.url.indexOf('choose') !== -1) {
+        return '/manipulation';
+      } else {
+        return '/manipulation/select-stage';
+      }
+    } else {
+      return '/';
+    }
+  }
   onSignIn() {
-    const formData = this.signInForm.value;
-    this.authService.signIn(formData.mail, formData.password);
+    this.authService.signIn(this.signInForm.value.mail, this.signInForm.value.password);
     this.shareService.progressBarSubject.next(true);
   }
 

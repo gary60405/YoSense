@@ -61,7 +61,7 @@
             mat-dialog-close
             tabindex="-1"
             color="primary"
-            routerLink="/authoring"
+            [routerLink]="authService.getUserInfo()['identification'] === 'teacher' ? '/authoring' : '/manipulation'"
             *ngIf="(signInMsg === '登入成功！');else signInFailBtn;" (click)="checkSignIn()">確認</button>
     <ng-template #signInFailBtn>
       <button tabindex="-1" mat-button mat-dialog-close color="primary">返回</button>

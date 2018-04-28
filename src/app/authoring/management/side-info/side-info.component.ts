@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ManagementService } from '../management.service';
 import { EditService } from '../../edit/edit.service';
 import { Subscription } from 'rxjs/Subscription';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-side-info',
@@ -13,52 +14,64 @@ export class SideInfoComponent implements OnInit, OnDestroy {
 
   constructor(public managementService: ManagementService,
               private editService: EditService,
-              private shareService: ShareService) { }
+              private shareService: ShareService,
+              private authService: AuthService) { }
   projectIndex = -1;
   editMode = false;
+  projectInfo = {};
+  stageData = [];
   editModeSubscription = new Subscription();
+  stageSubscription = new Subscription();
   ngOnInit() {
-    this.managementService.editModeSubject
+    this.editModeSubscription =  this.managementService.editModeSubject
       .subscribe(res => {
         this.editMode = res;
       });
+    this.stageSubscription = this.managementService.stageDataSubject
+      .subscribe(res => {
+        console.log(res);
+        this.stageData = res;
+      });
   }
-  onEditProject(index) {
+  onEditProject() {
+    this.managementService.sideInfo = {};
+  }
+  onEditStage() {
     this.shareService.stepperSubject.next();
-    this.projectIndex = this.managementService.editProjectIndex;
-    const stageData = this.managementService.getProjectData()[this.projectIndex].stage;
-    if (stageData[index]['stageData']['diveId'] === undefined) {
+    const index = this.managementService.editStageIndex;
+    if (this.stageData[index]['stageData']['diveId'] === undefined) {
       this.editService.diveId = null;
     } else {
-      this.editService.diveId = stageData[index]['stageData']['diveId'];
+      this.editService.diveId = this.stageData[index]['stageData']['diveId'];
     }
-    if (stageData[index]['stageData']['diveData'] === undefined) {
+    if (this.stageData[index]['stageData']['diveData'] === undefined) {
       this.editService.diveDataArray = [];
     } else {
-      this.editService.diveDataArray = stageData[index]['stageData']['diveData'];
+      this.editService.diveDataArray = this.stageData[index]['stageData']['diveData'];
     }
-    if (stageData[index]['stageData']['blocklyData'] === undefined) {
+    if (this.stageData[index]['stageData']['blocklyData'] === undefined) {
       this.editService.blocklyDataArray = [];
     } else {
-      this.editService.blocklyDataArray = stageData[index]['stageData']['blocklyData'];
+      this.editService.blocklyDataArray = this.stageData[index]['stageData']['blocklyData'];
     }
-    if (stageData[index]['stageData']['bindingData'] === undefined) {
+    if (this.stageData[index]['stageData']['bindingData'] === undefined) {
       this.editService.bindingDataArray = [];
     } else {
-      this.editService.bindingDataArray = stageData[index]['stageData']['bindingData'];
+      this.editService.bindingDataArray = this.stageData[index]['stageData']['bindingData'];
     }
-    if (stageData[index]['stageData']['conditionData'] === undefined) {
+    if (this.stageData[index]['stageData']['conditionData'] === undefined) {
       this.editService.conditionDataArray = [];
     } else {
-      this.editService.conditionDataArray = stageData[index]['stageData']['conditionData'];
+      this.editService.conditionDataArray = this.stageData[index]['stageData']['conditionData'];
     }
-    if (stageData[index]['stageData']['passCondition'] === undefined) {
+    if (this.stageData[index]['stageData']['passCondition'] === undefined) {
       this.editService.passConditionArray = [];
     } else {
-      this.editService.passConditionArray = stageData[index]['stageData']['passCondition'];
+      this.editService.passConditionArray = this.stageData[index]['stageData']['passCondition'];
     }
   }
   ngOnDestroy() {
     this.editModeSubscription.unsubscribe();
+    this.stageSubscription.unsubscribe();
   }
 }

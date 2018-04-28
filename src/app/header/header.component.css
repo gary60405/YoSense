@@ -13,3 +13,7 @@ mat-list-item {
   width: 150px;
   transform: translateY(-20%);
 }
+
+.fix-brand-title {
+  color: #fff;
+}

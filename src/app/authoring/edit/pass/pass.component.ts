@@ -1,5 +1,6 @@
+import { Subscription } from 'rxjs/Subscription';
 import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
 import { ManagementService } from '../../management/management.service';
@@ -9,15 +10,21 @@ import { ShareService } from '../../../share/share.service';
   templateUrl: './pass.component.html',
   styleUrls: ['./pass.component.css']
 })
-export class PassComponent implements OnInit {
+export class PassComponent implements OnInit, OnDestroy {
   constructor(private editService: EditService,
               private managementService: ManagementService,
               private shareService: ShareService) { }
-  diveItems = this.editService.getDiveDataArray();
+  diveItems = [];
   operators = this.editService.getOperators();
   conditionArray: AbstractControl[];
   passForm: FormGroup;
+  diveDataSubscription = new Subscription();
   ngOnInit() {
+    this.diveDataSubscription = this.editService.diveDataSubject
+      .subscribe(diveitem => {
+        this.diveItems = diveitem;
+      });
+    this.editService.getDiveDataArray();
     const passArray = new FormArray([]);
     const passCondition = this.editService.getPassConditionArray();
     for (const condition of passCondition) {
@@ -59,6 +66,9 @@ export class PassComponent implements OnInit {
 
   onDeleteCondition(index) {
     (<FormArray>this.passForm.get('passArray')).removeAt(index);
+  }
+  ngOnDestroy() {
+    this.diveDataSubscription.unsubscribe();
   }
 }
 

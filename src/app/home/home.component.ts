@@ -13,7 +13,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('signUpDialog') signUpDialog;
   @ViewChild('signInDialog') signInDialog;
-  constructor(private authService: AuthService,
+  constructor(public authService: AuthService,
               private shareService: ShareService,
               private dialog: MatDialog) { }
   signUpMsg = '';
@@ -36,9 +36,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.signInMsg = msg;
         this.dialog.open(this.signInDialog);
         this.shareService.progressBarSubject.next(false);
-        if (msg === '登入成功！') {
-
-        }
     });
     this.signUpSubscription = this.authService.singnUpSubject
       .subscribe(msg => {
@@ -56,6 +53,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   checkSignIn() {
     this.authService.isLoginSubject.next(true);
+    console.log(this.authService.getUserInfo());
   }
   onSignUp() {
     this.shareService.progressBarSubject.next(true);

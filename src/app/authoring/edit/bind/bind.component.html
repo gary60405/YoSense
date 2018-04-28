@@ -17,7 +17,7 @@
                 <!-- <div class="col-1"></div> -->
               </div>
               <div formArrayName="bindingArray">
-                <div class="form-row mt-2" [formGroupName]="i" *ngFor="let blockly of getBindingArrayForm(bindingForm.get('bindingArray')); let i = index">
+                <div class="form-row mt-2" [formGroupName]="i" *ngFor="let blockly of bindingArray; let i = index">
                   <div class="col-5">
                       <input type="text" [value]="transformIndex(blockly.value.blocklyIndex)" class="form-control" disabled>
                       <input type="hidden" [ngModel]="i" class="form-control" formControlName="blocklyIndex">
