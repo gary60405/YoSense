@@ -39,6 +39,7 @@
     "esprima": "^4.0.0",
     "estemplate": "^0.5.1",
     "firebase": "4.12.1",
+    "intro.js": "^2.9.3",
     "js-interpreter": "^1.4.6",
     "node-pre-gyp": "^0.9.1",
     "rxjs": "^5.5.2",

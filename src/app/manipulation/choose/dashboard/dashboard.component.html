@@ -5,7 +5,7 @@
 </mat-card-header>
 <mat-card-content>
   <div class="container">
-    <div class="form-row">
+    <div *ngIf="isLoadedProject;else loading" class="form-row">
       <div class="col-3 mb-3">
         <div class="card item">
           <div class="card-body">
@@ -34,6 +34,11 @@
     </div>
   </div>
 </mat-card-content>
+<ng-template #loading>
+  <div class="row justify-content-center my-5">
+      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+  </div>
+</ng-template>
 <ng-template #projectDialog>
   <h2 mat-dialog-title>專案代碼</h2>
   <mat-dialog-content>

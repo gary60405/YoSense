@@ -22,7 +22,7 @@ export class PassComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.diveDataSubscription = this.editService.diveDataSubject
       .subscribe(diveitem => {
-        this.diveItems = diveitem;
+        this.diveItems = diveitem['outValue'];
       });
     this.editService.getDiveDataArray();
     const passArray = new FormArray([]);
@@ -47,7 +47,6 @@ export class PassComponent implements OnInit, OnDestroy {
   }
 
   submitForm() {
-    this.shareService.stepperSubject.next();
     this.editService.passConditionArray = this.passForm.value.passArray;
     this.managementService.editModeSubject.next(false);
     this.editService.submitData();

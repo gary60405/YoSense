@@ -22,7 +22,7 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.diveDataSubscription = this.editService.diveDataSubject
       .subscribe(diveitem => {
-        this.diveItems = diveitem;
+        this.diveItems = diveitem['outValue'];
       });
     this.editService.getDiveDataArray();
     this.conditionForm = this.initForm();
@@ -42,11 +42,11 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
         })
       ]),
       content: new FormControl('', [Validators.required, ]),
-    }, { updateOn: 'submit' });
+    });
   }
   onSubmit() {
+    this.shareService.displayStepArray[4] = true;
     this.editService.conditionDataArray = this.conditionDataArray;
-    this.shareService.stepperSubject.next();
   }
   onAddDiagnos() {
     if (this.editIndex === -1) {
@@ -57,12 +57,13 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
       this.editService.conditionDataArray = this.conditionDataArray;
       this.editIndex = -1;
     }
-    this.conditionForm.reset();
     let num = (<FormArray>this.conditionForm.get('conditions')).length;
+    console.log(num);
     while (num - 1) {
       (<FormArray>this.conditionForm.get('conditions')).removeAt(1);
       num--;
     }
+    this.conditionForm.reset();
   }
   onDeleteDiagnos(index) {
     this.conditionDataArray.splice(index, 1);
@@ -71,7 +72,6 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
   onEditDiagnos(index) {
     const conditions = this.conditionDataArray[index];
     const conditonArray = new FormArray([]);
-    console.log(conditions);
     for (const condition of conditions.conditions) {
       conditonArray.push(new FormGroup({
         condition: new FormGroup({

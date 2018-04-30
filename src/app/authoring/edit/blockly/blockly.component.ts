@@ -24,7 +24,7 @@ export class BlocklyComponent implements OnInit {
   }
 
   moveStep() {
-    this.shareService.stepperSubject.next();
+    this.shareService.displayStepArray[2] = true;
   }
 
   submitForm() {

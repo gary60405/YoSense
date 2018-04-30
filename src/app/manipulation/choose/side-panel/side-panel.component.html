@@ -29,6 +29,12 @@
     </div>
     <div *ngIf="!chooseService.editMode" class="row">
       <div class="col p-0">
+          <h5>專案代碼：</h5>
+          <p class="pl-4 py-1">{{chooseService.sideInfo['uid']}}</p>
+        </div>
+  </div>
+    <div *ngIf="!chooseService.editMode" class="row">
+      <div class="col p-0">
         <h5>專案作者：</h5>
         <p class="pl-4 py-1">{{chooseService.sideInfo['author']}}</p>
       </div>

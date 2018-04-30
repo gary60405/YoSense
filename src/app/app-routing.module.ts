@@ -8,6 +8,7 @@ const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'authoring', loadChildren: 'app/authoring/authoring.module#AuthoringModule'},
   {path: 'manipulation', loadChildren: 'app/manipulation/manipulation.module#ManipulationModule'},
+  { path: '**', redirectTo: '/', pathMatch: 'full' }
 ];
 
 @NgModule({

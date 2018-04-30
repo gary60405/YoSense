@@ -1,3 +1,4 @@
+import { ShareService } from './../../../share/share.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import {MatDialog } from '@angular/material';
@@ -13,9 +14,12 @@ export class EditProjectComponent implements OnInit {
   stageData = [];
   stageForm: FormGroup;
   deleteIndex = -1;
+  isLoadedProject = false;
   constructor(public dialog: MatDialog,
-              private managementService: ManagementService) { }
+              private managementService: ManagementService,
+              private shareService: ShareService) { }
   ngOnInit() {
+    this.managementService.sideInfo = {};
     this.managementService.editModeSubject.next(true);
     this.stageForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -24,6 +28,7 @@ export class EditProjectComponent implements OnInit {
     this.managementService.stageDataSubject
       .subscribe(stage => {
         this.stageData = stage;
+        this.isLoadedProject = true;
       });
     this.managementService.getStageData();
   }

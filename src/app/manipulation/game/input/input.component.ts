@@ -78,7 +78,7 @@ export class InputComponent implements OnInit, OnDestroy {
             // tslint:disable-next-line:no-eval
             isTrigger = eval(`${isTrigger} && ${compareValue}`);
           });
-          isTrigger = true;
+          // isTrigger = true;
           if (isTrigger) {
             this.gameService.snackBarSubject.next(items['content']);
             clearInterval(this.intervalID[i]);
@@ -124,7 +124,7 @@ export class InputComponent implements OnInit, OnDestroy {
     condition.forEach(item => {
       isPass = isPass && item;
     });
-    isPass = true;
+    // isPass = true;
     if (isPass) {
       this.dialog.open(this.passDialog);
     } else {

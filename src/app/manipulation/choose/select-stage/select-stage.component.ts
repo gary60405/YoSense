@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class SelectStageComponent implements OnInit, OnDestroy {
   stageData = [];
+  isLoadedProject = false;
   constructor(private chooseService: ChooseService) { }
   editProjectIndex = this.chooseService.editProjectIndex;
   stageDataSubscription = new Subscription();
@@ -17,6 +18,7 @@ export class SelectStageComponent implements OnInit, OnDestroy {
     this.chooseService.stageDataSubject
       .subscribe(stage => {
         this.stageData = stage;
+        this.isLoadedProject = true;
       });
     this.chooseService.getSatageData();
   }

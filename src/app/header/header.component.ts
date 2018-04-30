@@ -20,13 +20,12 @@ export class HeaderComponent implements OnInit {
   @ViewChild('menuTmpl') menuTmpl;
   signInForm: FormGroup;
   overlayRef: OverlayRef;
-  displayStepArray = [false, false, false, false, false];
-  constructor(private shareService: ShareService,
+
+  constructor(public shareService: ShareService,
               private authService: AuthService,
               private route: Router,
               private overlay: Overlay,
               private viewContainerRef: ViewContainerRef) { }
-
   ngOnInit() {
     const strategy = this.overlay.position()
                       .connectedTo(this.toolbar._elementRef, { originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'top' });
@@ -43,23 +42,23 @@ export class HeaderComponent implements OnInit {
       .subscribe(res => {
         this.userName = res['displayName'];
         this.identification = res['identification'];
+        this.switchToHome();
       });
-    this.shareService.stepperSubject
-      .subscribe(() => {
-        if (this.route.url === '/authoring/management/editProject') {
-          this.displayStepArray[0] = true;
-        } else if (this.route.url === '/authoring/edit/dive') {
-          this.displayStepArray[1] = true;
-        } else if (this.route.url === '/authoring/edit/blockly') {
-          this.displayStepArray[2] = true;
-        } else if (this.route.url === '/authoring/edit/bind') {
-          this.displayStepArray[3] = true;
-        } else if (this.route.url === '/authoring/edit/diagnosis') {
-          this.displayStepArray[4] = true;
-        } else if (this.route.url === '/authoring/edit/pass') {
-          this.displayStepArray = [false, false, false, false, false];
-        }
-      });
+    this.route.events.subscribe(res => {
+      if (this.route.url === '/authoring/edit/dive') {
+        this.shareService.displayStepArray[0] = true;
+      } else if (this.route.url === '/authoring/edit/blockly') {
+        this.shareService.displayStepArray[1] = true;
+      } else if (this.route.url === '/authoring/edit/bind') {
+        this.shareService.displayStepArray[2] = true;
+      } else if (this.route.url === '/authoring/edit/diagnosis') {
+        this.shareService.displayStepArray[3] = true;
+      } else if (this.route.url === '/authoring/edit/pass') {
+        this.shareService.displayStepArray[4] = true;
+      } else {
+        this.shareService.displayStepArray = [false, false, false, false, false];
+      }
+    });
   }
 
   displayMenu() {
@@ -73,18 +72,18 @@ export class HeaderComponent implements OnInit {
   switchToHome() {
     if (this.identification === 'teacher') {
       if (this.route.url.indexOf('management') !== -1) {
-        return '/authoring';
+        this.route.navigateByUrl('/authoring');
       } else {
-        return '/authoring/management/editProject';
+        this.route.navigateByUrl('/authoring/management/editProject');
       }
     } else if (this.identification === 'student') {
       if (this.route.url.indexOf('choose') !== -1) {
-        return '/manipulation';
+        this.route.navigateByUrl('/manipulation');
       } else {
-        return '/manipulation/select-stage';
+        this.route.navigateByUrl('/manipulation/select-stage');
       }
     } else {
-      return '/';
+      this.route.navigateByUrl('/');
     }
   }
   onSignIn() {

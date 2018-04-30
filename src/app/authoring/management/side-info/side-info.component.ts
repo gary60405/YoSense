@@ -29,7 +29,6 @@ export class SideInfoComponent implements OnInit, OnDestroy {
       });
     this.stageSubscription = this.managementService.stageDataSubject
       .subscribe(res => {
-        console.log(res);
         this.stageData = res;
       });
   }
@@ -37,7 +36,6 @@ export class SideInfoComponent implements OnInit, OnDestroy {
     this.managementService.sideInfo = {};
   }
   onEditStage() {
-    this.shareService.stepperSubject.next();
     const index = this.managementService.editStageIndex;
     if (this.stageData[index]['stageData']['diveId'] === undefined) {
       this.editService.diveId = null;
