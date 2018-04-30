@@ -43,7 +43,7 @@ export class GameService {
     return str.replace(/\n/g, '');
   }
   rebuiltCodegen(blockIndex, defCode, genCode) {
-    const diveData = this.stageData['diveData'];
+    const diveData = this.stageData['diveData']['inValue'];
     let diveIndex = '';
     let type = '';
     if (defCode.indexOf('Number') !== -1) {

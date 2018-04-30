@@ -7,13 +7,13 @@ export class EditService {
 
   constructor(private managementService: ManagementService) { }
   public diveId = 0;
-  public diveDataArray = [];
+  public diveDataArray = {};
   public blocklyDataArray = [];
   public bindingDataArray = [];
   public conditionDataArray = [];
   public passConditionArray = [];
   public readonly operators = ['=', '!=', '>', '>=', '<', '<='];
-  public diveDataSubject = new Subject<{}[]>();
+  public diveDataSubject = new Subject<{}>();
   submitData() {
     const data = {
       lastModify: new Date(),
@@ -28,8 +28,13 @@ export class EditService {
     };
     this.managementService.updateStageProject(data);
   }
-  transDataFormat(res: any[]) {
-    this.diveDataArray = res.map((row) => {
+  transDataFormat(res: {}) {
+    this.diveDataArray['inValue'] = res['inValue'].map((row) => {
+      const newRow = {dataValue: '', viewValue: ''};
+      [newRow['dataValue'], newRow['viewValue']] = [row['id'].toString(), row['name']];
+      return newRow;
+    });
+    this.diveDataArray['outValue'] = res['outValue'].map((row) => {
       const newRow = {dataValue: '', viewValue: ''};
       [newRow['dataValue'], newRow['viewValue']] = [row['id'].toString(), row['name']];
       return newRow;

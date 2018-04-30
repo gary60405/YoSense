@@ -61,10 +61,20 @@
             mat-dialog-close
             tabindex="-1"
             color="primary"
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+            *ngIf="(signInMsg !== '登入成功！');">返回</button>
+=======
+=======
+>>>>>>> c091799... 完成Firebase整合
+=======
+>>>>>>> c091799... 完成Firebase整合
             [routerLink]="authService.getUserInfo()['identification'] === 'teacher' ? '/authoring' : '/manipulation'"
             *ngIf="(signInMsg === '登入成功！');else signInFailBtn;" (click)="checkSignIn()">確認</button>
     <ng-template #signInFailBtn>
       <button tabindex="-1" mat-button mat-dialog-close color="primary">返回</button>
     </ng-template>
+>>>>>>> c091799... 完成Firebase整合
   </mat-dialog-actions>
 </ng-template>

@@ -1,14 +1,34 @@
-<button mat-fab color="primary" class="stick mr-5 mb-5" (click)="open()">
+<button *ngIf="!isChecked;else checkButton"
+        mat-fab color="primary"
+        class="stick mr-5 mb-5"
+        (click)="open()"
+        matTooltip="輸入Dive專案代碼">
   <mat-icon>eject</mat-icon>
 </button>
-<iframe id="iframe" [src]="url | safe" name="mainExperiment"></iframe>
+<iframe  id="iframe" [src]="url | safe" name="mainExperiment"></iframe>
 
 <!-- http://bootstrap.hexschool.com/docs/4.0/components/progress/ -->
 <!-- http://dive.nutn.edu.tw:8080/Experiment/ -->
+<div *ngIf="!isDiveLoaded" class="position-absolute container-fluid">
+  <div id="loading-background" class="row">
+    <div class="col">
+      <div class="loading d-flex flex-column justify-content-center align-items-center">
+          <div class="lds-blocks"><div style="left:38px;top:38px;animation-delay:0s"></div><div style="left:80px;top:38px;animation-delay:0.125s"></div><div style="left:122px;top:38px;animation-delay:0.25s"></div><div style="left:38px;top:80px;animation-delay:0.875s"></div><div style="left:122px;top:80px;animation-delay:0.375s"></div><div style="left:38px;top:122px;animation-delay:0.75s"></div><div style="left:80px;top:122px;animation-delay:0.625s"></div><div style="left:122px;top:122px;animation-delay:0.5s"></div></div>
+          <h4>載入中請稍後....</h4>
+        </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #checkButton>
+    <button matTooltip="前往下個步驟" mat-fab routerLink="/authoring/edit/blockly" color="primary" class="stick mr-5 mb-5">
+        <mat-icon>done_all</mat-icon>
+      </button>
+</ng-template>
 
 <ng-template #diveDialog>
   <h2 mat-dialog-title>專案資訊表單</h2>
-  <mat-dialog-content class="post-form"> 
+  <mat-dialog-content class="post-form">
     <mat-form-field>
       <input matInput maxlength="4" placeholder="Dive專案代碼" #code/>
       <mat-hint>請輸入四碼數字</mat-hint>

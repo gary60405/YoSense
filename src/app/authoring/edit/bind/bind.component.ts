@@ -19,23 +19,23 @@ export class BindComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.diveDataSubscription = this.editService.diveDataSubject
       .subscribe(diveitem => {
-        this.diveItems = diveitem;
+        this.diveItems = diveitem['inValue'];
       });
     this.editService.getDiveDataArray();
     this.blocklyItems = this.editService.getBlocklyDataArray();
     const bindingArray = new FormArray([]);
     const bindingArrayData = this.editService.getBindingDataArray();
     if (bindingArrayData.length === 0) {
-      for (const blockly of this.blocklyItems) {
+      this.blocklyItems.forEach(blockly => {
         bindingArray.push(
           new FormGroup({
             diveIndex: new FormControl(''),
             blocklyIndex: new FormControl(blockly.name)
           })
         );
-      }
+      });
     } else {
-      for (const bindingData of bindingArrayData) {
+      bindingArrayData.forEach(bindingData => {
         const d_index = bindingData.diveIndex;
         const b_index = bindingData.blocklyIndex;
         bindingArray.push(
@@ -44,6 +44,20 @@ export class BindComponent implements OnInit, OnDestroy {
             blocklyIndex: new FormControl(parseInt(b_index, 10))
           })
         );
+      });
+      if (this.blocklyItems.length > bindingArrayData.length) {
+        let startIndex = this.blocklyItems.length - bindingArrayData.length;
+        console.log(this.blocklyItems.length, bindingArrayData.length);
+        while (startIndex) {
+          const currentIndex = this.blocklyItems.length - bindingArrayData.length - startIndex;
+          bindingArray.push(
+            new FormGroup({
+              diveIndex: new FormControl(''),
+              blocklyIndex: new FormControl(this.blocklyItems[currentIndex].name)
+            })
+          );
+          startIndex--;
+        }
       }
     }
     this.bindingForm = new FormGroup({
@@ -52,7 +66,7 @@ export class BindComponent implements OnInit, OnDestroy {
     this.bindingArray = (<FormArray>this.bindingForm.controls.bindingArray).controls;
   }
   onSubmit() {
-    this.shareService.stepperSubject.next();
+    this.shareService.displayStepArray[3] = true;
     this.editService.bindingDataArray = this.bindingForm.value.bindingArray.map(row => {
       // const compare = (row['diveIndex']).toString();
       // let i = 0;

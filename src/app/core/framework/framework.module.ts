@@ -20,6 +20,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
@@ -41,6 +42,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatStepperModule,
     MatExpansionModule,
     MatProgressBarModule,
+    MatTooltipModule,
     MatMenuModule,
     OverlayModule,
     CommonModule
@@ -64,6 +66,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatTooltipModule,
     OverlayModule,
     MatMenuModule
   ],

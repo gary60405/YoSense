@@ -1,5 +1,27 @@
 <mat-toolbar #toolbar class="mat-elevation-z8 font-weight-bold fixed-top" color="primary">
   <mat-toolbar-row>
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <a class="navbar-brand mr-auto">
+      <img src="assets/YoSense2.svg" width="44" height="33" class="d-inline-block align-top" alt="">
+      <span class="fix-brand-title" (click)="switchToHome()">遊程氏：YoSense</span>
+    </a>
+    <div *ngIf="shareService.displayStepArray[0]" class="btn-group" role="group">
+      <button *ngIf="shareService.displayStepArray[0]" type="button" routerLink="/authoring/edit/dive" routerLinkActive="active" class="btn btn-dark">互動內容</button>
+      <button *ngIf="shareService.displayStepArray[1]" type="button" routerLink="/authoring/edit/blockly" routerLinkActive="active" class="btn btn-dark">Blockly積木</button>
+      <button *ngIf="shareService.displayStepArray[2]" type="button" routerLink="/authoring/edit/bind" routerLinkActive="active" class="btn btn-dark">綁定功能</button>
+      <button *ngIf="shareService.displayStepArray[3]" type="button" routerLink="/authoring/edit/diagnosis" routerLinkActive="active" class="btn btn-dark">學習診斷</button>
+      <button *ngIf="shareService.displayStepArray[4]" type="button" routerLink="/authoring/edit/pass" routerLinkActive="active" class="btn btn-dark">過關條件</button>
+=======
+=======
+>>>>>>> c091799... 完成Firebase整合
+=======
+>>>>>>> c091799... 完成Firebase整合
+=======
+>>>>>>> c091799... 完成Firebase整合
     <a class="navbar-brand mr-auto" href="#">
       <img src="../assets/YoSense2.svg" width="44" height="33" class="d-inline-block align-top" alt="">
       <span class="fix-brand-title" [routerLink]="switchToHome()">遊程氏：YoSense</span>
@@ -10,6 +32,19 @@
       <button *ngIf="displayStepArray[2]" type="button" routerLink="/authoring/edit/bind" routerLinkActive="active" class="btn btn-dark">綁定功能</button>
       <button *ngIf="displayStepArray[3]" type="button" routerLink="/authoring/edit/diagnosis" routerLinkActive="active" class="btn btn-dark">學習診斷</button>
       <button *ngIf="displayStepArray[4]" type="button" routerLink="/authoring/edit/pass" routerLinkActive="active" class="btn btn-dark">過關條件</button>
+>>>>>>> c091799... 完成Firebase整合
+=======
+    <a class="navbar-brand mr-auto">
+      <img src="assets/YoSense2.svg" width="44" height="33" class="d-inline-block align-top" alt="">
+      <span class="fix-brand-title" (click)="switchToHome()">遊程氏：YoSense</span>
+    </a>
+    <div *ngIf="shareService.displayStepArray[0]" class="btn-group" role="group">
+      <button *ngIf="shareService.displayStepArray[0]" type="button" routerLink="/authoring/edit/dive" routerLinkActive="active" class="btn btn-dark">互動內容</button>
+      <button *ngIf="shareService.displayStepArray[1]" type="button" routerLink="/authoring/edit/blockly" routerLinkActive="active" class="btn btn-dark">Blockly積木</button>
+      <button *ngIf="shareService.displayStepArray[2]" type="button" routerLink="/authoring/edit/bind" routerLinkActive="active" class="btn btn-dark">綁定功能</button>
+      <button *ngIf="shareService.displayStepArray[3]" type="button" routerLink="/authoring/edit/diagnosis" routerLinkActive="active" class="btn btn-dark">學習診斷</button>
+      <button *ngIf="shareService.displayStepArray[4]" type="button" routerLink="/authoring/edit/pass" routerLinkActive="active" class="btn btn-dark">過關條件</button>
+>>>>>>> 43bc3b5... 優化並修正錯誤
     </div>
     <form [formGroup]="signInForm" *ngIf="!isLogin; else elseTmpl" class="ml-auto d-flex w-40 justify-content-between">
       <input formControlName="mail" class="form-control w-40" type="text" placeholder="帳號">

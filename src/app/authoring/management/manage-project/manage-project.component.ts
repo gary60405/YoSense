@@ -1,3 +1,4 @@
+import { ShareService } from './../../../share/share.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import {MatDialog } from '@angular/material';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
@@ -21,10 +22,12 @@ export class ManageProjectComponent implements OnInit, OnDestroy {
   constructor(public dialog: MatDialog,
               private managementService: ManagementService,
               private afStore: AngularFirestore,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private shareService: ShareService) { }
   projectDataSubscrption = new Subscription();
   userInfoSubscription = new Subscription();
   ngOnInit() {
+    this.managementService.sideInfo = {};
     this.managementService.editModeSubject.next(false);
     this.projectDataSubscrption = this.managementService.projectDataSubject
       .subscribe(res => {
