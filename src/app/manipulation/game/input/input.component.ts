@@ -3,8 +3,6 @@ import { WizardComponent } from './../wizard/wizard.component';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { GameService } from '../game.service';
-// import * as astEval from 'ast-eval';
-// import * as staticEval from 'static-eval';
 // import * as esprima from 'esprima';
 // import * as escodegen from 'escodegen';
 // import * as Interpreter from 'js-interpreter';
@@ -45,7 +43,6 @@ export class InputComponent implements OnInit, OnDestroy {
     const editStageIndex = this.chooseService.editStageIndex;
     const sumOfStage = this.chooseService.getAllStageDataArray().length;
     this.isEnd = sumOfStage - 1 !== editStageIndex;
-    // console.log(editStageIndex, sumOfStage, this.isEnd);
   }
   backToMenu() {
     this.chooseService.editStageIndex = -1;
@@ -107,6 +104,7 @@ export class InputComponent implements OnInit, OnDestroy {
         // tslint:disable-next-line:no-eval
         const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
         condition.push(temp === data['value'][index]);
+        console.log(temp, data['value'][index], temp === data['value'][index]);
       }
     }
     let isPass = true;

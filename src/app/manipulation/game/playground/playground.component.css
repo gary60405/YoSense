@@ -8,5 +8,64 @@
 .wiz {
   background-color: #fff;
 }
-
-
+.fix-dive-scale {
+  height: 50vh !important;
+}
+#loading-background {
+  position: fixed;
+  background-color: #333;
+  width: calc(7 * 100vw / 12);
+  height: calc(100vh - 64px);
+  z-index: 11;
+}
+.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes lds-blocks {
+  0% {
+    background: #00d8ff;
+  }
+  12.5% {
+    background: #00d8ff;
+  }
+  12.625% {
+    background: #222222;
+  }
+  100% {
+    background: #222222;
+  }
+}
+@-webkit-keyframes lds-blocks {
+  0% {
+    background: #00d8ff;
+  }
+  12.5% {
+    background: #00d8ff;
+  }
+  12.625% {
+    background: #222222;
+  }
+  100% {
+    background: #222222;
+  }
+}
+.lds-blocks {
+  position: relative;
+}
+.lds-blocks div {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #222222;
+  -webkit-animation: lds-blocks 1s linear infinite;
+  animation: lds-blocks 1s linear infinite;
+}
+.lds-blocks {
+  width: 200px !important;
+  height: 200px !important;
+  -webkit-transform: translate(-100px, -100px) scale(1) translate(100px, 100px);
+  transform: translate(-100px, -100px) scale(1) translate(100px, 100px);
+}

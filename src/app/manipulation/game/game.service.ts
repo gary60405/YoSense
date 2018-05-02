@@ -56,10 +56,11 @@ export class GameService {
         diveIndex = item.diveIndex;
       }
     });
+    console.log(this.stageData);
     const diveId = diveData[diveIndex].dataValue;
-    console.log(genCode);
+    // console.log(genCode);
     const value = genCode.split('var')[1].split(' = ')[1].split(';')[0].replace(/"/g, '\'');
-    console.log(`return "const type=\\\`${type}\\\`;diveLinker.Send(${diveId}, " + ${value} + ");";`);
+    // console.log(`return "const type=\\\`${type}\\\`;diveLinker.Send(${diveId}, " + ${value} + ");";`);
     return `return "const type=\\\`${type}\\\`;diveLinker.Send(${diveId}, " + ${value} + ");";`;
   }
 }

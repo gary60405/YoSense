@@ -15,6 +15,7 @@ export class EditService {
   public readonly operators = ['=', '!=', '>', '>=', '<', '<='];
   public diveDataSubject = new Subject<{}>();
   submitData() {
+    console.log(this.diveDataArray);
     const data = {
       lastModify: new Date(),
       stageData: {

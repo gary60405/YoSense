@@ -43,7 +43,7 @@ export class SideInfoComponent implements OnInit, OnDestroy {
       this.editService.diveId = this.stageData[index]['stageData']['diveId'];
     }
     if (this.stageData[index]['stageData']['diveData'] === undefined) {
-      this.editService.diveDataArray = [];
+      this.editService.diveDataArray = {};
     } else {
       this.editService.diveDataArray = this.stageData[index]['stageData']['diveData'];
     }

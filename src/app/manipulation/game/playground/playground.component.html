@@ -1,3 +1,12 @@
-<iframe id="iframe" [src]="'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=3402' | safe" name="mainExperiment"></iframe>
+<iframe id="iframe" [ngClass]="{'fix-dive-scale':!isDiveLoaded}" [src]="'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=3402' | safe" name="mainExperiment"></iframe>
 
-
+<div *ngIf="!isDiveLoaded" class="position-absolute container-fluid">
+  <div id="loading-background" class="row">
+    <div class="col">
+      <div class="loading d-flex flex-column justify-content-center align-items-center">
+          <div class="lds-blocks"><div style="left:38px;top:38px;animation-delay:0s"></div><div style="left:80px;top:38px;animation-delay:0.125s"></div><div style="left:122px;top:38px;animation-delay:0.25s"></div><div style="left:38px;top:80px;animation-delay:0.875s"></div><div style="left:122px;top:80px;animation-delay:0.375s"></div><div style="left:38px;top:122px;animation-delay:0.75s"></div><div style="left:80px;top:122px;animation-delay:0.625s"></div><div style="left:122px;top:122px;animation-delay:0.5s"></div></div>
+          <h4>載入中請稍後....</h4>
+        </div>
+    </div>
+  </div>
+</div>

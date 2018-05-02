@@ -70,6 +70,60 @@
     </div>
     <div class="col-5">
       <mat-card class="mat-elevation-z8">
+        <!-- <mat-card-header class="d-flex justify-content-center">
+          <mat-card-title>
+            <h2 class="font-weight-bold">關卡資訊</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-accordion class="w-100">
+            <mat-expansion-panel class="alert-danger">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="font-weight-bold">
+                  關卡說明
+                </mat-panel-title>
+                <mat-panel-description>
+                  請填入說明關卡的提示文字
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <form [formGroup]="descriptionForm">
+                <mat-form-field>
+                  <input formControlName="description" matInput placeholder="提示文字">
+                </mat-form-field>
+              </form>
+            </mat-expansion-panel>
+            <mat-expansion-panel class="alert-danger">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="font-weight-bold">
+                  過關成功
+                </mat-panel-title>
+                <mat-panel-description>
+                  請填入過關成功的提示文字
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <form [formGroup]="successForm">
+                  <mat-form-field>
+                    <input formControlName="successText" matInput placeholder="提示文字">
+                  </mat-form-field>
+                </form>
+            </mat-expansion-panel>
+            <mat-expansion-panel class="alert-success" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="font-weight-bold">
+                  通關失敗
+                </mat-panel-title>
+                <mat-panel-description>
+                  請填入過關失敗的提示文字
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <form [formGroup]="failForm">
+                  <mat-form-field>
+                    <input formControlName="failText" matInput placeholder="提示文字">
+                  </mat-form-field>
+                </form>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-card-content> -->
         <mat-card-header class="d-flex justify-content-center ">
           <mat-card-title>
             <h2 class="font-weight-bold">已完成提示</h2>

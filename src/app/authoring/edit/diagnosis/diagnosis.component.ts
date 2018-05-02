@@ -16,8 +16,12 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
   operators = this.editService.getOperators();
   conditionDataArray = this.editService.getConditionDataArray();
   conditionArray: AbstractControl[];
+  // descriptionForm: FormGroup;
+  // successForm: FormGroup;
+  // failForm: FormGroup;
   conditionForm: FormGroup;
   editIndex = -1;
+  panelOpenState = false;
   diveDataSubscription = new Subscription();
   ngOnInit() {
     this.diveDataSubscription = this.editService.diveDataSubject
@@ -26,6 +30,15 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
       });
     this.editService.getDiveDataArray();
     this.conditionForm = this.initForm();
+    // this.descriptionForm = new FormGroup({
+    //   description: new FormControl()
+    // });
+    // this.successForm = new FormGroup({
+    //   successText: new FormControl()
+    // });
+    // this.failForm = new FormGroup({
+    //   failText: new FormControl()
+    // });
     this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
   }
   initForm() {

@@ -1,4 +1,5 @@
 let workspace = null;
+
 function init(str, opt = 1) {
     const blocksData = str.split('#^&').map(data => {
       const newData = {}
@@ -32,10 +33,7 @@ function init(str, opt = 1) {
       },
   });
 }
-// function newWorkSpace(str) {
 
-
-// }
 function getXmlText(blocksData) {
   let xmlText = '<xml id="toolbox">';
   for (block in blocksData) {

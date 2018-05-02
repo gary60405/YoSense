@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit {
       if (this.route.url.indexOf('choose') !== -1) {
         this.route.navigateByUrl('/manipulation');
       } else {
-        this.route.navigateByUrl('/manipulation/select-stage');
+        this.route.navigateByUrl('/manipulation/choose/select-stage');
       }
     } else {
       this.route.navigateByUrl('/');
