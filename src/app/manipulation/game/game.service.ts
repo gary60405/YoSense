@@ -7,6 +7,7 @@ export class GameService {
   public snackBarSubject = new Subject();
   public stageDataSubject = new Subject();
   public snackBarOffSubject = new Subject();
+  public diveUrlSubject = new Subject();
   public stageData = {};
   constructor(private chooseService: ChooseService) {}
   getStageData() {
@@ -18,6 +19,7 @@ export class GameService {
     if (stageDataArray.length !== index + 1) {
       this.chooseService.editStageIndex += 1;
       this.stageData = this.chooseService.getStageDataArray();
+      console.log(this.stageData);
     }
   }
   getPassCondition() {

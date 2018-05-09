@@ -1,3 +1,4 @@
+import { ChooseService } from './../../choose/choose.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { WizardComponent } from '../wizard/wizard.component';
@@ -11,22 +12,29 @@ import { Subject } from 'rxjs/Subject';
   styleUrls: ['./playground.component.css']
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
-  constructor(private snackBar: MatSnackBar, private gameService: GameService) { }
+  constructor(private snackBar: MatSnackBar, private gameService: GameService, private chooseService: ChooseService) { }
   isDiveLoaded = false;
   snackBarSubscription: Subscription;
-  diveLoadedSubscription = new Subscription();
-  diveLoadedSubject = new Subject<boolean>();
+  diveUrlSubscription: Subscription;
+  url = '';
   ngOnInit() {
   this.snackBarSubscription = this.gameService.snackBarSubject.subscribe(content => {
     this.involke(content);
   });
-  setTimeout(() => {
-    while (!this.isDiveLoaded) {
-      // tslint:disable-next-line:no-eval
-      const temp = eval('diveLinker.Hello()');
-      temp !== [] ? this.isDiveLoaded = true : this.isDiveLoaded = false;
-    }
-  }, 3000);
+  this.diveUrlSubscription = this.gameService.diveUrlSubject
+    .subscribe(diveId => {
+      this.isDiveLoaded = false;
+      this.url = `http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=${diveId}`;
+      setTimeout(() => {
+        while (!this.isDiveLoaded) {
+          // tslint:disable-next-line:no-eval
+          const temp = eval('diveLinker.Hello()');
+          temp !== [] ? this.isDiveLoaded = true : this.isDiveLoaded = false;
+        }
+      }, 3000);
+    });
+    const code = this.chooseService.getStageDataArray()['diveId'];
+    this.gameService.diveUrlSubject.next(code);
   }
 
   involke(content) {
@@ -40,5 +48,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.snackBarSubscription.unsubscribe();
+    this.diveUrlSubscription.unsubscribe();
   }
 }

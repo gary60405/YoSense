@@ -1,4 +1,4 @@
-<iframe id="iframe" [ngClass]="{'fix-dive-scale':!isDiveLoaded}" [src]="'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=3402' | safe" name="mainExperiment"></iframe>
+<iframe id="iframe" [ngClass]="{'fix-dive-scale':!isDiveLoaded}" [src]="url | safe" name="mainExperiment"></iframe>
 
 <div *ngIf="!isDiveLoaded" class="position-absolute container-fluid">
   <div id="loading-background" class="row">

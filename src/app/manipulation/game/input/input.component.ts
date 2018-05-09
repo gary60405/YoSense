@@ -26,16 +26,20 @@ export class InputComponent implements OnInit, OnDestroy {
   isEnd: Boolean;
   ngOnInit() {
     this.gameService.getStageData();
+    const diveId = this.gameService.stageData['diveId'];
     // tslint:disable-next-line:no-eval
-    eval(`init(\`${this.gameService.transformBlockDef()}\`)`);
+    eval(`init(\`${this.gameService.transformBlockDef()}\`, 1)`);
     this.updateStageInfo();
   }
   restart() {
+    const diveId = this.gameService.stageData['diveId'];
     // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
   }
   nextStage() {
     this.gameService.moveEditStageIndex();
+    const diveId = this.gameService.stageData['diveId'];
+    this.gameService.diveUrlSubject.next(diveId);
     // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
   }
@@ -58,18 +62,24 @@ export class InputComponent implements OnInit, OnDestroy {
       });
     });
     const diveValue = {};
-    diveAttribute.forEach(attr => {
-      // tslint:disable-next-line:no-eval
-      diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`);
-    });
     let i = 0;
     diagnosis.forEach(items => {
       this.intervalID.push(
         setInterval(() => {
+          diveAttribute.forEach(attr => {
+            // tslint:disable-next-line:no-eval
+            diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`);
+          });
           let isTrigger = true;
           items['conditions'].forEach(item => {
+            if (item.condition['operator'] === '=') {
+              item.condition['operator'] = '==';
+            }
+            console.log(`${diveValue[item['condition']['diveAttribute']]}
+            ${item.condition['operator']}
+            ${Number(item.condition['value'])}`);
             // tslint:disable-next-line:no-eval
-            const compareValue = eval(`${diveValue[item['diveAttribute']]}
+            const compareValue = eval(`${diveValue[item['condition']['diveAttribute']]}
                                         ${item.condition['operator']}
                                         ${Number(item.condition['value'])}`);
             // tslint:disable-next-line:no-eval
@@ -78,12 +88,17 @@ export class InputComponent implements OnInit, OnDestroy {
           // isTrigger = true;
           if (isTrigger) {
             this.gameService.snackBarSubject.next(items['content']);
-            clearInterval(this.intervalID[i]);
+            console.log(i, this.intervalID, this.intervalID[i]);
+            this.intervalID.forEach(id => {
+              clearInterval(id);
+            });
+            // clearInterval(this.intervalID[i]);
           }
-        i++;
         }, 100)
       );
+      i++;
   });
+  console.log(this.intervalID);
   }
   passMonitor() {
     this.updateStageInfo();
@@ -103,7 +118,7 @@ export class InputComponent implements OnInit, OnDestroy {
       if (data['diveAttribute'].hasOwnProperty(index)) {
         // tslint:disable-next-line:no-eval
         const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
-        condition.push(temp === data['value'][index]);
+        condition.push(temp === Number(data['value'][index]));
         console.log(temp, data['value'][index], temp === data['value'][index]);
       }
     }
@@ -136,6 +151,7 @@ export class InputComponent implements OnInit, OnDestroy {
     const commands = eval('getCode()').split(';').map(item => {
       return item + ';';
     }).slice(0, -1);
+    // console.log(commands);
     const solvePromise = (command, time) => {
       return new Promise((resolve, reject) =>　{
         setTimeout(() => {

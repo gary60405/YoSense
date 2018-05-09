@@ -1,71 +1,71 @@
 <mat-card-header class="d-flex justify-content-center ">
-    <mat-card-title>
-      <h2 class="font-weight-bold">關卡管理</h2>
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="container">
-      <div *ngIf="isLoadedProject;else loading" class="form-row">
-        <div class="col-3 mb-3">
-          <div class="card item">
-            <div class="card-body">
-              <h5 class="card-text text-center font-weight-bold">新增關卡</h5>
-            </div>
-            <div class="mask" (click)="onAddStageDialogOpen()">
-              <i class="fas fa-plus add_align_center"></i>
-            </div>
+  <mat-card-title>
+    <h2 class="font-weight-bold">關卡管理</h2>
+  </mat-card-title>
+</mat-card-header>
+<mat-card-content>
+  <div class="container">
+    <div *ngIf="isLoadedProject;else loading" class="form-row">
+      <div class="col-3 mb-3">
+        <div class="card item">
+          <div class="card-body">
+            <h5 class="card-text text-center font-weight-bold">新增關卡</h5>
+          </div>
+          <div class="mask" (click)="onAddStageDialogOpen()">
+            <i class="fas fa-plus add_align_center"></i>
           </div>
         </div>
-        <div *ngFor="let stage of stageData;let i = index;" class="col-3 mb-3">
-          <div class="card item">
-            <div class="card-header">
-              <h5 class="card-text text-center font-weight-bold position-absolute">{{stage.name}}</h5>
-              <button (click)="onCheckDelete(i)" type="button" class="close ml-auto fix-close-position">
-                <span aria-hidden="true ">&times;</span>
-              </button>
-            </div>
-            <div class="card-body p-0">
-              <div class="cover" (click)="onShowSideInfo(i)">
-                <div class="alt-text">暫無圖片</div>
-              </div>
+      </div>
+      <div *ngFor="let stage of stageData;let i = index;" class="col-3 mb-3">
+        <div class="card item">
+          <div class="card-header">
+            <h5 class="card-text text-center font-weight-bold position-absolute">{{stage.name}}</h5>
+            <button (click)="onCheckDelete(i)" type="button" class="close ml-auto fix-close-position">
+              <span aria-hidden="true ">&times;</span>
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <div class="cover" (click)="onShowSideInfo(i)">
+              <div class="alt-text">暫無圖片</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </mat-card-content>
-  <ng-template #loading>
-    <div class="row justify-content-center my-5">
-        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    </div>
+  </div>
+</mat-card-content>
+<ng-template #loading>
+  <div class="row justify-content-center my-5">
+      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+  </div>
+</ng-template>
+<ng-template #stageDialog>
+    <h2 mat-dialog-title>關卡資訊</h2>
+    <mat-dialog-content>
+      <form [formGroup]="stageForm">
+        <mat-form-field class="w-100 mb-2">
+          <input formControlName="name" matInput maxlength="8" placeholder="關卡名稱" />
+        </mat-form-field>
+        <mat-form-field class="w-100 mb-2">
+          <textarea formControlName="description" matInput placeholder="關卡描述" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="5"></textarea>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close color="primary" (click)="onAddstage()">新增</button>
+      <button mat-button mat-dialog-close color="warn">取消</button>
+    </mat-dialog-actions>
   </ng-template>
-  <ng-template #stageDialog>
-      <h2 mat-dialog-title>關卡資訊</h2>
-      <mat-dialog-content>
-        <form [formGroup]="stageForm">
-          <mat-form-field class="w-100 mb-2">
-            <input formControlName="name" matInput maxlength="8" placeholder="關卡名稱" />
-          </mat-form-field>
-          <mat-form-field class="w-100 mb-2">
-            <textarea formControlName="description" matInput placeholder="關卡描述" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="5"></textarea>
-          </mat-form-field>
-        </form>
-      </mat-dialog-content>
-      <mat-dialog-actions>
-        <button mat-button mat-dialog-close color="primary" (click)="onAddstage()">新增</button>
-        <button mat-button mat-dialog-close color="warn">取消</button>
-      </mat-dialog-actions>
-    </ng-template>
 
-    <ng-template #deleteStageDialog>
-      <h2 mat-dialog-title>
-        <i class="mr-1 fas fa-exclamation-triangle"></i>注意</h2>
-      <mat-dialog-content>
-        確定刪除本關卡?
-      </mat-dialog-content>
-      <mat-dialog-actions>
-        <button mat-button mat-dialog-close color="primary" (click)="onDeleteStage()">確定</button>
-        <button mat-button mat-dialog-close color="warn">取消</button>
-      </mat-dialog-actions>
-    </ng-template>
+  <ng-template #deleteStageDialog>
+    <h2 mat-dialog-title>
+      <i class="mr-1 fas fa-exclamation-triangle"></i>注意</h2>
+    <mat-dialog-content>
+      確定刪除本關卡?
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close color="primary" (click)="onDeleteStage()">確定</button>
+      <button mat-button mat-dialog-close color="warn">取消</button>
+    </mat-dialog-actions>
+  </ng-template>
 

@@ -14,6 +14,7 @@
 #loading-background {
   position: fixed;
   background-color: #333;
+  color: #fff;
   width: calc(7 * 100vw / 12);
   height: calc(100vh - 64px);
   z-index: 11;
