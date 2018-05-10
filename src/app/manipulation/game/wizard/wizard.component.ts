@@ -1,7 +1,7 @@
 import { GameService } from './../game.service';
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-wizard',

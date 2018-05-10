@@ -2,7 +2,7 @@ import { ShareService } from './../../../share/share.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ManagementService } from '../management.service';
 import { EditService } from '../../edit/edit.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
 
 @Component({

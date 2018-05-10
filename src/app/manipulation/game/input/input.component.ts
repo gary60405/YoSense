@@ -8,7 +8,7 @@ import { GameService } from '../game.service';
 // import * as Interpreter from 'js-interpreter';
 // import { parse } from 'esprima';
 // import { generate } from 'escodegen';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-input',

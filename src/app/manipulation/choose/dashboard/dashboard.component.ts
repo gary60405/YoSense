@@ -1,5 +1,5 @@
 import { AngularFirestore } from 'angularfire2/firestore';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import {MatDialog } from '@angular/material';
 import { FormGroup, Validators, FormControl } from '@angular/forms';

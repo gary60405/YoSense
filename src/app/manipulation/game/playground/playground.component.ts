@@ -3,8 +3,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { WizardComponent } from '../wizard/wizard.component';
 import { GameService } from '../game.service';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
+import { Subscription ,  Subject } from 'rxjs';
 
 @Component({
   selector: 'app-playground',

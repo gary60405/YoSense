@@ -1,5 +1,5 @@
 import { ShareService } from './../share/share.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AuthService } from '../auth/auth.service';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ManagementService } from '../management/management.service';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class EditService {

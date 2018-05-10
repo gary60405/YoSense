@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatTableDataSource} from '@angular/material';
 import { EditService } from '../edit.service';
 import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-diagnosis',
   templateUrl: './diagnosis.component.html',

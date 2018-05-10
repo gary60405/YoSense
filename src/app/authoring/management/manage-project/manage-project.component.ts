@@ -5,7 +5,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { ManagementService } from './../management.service';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AuthService } from '../../../auth/auth.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-manage-project',
   templateUrl: './manage-project.component.html',

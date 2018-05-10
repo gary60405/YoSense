@@ -1,9 +1,8 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription ,  Subject } from 'rxjs';
 import { EditService } from './../edit.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import {MatDialog } from '@angular/material';
 import { ShareService } from '../../../share/share.service';
-import { Subject } from 'rxjs/Subject';
 import * as intro from 'intro.js/minified/intro.min.js';
 import { ManagementService } from '../../management/management.service';
 

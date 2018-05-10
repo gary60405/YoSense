@@ -1,6 +1,6 @@
 import { ChooseService } from './../choose/choose.service';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class GameService {
