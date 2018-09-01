@@ -14,7 +14,7 @@ export class AuthService {
   constructor(public afAuth: AngularFireAuth,
               public afStore: AngularFirestore) {
     const settings = {timestampsInSnapshots: true};
-    afStore.app.firestore().settings(settings);
+    afStore.firestore.settings(settings);
   }
   getUserInfo() {
     return this.userInfo;
