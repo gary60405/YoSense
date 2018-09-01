@@ -448,6 +448,22 @@
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.8.tgz#38a936b60b898a1ad0f3719543ff1a1031f60f8b"
 
+"@ngrx/effects@ngrx/effects":
+  version "2.0.5"
+  resolved "https://codeload.github.com/ngrx/effects/tar.gz/90752b5f4d89194275d40ff12bd9c5c887c58682"
+
+"@ngrx/router-store@ngrx/router-store":
+  version "1.2.6"
+  resolved "https://codeload.github.com/ngrx/router-store/tar.gz/5a1e261a7d6289dad658d03a81a179cc47666f1f"
+
+"@ngrx/store-devtools@ngrx/store-devtools":
+  version "3.2.4"
+  resolved "https://codeload.github.com/ngrx/store-devtools/tar.gz/a08f7366ef16d1b470f7a8b2aa73c341ea5116b1"
+
+"@ngrx/store@ngrx/store":
+  version "2.2.3"
+  resolved "https://codeload.github.com/ngrx/store/tar.gz/f1e0d17a3d6b1be01ef58d652261a8e66ee3946f"
+
 "@ngtools/webpack@6.0.8":
   version "6.0.8"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-6.0.8.tgz#a05bce526aee9da62bb230a95fba83fee99d0bca"
@@ -1575,7 +1591,7 @@ clone@^2.1.1, clone@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
 
-clone@aminmarashi/clone#d97b4f:
+"clone@github:aminmarashi/clone#d97b4f":
   version "2.1.1"
   resolved "https://codeload.github.com/aminmarashi/clone/tar.gz/d97b4f0ff3d3afebcaaf4a2ecc9c50fbce914900"
 
