@@ -1,11 +1,16 @@
-import { ShareService } from './../share/share.service';
+import { StepDisplayState } from './../model/header/header.model';
+import { authenticateStateSelector, userDataStateSelector } from './../auth/store/auth.selectors';
+import { Appstate } from './../store/app.reducers';
 import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { MatMenuTrigger } from '@angular/material';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import * as AuthActions from '../auth/store/auth.actions';
+import * as HeaderActions from './store/header.actions';
+import { Observable } from 'rxjs';
+import { stepDisplayStateSelector } from './store/header.selectors';
 
 @Component({
   selector: 'app-header',
@@ -13,50 +18,56 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  isLogin = false;
-  userName = '';
-  identification = '';
+
   @ViewChild('toolbar') toolbar;
   @ViewChild('menuTmpl') menuTmpl;
+
+  isLogin$: Observable<boolean>;
+  stepDisplayState$: Observable<StepDisplayState>;
+  userName = '';
+  identification = '';
   signInForm: FormGroup;
   overlayRef: OverlayRef;
 
-  constructor(public shareService: ShareService,
-              private authService: AuthService,
-              private route: Router,
+  constructor(private route: Router,
               private overlay: Overlay,
-              private viewContainerRef: ViewContainerRef) { }
+              private viewContainerRef: ViewContainerRef,
+              private store: Store<Appstate>) {
+    this.isLogin$ = store.pipe(select(authenticateStateSelector));
+    this.stepDisplayState$ = store.pipe(select(stepDisplayStateSelector));
+  }
   ngOnInit() {
-    const strategy = this.overlay.position()
-                      .connectedTo(this.toolbar._elementRef, { originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'top' });
+    const strategy = this.overlay.position().connectedTo(this.toolbar._elementRef, { originX: 'end', originY: 'bottom' }, { overlayX: 'end', overlayY: 'top' });
     this.overlayRef = this.overlay.create({positionStrategy: strategy});
     this.signInForm = new FormGroup({
       mail: new FormControl(),
       password: new FormControl()
     });
-    this.authService.isLoginSubject
-      .subscribe(isLogin => {
-        this.isLogin = isLogin;
+    this.store.pipe(select(userDataStateSelector))
+      .subscribe(userData => {
+        this.userName = userData.displayName;
+        this.identification = userData.identification;
+        this.redirectPage();
       });
-    this.authService.userInfoSubject
-      .subscribe(res => {
-        this.userName = res['displayName'];
-        this.identification = res['identification'];
-        this.switchToHome();
-      });
+    let current = '';
     this.route.events.subscribe(res => {
-      if (this.route.url === '/authoring/edit/dive') {
-        this.shareService.displayStepArray[0] = true;
-      } else if (this.route.url === '/authoring/edit/blockly') {
-        this.shareService.displayStepArray[1] = true;
-      } else if (this.route.url === '/authoring/edit/bind') {
-        this.shareService.displayStepArray[2] = true;
-      } else if (this.route.url === '/authoring/edit/diagnosis') {
-        this.shareService.displayStepArray[3] = true;
-      } else if (this.route.url === '/authoring/edit/pass') {
-        this.shareService.displayStepArray[4] = true;
-      } else {
-        this.shareService.displayStepArray = [false, false, false, false, false];
+      if (current !== this.route.url) {
+        current = this.route.url;
+        if (this.route.url === '/authoring/edit/dive') {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('DIVE_DISPLAY'));
+        } else if (this.route.url === '/authoring/edit/hierarchy') {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('HIERARCHY_DISPLAY_DISPLAY'));
+        } else if (this.route.url === '/authoring/edit/blockly') {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('BLOCKLY_DISPLAY'));
+        } else if (this.route.url === '/authoring/edit/bind') {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('BINDING_DISPLAY'));
+        } else if (this.route.url === '/authoring/edit/diagnosis') {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('DIAGNOSIS_DISPLAY'));
+        } else if (this.route.url === '/authoring/edit/pass') {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('PASS_DISPLAY'));
+        } else {
+          this.store.dispatch(new HeaderActions.InitailStepDisplayState);
+        }
       }
     });
   }
@@ -69,7 +80,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  switchToHome() {
+  redirectPage() {
     if (this.identification === 'teacher') {
       if (this.route.url.indexOf('management') !== -1) {
         this.route.navigateByUrl('/authoring');
@@ -87,13 +98,17 @@ export class HeaderComponent implements OnInit {
     }
   }
   onSignIn() {
-    this.authService.signIn(this.signInForm.value.mail, this.signInForm.value.password);
-    this.shareService.progressBarSubject.next(true);
+    const userdata = {
+      email: this.signInForm.value.mail,
+      password: this.signInForm.value.password
+    };
+    this.store.dispatch(new AuthActions.TrySignin(userdata));
   }
 
   onSignOut() {
     this.overlayRef.detach();
-    this.authService.signOut();
+    this.store.dispatch(new AuthActions.Logout);
+    this.redirectPage();
   }
 
 }

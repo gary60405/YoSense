@@ -26,7 +26,6 @@ export class PlaygroundComponent implements OnInit, OnDestroy {
       this.url = `http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=${diveId}`;
       setTimeout(() => {
         while (!this.isDiveLoaded) {
-          // tslint:disable-next-line:no-eval
           const temp = eval('diveLinker.Hello()');
           temp !== [] ? this.isDiveLoaded = true : this.isDiveLoaded = false;
         }

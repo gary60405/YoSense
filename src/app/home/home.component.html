@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-      <mat-progress-bar *ngIf="displayProgressBar" class="position-absolute" mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar *ngIf="(progressbarState$ | async) === 'OPEN'" class="position-absolute" mode="indeterminate"></mat-progress-bar>
   </div>
   <div class="row">
     <form [formGroup]="signUpForm" class="center d-flex flex-column">
@@ -26,20 +26,20 @@
 
 <ng-template #signUpDialog>
   <h2 mat-dialog-title class="text-weight-bold">
-      <i *ngIf="(signUpMsg === '註冊成功！請由右上方登入');else signUpFail;" class="fas fa-check-circle text-success"></i>
+      <i *ngIf="((stateText$ | async) === '註冊成功！請由右上方登入');else signUpFail;" class="fas fa-check-circle text-success"></i>
       <ng-template #signUpFail>
           <i class="fas fa-exclamation-triangle text-danger"></i>
       </ng-template>
   註冊提示</h2>
   <mat-dialog-content>
-    {{signUpMsg}}
+    {{(stateText$ | async)}}
   </mat-dialog-content>
   <mat-dialog-actions class="d-flex justify-content-center">
       <button mat-button
               mat-dialog-close
               tabindex="-1"
               color="primary"
-              *ngIf="(signUpMsg === '註冊成功！請由右上方登入');else signUpFailBtn;">確認</button>
+              *ngIf="((stateText$ | async) === '註冊成功！請由右上方登入');else signUpFailBtn;">確認</button>
 <ng-template #signUpFailBtn>
 <button tabindex="-1" mat-button mat-dialog-close color="primary">返回</button>
 </ng-template>
@@ -48,19 +48,19 @@
 
 <ng-template #signInDialog>
   <h2 mat-dialog-title class="font-weight-bold">
-      <i *ngIf="(signInMsg === '登入成功！');else signInFail;" class="fas fa-check-circle text-success"></i>
+      <i *ngIf="((stateText$ | async) === '登入成功！');else signInFail;" class="fas fa-check-circle text-success"></i>
       <ng-template #signInFail>
           <i class="fas fa-exclamation-triangle text-danger"></i>
       </ng-template>
   登入提示</h2>
   <mat-dialog-content>
-    {{signInMsg}}
+    {{(stateText$ | async)}}
   </mat-dialog-content>
   <mat-dialog-actions class="d-flex justify-content-center">
     <button mat-button
             mat-dialog-close
             tabindex="-1"
             color="primary"
-            *ngIf="(signInMsg !== '登入成功！');">返回</button>
+            *ngIf="((stateText$ | async) !== '登入成功！');">返回</button>
   </mat-dialog-actions>
 </ng-template>

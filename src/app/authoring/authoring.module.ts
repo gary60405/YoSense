@@ -18,6 +18,7 @@ import { ManagementService } from './management/management.service';
 import { EditProjectComponent } from './management/edit-project/edit-project.component';
 import { ManageProjectComponent } from './management/manage-project/manage-project.component';
 import { SideInfoComponent } from './management/side-info/side-info.component';
+import { HierarchyComponent } from './edit/hierarchy/hierarchy.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { SideInfoComponent } from './management/side-info/side-info.component';
     SafePipe,
     EditProjectComponent,
     ManageProjectComponent,
-    SideInfoComponent
+    SideInfoComponent,
+    HierarchyComponent
   ],
   providers: [
     EditService,

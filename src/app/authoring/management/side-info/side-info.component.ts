@@ -1,9 +1,13 @@
-import { ShareService } from './../../../share/share.service';
+import { take } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ManagementService } from '../management.service';
 import { EditService } from '../../edit/edit.service';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../../../auth/auth.service';
+import { Subscription, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Appstate } from '../../../store/app.reducers';
+import { ProjectState, StagesState } from '../../../model/authoring/management.model';
+import { projectSideInfoSelector, editModeSelector, stageSideInfoSelector, projectUidStateSelector } from '../../store/authoring.selectors';
+import * as AuthoringActions from './../../store/authoring.actions';
 
 @Component({
   selector: 'app-side-info',
@@ -14,26 +18,23 @@ export class SideInfoComponent implements OnInit, OnDestroy {
 
   constructor(public managementService: ManagementService,
               private editService: EditService,
-              private shareService: ShareService,
-              private authService: AuthService) { }
+              private store: Store<Appstate>) {
+    this.editMode$ = store.select(editModeSelector);
+    this.projectInfo$ = store.select(projectSideInfoSelector);
+    this.stageInfo$ = store.select(stageSideInfoSelector);
+  }
+  editMode$: Observable<string>;
+  projectInfo$: Observable<ProjectState>;
+  stageInfo$: Observable<StagesState>;
   projectIndex = -1;
-  editMode = false;
-  projectInfo = {};
   stageData = [];
   editModeSubscription = new Subscription();
   stageSubscription = new Subscription();
-  ngOnInit() {
-    this.editModeSubscription =  this.managementService.editModeSubject
-      .subscribe(res => {
-        this.editMode = res;
-      });
-    this.stageSubscription = this.managementService.stageDataSubject
-      .subscribe(res => {
-        this.stageData = res;
-      });
-  }
+  ngOnInit() {}
   onEditProject() {
-    this.managementService.sideInfo = {};
+    this.store.select(projectUidStateSelector)
+      .pipe(take(1))
+      .subscribe((uid: string) => this.store.dispatch(new AuthoringActions.TryLoadStagesData(uid)));
   }
   onEditStage() {
     const index = this.managementService.editStageIndex;

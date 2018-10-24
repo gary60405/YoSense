@@ -27,20 +27,17 @@ export class InputComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.gameService.getStageData();
     const diveId = this.gameService.stageData['diveId'];
-    // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`, 1)`);
     this.updateStageInfo();
   }
   restart() {
     const diveId = this.gameService.stageData['diveId'];
-    // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
   }
   nextStage() {
     this.gameService.moveEditStageIndex();
     const diveId = this.gameService.stageData['diveId'];
     this.gameService.diveUrlSubject.next(diveId);
-    // tslint:disable-next-line:no-eval
     eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
   }
   updateStageInfo() {
@@ -67,8 +64,7 @@ export class InputComponent implements OnInit, OnDestroy {
       this.intervalID.push(
         setInterval(() => {
           diveAttribute.forEach(attr => {
-            // tslint:disable-next-line:no-eval
-            diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`);
+                    diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`);
           });
           let isTrigger = true;
           items['conditions'].forEach(item => {
@@ -78,12 +74,10 @@ export class InputComponent implements OnInit, OnDestroy {
             console.log(`${diveValue[item['condition']['diveAttribute']]}
             ${item.condition['operator']}
             ${Number(item.condition['value'])}`);
-            // tslint:disable-next-line:no-eval
-            const compareValue = eval(`${diveValue[item['condition']['diveAttribute']]}
+                    const compareValue = eval(`${diveValue[item['condition']['diveAttribute']]}
                                         ${item.condition['operator']}
                                         ${Number(item.condition['value'])}`);
-            // tslint:disable-next-line:no-eval
-            isTrigger = eval(`${isTrigger} && ${compareValue}`);
+                    isTrigger = eval(`${isTrigger} && ${compareValue}`);
           });
           // isTrigger = true;
           if (isTrigger) {
@@ -116,8 +110,7 @@ export class InputComponent implements OnInit, OnDestroy {
     const condition = [];
     for ( const index in data['diveAttribute']) {
       if (data['diveAttribute'].hasOwnProperty(index)) {
-        // tslint:disable-next-line:no-eval
-        const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
+            const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
         condition.push(temp === Number(data['value'][index]));
         console.log(temp, data['value'][index], temp === data['value'][index]);
       }
@@ -127,8 +120,7 @@ export class InputComponent implements OnInit, OnDestroy {
       if (condition.hasOwnProperty(index)) {
         const element = condition[index];
         if (index !== '0') {
-          // tslint:disable-next-line:no-eval
-          isPass = eval(`${isPass} ${data['logical'][index]} ${element}`);
+                isPass = eval(`${isPass} ${data['logical'][index]} ${element}`);
         } else {
           isPass = isPass && element;
         }
@@ -147,7 +139,6 @@ export class InputComponent implements OnInit, OnDestroy {
 
  getCode() {
    this.diagnosisMonitor();
-    // tslint:disable-next-line:no-eval
     const commands = eval('getCode()').split(';').map(item => {
       return item + ';';
     }).slice(0, -1);
@@ -155,8 +146,7 @@ export class InputComponent implements OnInit, OnDestroy {
     const solvePromise = (command, time) => {
       return new Promise((resolve, reject) =>　{
         setTimeout(() => {
-          // tslint:disable-next-line:no-eval
-          resolve(eval(command));
+                resolve(eval(command));
         }, time);
       });
     };
@@ -191,7 +181,6 @@ export class InputComponent implements OnInit, OnDestroy {
         }
       }
     }
-    // tslint:disable-next-line:no-eval
     eval(code);
   }
 ngOnDestroy() {

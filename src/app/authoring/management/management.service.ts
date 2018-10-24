@@ -64,11 +64,8 @@ export class ManagementService {
     this.afStore.collection('project').doc(uid).delete();
   }
   genUid() {
-    const random = (min, max) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    let id = '';
-    let i = 4;
+    const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    let id = '', i = 4;
     const charSet = [{min: 48, max: 57}, {min: 65, max: 90}, {min: 97, max: 122}];
     while (i !== 0) {
       const range = charSet[random(0, 2)];

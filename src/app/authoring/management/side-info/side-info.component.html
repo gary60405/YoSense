@@ -1,6 +1,6 @@
 <mat-card-header class="d-flex justify-content-center ">
   <mat-card-title>
-    <h2 class="font-weight-bold">{{editMode? '關卡' : '專案'}}資訊</h2>
+    <h2 class="font-weight-bold">{{(editMode$ | async) === 'PROJECT_MODE'? '專案' : '關卡'}}資訊</h2>
   </mat-card-title>
 </mat-card-header>
 <mat-card-content>
@@ -10,9 +10,9 @@
               (click)="onEditStage()"
               routerLink="/authoring/edit"
               class="btn btn-primary btn-sm"
-              *ngIf="editMode;else elseBtn">編輯關卡</button>
+              *ngIf="!((editMode$ | async) === 'PROJECT_MODE');else elseBtn">編輯關卡</button>
       <ng-template #elseBtn>
-          <button type="button" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm" (click)="onEditProject()">編輯專案</button>
+          <button type="button" (click)="onEditProject()" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm">編輯專案</button>
       </ng-template>
     </div>
     <div class="row">
@@ -24,38 +24,38 @@
     </div>
     <div class="row">
       <div class="col p-0">
-        <h5>{{editMode ? '關卡' : '專案'}}名稱：</h5>
-        <p class="pl-4 py-1">{{managementService.sideInfo['name']}}</p>
+        <h5>{{(editMode$ | async) === 'PROJECT_MODE' ? '專案' : '關卡'}}名稱：</h5>
+        <p class="pl-4 py-1">{{(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).name : (stageInfo$ | async).name}}</p>
       </div>
     </div>
-    <div *ngIf="!editMode" class="row">
+    <div *ngIf="(editMode$ | async) === 'PROJECT_MODE'" class="row">
         <div class="col p-0">
             <h5>專案代碼：</h5>
-            <p class="pl-4 py-1">{{managementService.sideInfo['uid']}}</p>
+            <p class="pl-4 py-1">{{(projectInfo$ | async).uid}}</p>
           </div>
     </div>
-    <div *ngIf="!editMode" class="row">
+    <div *ngIf="(editMode$ | async) === 'PROJECT_MODE'" class="row">
       <div class="col p-0">
         <h5>專案作者：</h5>
-        <p class="pl-4 py-1">{{managementService.sideInfo['author']}}</p>
+        <p class="pl-4 py-1">{{(projectInfo$ | async).author}}</p>
       </div>
     </div>
     <div class="row">
       <div class="col p-0">
-        <h5>{{editMode ? '關卡' : '專案'}}描述：</h5>
-        <p class="pl-4 py-1">{{managementService.sideInfo['description']}}</p>
+        <h5>{{(editMode$ | async) === 'PROJECT_MODE' ? '專案' : '關卡'}}描述：</h5>
+        <p class="pl-4 py-1">{{(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).description : (stageInfo$ | async).description}}</p>
       </div>
     </div>
     <div class="row">
       <div class="col p-0">
         <h5>最後修改：</h5>
-        <p class="pl-4 py-1">{{managementService.sideInfo['lastModify'] | date:'HH:mm:ss, M月d日, y年'}}</p>
+        <p class="pl-4 py-1">{{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify : (stageInfo$ | async).lastModify) | date:'y年M月d日 HH:mm:ss'}}</p>
       </div>
     </div>
     <div class="row">
       <div class="col p-0">
         <h5>建立日期：</h5>
-        <p class="pl-4 py-1">{{managementService.sideInfo['createDate'] | date:'HH:mm:ss, M月d日, y年'}}</p>
+        <p class="pl-4 py-1">{{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate : (stageInfo$ | async).createDate) | date:'y年M月d日 HH:mm:ss'}}</p>
       </div>
     </div>
   </div>

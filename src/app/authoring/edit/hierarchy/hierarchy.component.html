@@ -1,0 +1,80 @@
+<div class="container-fluid position-absolute">
+  <div class="row mt-3 justify-content-center">
+    <div class="col-8">
+      <mat-card class="mat-elevation-z8">
+        <mat-card-header class="d-flex justify-content-center ">
+          <mat-card-title>
+            <h2 class="font-weight-bold">建立巢狀結構</h2>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row justify-content-center">
+            <div class="btn btn-primary mr-1" (click)="onCreateObject()">新建物件</div>
+            <div class="btn btn-warning ml-1" (click)="onSubmitData()">確認送出</div>
+          </div>
+          <form [formGroup]="hierarchyForm">
+            <div formArrayName="objects">
+              <div class="mt-3" [formGroupName]="i" *ngFor="let object of objectsArray; let i = index">
+                <div class="form-group d-flex">
+                  <input type="text" class="form-control w-25" formControlName="name" placeholder="請輸入物件名稱">
+                  <button mat-icon-button (click)="onDeleteItem(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                <div formArrayName="states">
+                  <div [formGroupName]="j" *ngFor="let state of stateArray[i]; let j = index">
+                    <div class="ml-5">
+                      <div class="form-group d-flex">
+                        <input type="text" class="form-control w-25" formControlName="stateName" [placeholder]="switchPlaceholder(i, j)">
+                        <button mat-icon-button (click)="onDeleteItem(i,j)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                      <div class="ml-5" formGroupName="diveData">
+                        <div class="form-group">
+                          <div *ngIf="hierarchyForm.value.objects[i].states[j].class === 'setter';else getter">
+                            <select (change)="onSelectValue($event.target.value, i, j)" class="form-control w-25" formControlName="diveNumber">
+                              <option disabled>--請選擇dive屬性--</option>
+                              <option [value]="data.id" *ngFor="let data of (diveData$ | async).inValue">{{data.id + '(' + data.name + ')'}}</option>
+                            </select>
+                          </div>
+                          <ng-template #getter>
+                            <select (change)="onSelectValue($event.target.value, i, j)" class="form-control w-25" formControlName="diveNumber">
+                              <option disabled>--請選擇dive屬性--</option>
+                              <option [value]="data.id" *ngFor="let data of (diveData$ | async).outValue">{{data.id + '(' + data.name + ')'}}</option>
+                            </select>
+                          </ng-template>
+                        </div>
+                        <div class="form-group">
+                          <input type="text" class="form-control w-25" formControlName="diveName" placeholder="請輸入屬性名稱">
+                        </div>
+                        <input type="hidden" formControlName="diveValue">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div (click)="onCreateSetter(i)" class="btn btn-success ml-5">新建傳入屬性</div>
+                <div (click)="onCreateGetter(i)" class="btn btn-success ml-2">新建讀取屬性</div>
+              </div>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<ng-template #hierarchyDialog>
+  <h2 mat-dialog-title>建立物件</h2>
+  <mat-dialog-content class="d-flex flex-column">
+    <form [formGroup]="createObjectForm">
+      <mat-form-field class="w-100">
+        <input matInput formControlName="name" placeholder="請輸入物件名稱">
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close color="primary" (click)="submitCreateObjectForm()">確認</button>
+    <button mat-button mat-dialog-close color="warn">取消</button>
+  </mat-dialog-actions>
+</ng-template>

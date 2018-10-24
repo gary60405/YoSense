@@ -19,11 +19,12 @@ import { AuthService } from '../auth/auth.service';
   exports: [
     AppRoutingModule,
     HeaderComponent,
-    HomeComponent
+    HomeComponent,
+
   ],
   declarations: [
     HeaderComponent,
-    HomeComponent
+    HomeComponent,
   ],
   providers: [
     AuthService,

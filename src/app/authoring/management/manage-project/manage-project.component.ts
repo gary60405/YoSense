@@ -1,87 +1,101 @@
-import { ShareService } from './../../../share/share.service';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { projectDataStateSelector, addProjectSelector } from './../../store/authoring.selectors';
+import { Appstate } from './../../../store/app.reducers';
+import { Store, select } from '@ngrx/store';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatDialog } from '@angular/material';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { ManagementService } from './../management.service';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { AuthService } from '../../../auth/auth.service';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { ProjectState } from '../../../model/authoring/management.model';
+import { userDataStateSelector } from '../../../auth/store/auth.selectors';
+import { UserDataState } from '../../../model/auth/auth.model';
+import * as AuthoringActions from './../../store/authoring.actions';
+import { projectLoadedStateSelector } from '../../store/authoring.selectors';
 @Component({
   selector: 'app-manage-project',
   templateUrl: './manage-project.component.html',
   styleUrls: ['./manage-project.component.css']
 })
-export class ManageProjectComponent implements OnInit, OnDestroy {
+export class ManageProjectComponent implements OnInit {
   @ViewChild('projectDialog') projectDialog;
   @ViewChild('deleteProjectDialog') deleteProjectDialog;
   projectForm: FormGroup;
-  projectData = [];
-  isLoadedProject = false;
+  projectData$: Observable<ProjectState[]>;
+  isProjectLoaded$: Observable<boolean>;
   deleteIndex = -1;
-  nowDate: Date;
+
   constructor(public dialog: MatDialog,
-              private managementService: ManagementService,
-              private afStore: AngularFirestore,
-              private authService: AuthService,
-              private shareService: ShareService) { }
-  projectDataSubscrption = new Subscription();
-  userInfoSubscription = new Subscription();
+              private store: Store<Appstate>) {
+    this.projectData$ = store.pipe(select(projectDataStateSelector));
+    this.isProjectLoaded$ = store.pipe(select(projectLoadedStateSelector));
+  }
+
   ngOnInit() {
-    this.managementService.sideInfo = {};
-    this.managementService.editModeSubject.next(false);
-    this.projectDataSubscrption = this.managementService.projectDataSubject
-      .subscribe(res => {
-        this.isLoadedProject = true;
-        this.projectData = res;
+    // this.store.pipe(select(userDataStateSelector))
+    //   .subscribe((res: UserDataState) => {
+    //     res.project
+    //       .filter(data => data !== 'F2nV')
+    //       .forEach(data => {
+    //         if (data !== 'F2nV') {
+    //           this.afStore.collection('project').doc(data).delete();
+    //         }
+    //       });
+    //   });
+    //   this.afStore.collection('user').doc('gary60405@gmail.com').update({project: ['F2nV']});
+    // this.afStore.collection('project').doc('F2nV').update({
+    //   createDate: new Date(),
+    //   description: 'good',
+    //   lastModify: new Date(),
+    //   name: 'gf',
+    //   uid: 'F2nV'
+    // });
+    // this.afStore.collection('project').valueChanges()
+    //   .subscribe(res => {
+    //     res.filter(data => data['author'] === 'gary60405@gmail.com' && data['uid'] !== 'F2nV')
+    //        .map(data => data['uid'])
+    //        .forEach(uid => this.afStore.collection('project').doc(uid).delete());
+    //   });
+    this.store.dispatch(new AuthoringActions.InitailProjectInfo());
+    this.store.select(userDataStateSelector)
+      .pipe(take(1))
+      .subscribe((userData: UserDataState) => {
+        this.store.dispatch(new AuthoringActions.TryLoadProjectsData(userData));
       });
-    this.userInfoSubscription = this.authService.userInfoSubject.subscribe(data => {
-      this.afStore.collection('project').valueChanges()
-        .subscribe(projects => {
-          const projectPromise = new Promise((resolve, reject) => {
-            projects = projects.filter(project => {
-              return data['project'].find(projectIndex => project['uid'] === projectIndex);
-            }).map(row => {
-              row['lastModify'] = row['lastModify'].toDate();
-              row['createDate'] = row['createDate'].toDate();
-              return row;
-            });
-            resolve(projects);
-          });
-          projectPromise.then((res: {}[]) => {
-            this.managementService.projectDataArray = res;
-            this.managementService.projectDataSubject.next(res);
-          });
-        });
-    });
-    const userInfo = this.authService.userInfo;
-    this.authService.userInfoSubject.next(userInfo);
     this.projectForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required])
     });
   }
 
-  onShowSideInfo(index) {
-    this.managementService.editProjectIndex = index;
-    this.managementService.sideInfo = this.projectData[index];
+  onShowSideInfo(index: number) {
+    this.store.select(projectDataStateSelector)
+      .pipe(take(1))
+      .subscribe((projectData: ProjectState[]) => {
+        const data = {index: index, projects: projectData[index]};
+        this.store.dispatch(new AuthoringActions.SetProjectSideInfo(data));
+      });
   }
+
   onDeleteProject() {
-    this.managementService.deleteProjectData(this.projectData[this.deleteIndex]['uid']);
+    this.store.pipe(select(projectDataStateSelector))
+      .pipe(take(1))
+      .subscribe((projectData: ProjectState[]) => this.store.dispatch(new AuthoringActions.TryDeleteProject(projectData[this.deleteIndex].uid)));
     this.deleteIndex = -1;
   }
+
   onAddProject() {
-    this.managementService.addProjectData(this.projectForm.value);
+    this.store.pipe(select(addProjectSelector))
+      .pipe(take(1))
+      .subscribe((res: UserDataState) => this.store.dispatch(new AuthoringActions.TryAddProject({userData: res, projectData: this.projectForm.value})));
     this.projectForm.reset();
   }
+
   onAddProjectDialogOpen() {
     this.dialog.open(this.projectDialog);
   }
+
   onCheckDelete(index) {
     this.deleteIndex = index;
     this.dialog.open(this.deleteProjectDialog);
-  }
-  ngOnDestroy() {
-    this.projectDataSubscrption.unsubscribe();
-    this.userInfoSubscription.unsubscribe();
   }
 }

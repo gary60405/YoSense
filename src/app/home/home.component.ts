@@ -1,10 +1,14 @@
-import { ShareService } from './../share/share.service';
-import { Subscription } from 'rxjs';
+import { Appstate } from './../store/app.reducers';
+import { Subscription, Observable, from } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+
+import * as AuthActions from '../auth/store/auth.actions';
+import { stateTextSelector, progressbarStateSelector, dialogueStateSelector } from '../auth/store/auth.selectors';
 
 @Component({
   selector: 'app-home',
@@ -15,17 +19,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('signUpDialog') signUpDialog;
   @ViewChild('signInDialog') signInDialog;
   constructor(public authService: AuthService,
-              private shareService: ShareService,
               private dialog: MatDialog,
-              private router: Router) { }
-  signUpMsg = '';
-  signInMsg = '';
+              private router: Router,
+              private store: Store<Appstate>) {
+  this.stateText$ = store.pipe(select(stateTextSelector));
+  this.progressbarState$ = store.pipe(select(progressbarStateSelector));
+  }
   signUpForm: FormGroup;
-  signUpSubscription = new Subscription();
-  signInSubscription = new Subscription();
-  userInfoSubscription = new Subscription();
-  progressBarSubscription = new Subscription();
-  displayProgressBar = false;
+  stateText$: Observable<string>;
+  progressbarState$: Observable<string>;
+  dialogueSubscription = new Subscription();
+  stateTextSubscription = new Subscription();
+  identificationSubscription = new Subscription();
+
   ngOnInit() {
     this.signUpForm = new FormGroup({
       email: new FormControl(),
@@ -33,49 +39,44 @@ export class HomeComponent implements OnInit, OnDestroy {
       displayName: new FormControl(),
       identification: new FormControl()
     });
-    this.userInfoSubscription = this.authService.userInfoSubject
-      .subscribe(userInfo => {
-        if (this.signInMsg === '登入成功！' ) {
-          setTimeout(() => {
-            this.dialog.closeAll();
-            setTimeout(() => {
-              this.authService.isLoginSubject.next(true);
-              const identification = this.authService.getUserInfo()['identification'];
-              const address = identification === 'teacher' ? '/authoring' : '/manipulation';
-              this.router.navigateByUrl(address);
-            }, 100);
-            setTimeout(() => { this.signInMsg = ''; }, 1000);
-          }, 500);
+
+    this.dialogueSubscription = this.store.select(dialogueStateSelector)
+      .subscribe(data => {
+        let stateText = '';
+        this.stateText$.subscribe(res => stateText = res);
+        switch (data) {
+          case 'SIGN_UP_OPEN':
+            if (stateText === '註冊成功！請由右上方登入') {
+              this.signUpForm.reset();
+            }
+            return this.dialog.open(this.signUpDialog);
+          case 'SIGN_IN_OPEN':
+            this.dialog.open(this.signInDialog);
+            if (stateText === '登入成功！') {
+              setTimeout(() => {
+                this.dialog.closeAll();
+                setTimeout(() => {
+                  this.store.dispatch(new AuthActions.SetAuthenticated);
+                  this.identificationSubscription = this.store.select('auth')
+                    .subscribe(res => {
+                      const address = res.userData.identification === 'teacher' ? '/authoring' : '/manipulation';
+                      this.router.navigateByUrl(address);
+                    });
+                }, 100);
+              }, 500);
+            }
+            break;
+          case 'CLOSE_DIALOGUE':
+            return this.dialog.closeAll();
         }
-      });
-    this.signInSubscription = this.authService.singnInSubject
-      .subscribe(msg => {
-        this.signInMsg = msg;
-        this.dialog.open(this.signInDialog);
-        this.shareService.progressBarSubject.next(false);
-    });
-    this.signUpSubscription = this.authService.singnUpSubject
-      .subscribe(msg => {
-        this.signUpMsg = msg;
-        this.dialog.open(this.signUpDialog);
-        this.shareService.progressBarSubject.next(false);
-        if (msg === '註冊成功！請由右上方登入') {
-          this.signUpForm.reset();
-        }
-    });
-    this.shareService.progressBarSubject
-      .subscribe(res => {
-        this.displayProgressBar = res;
       });
   }
   onSignUp() {
-    this.shareService.progressBarSubject.next(true);
-    this.authService.signUp(this.signUpForm.value);
+    this.store.dispatch(new AuthActions.TrySignup(this.signUpForm.value));
   }
   ngOnDestroy() {
-    this.signInSubscription.unsubscribe();
-    this.signUpSubscription.unsubscribe();
-    this.userInfoSubscription.unsubscribe();
-    this.progressBarSubscription.unsubscribe();
+    this.dialogueSubscription.unsubscribe();
+    this.stateTextSubscription.unsubscribe();
+    this.identificationSubscription.unsubscribe();
   }
 }

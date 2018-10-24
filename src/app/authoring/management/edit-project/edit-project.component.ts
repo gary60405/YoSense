@@ -1,8 +1,14 @@
-import { ShareService } from './../../../share/share.service';
+import { StagesState } from './../../../model/authoring/management.model';
+import { take } from 'rxjs/operators';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import {MatDialog } from '@angular/material';
-import { ManagementService } from './../management.service';
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Appstate } from '../../../store/app.reducers';
+import { stageLoadedStateSelector, deleteDataSetSelector, stageDataStateSelector } from '../../store/authoring.selectors';
+import * as AuthoringActions from './../../store/authoring.actions';
+
 @Component({
   selector: 'app-edit-project',
   templateUrl: './edit-project.component.html',
@@ -11,32 +17,29 @@ import { ManagementService } from './../management.service';
 export class EditProjectComponent implements OnInit {
   @ViewChild('stageDialog') stageDialog;
   @ViewChild('deleteStageDialog') deleteStageDialog;
-  stageData = [];
-  stageForm: FormGroup;
   deleteIndex = -1;
-  isLoadedProject = false;
+  stageForm: FormGroup;
+  isStageLoaded$: Observable<boolean>;
+  stageData$: Observable<StagesState[]>;
   constructor(public dialog: MatDialog,
-              private managementService: ManagementService,
-              private shareService: ShareService) { }
+              private store: Store<Appstate>) {
+    this.stageData$ = store.pipe(select(stageDataStateSelector));
+    this.isStageLoaded$ = store.pipe(select(stageLoadedStateSelector));
+  }
   ngOnInit() {
-    this.managementService.sideInfo = {};
-    this.managementService.editModeSubject.next(true);
     this.stageForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required])
     });
-    this.managementService.stageDataSubject
-      .subscribe(stage => {
-        this.stageData = stage;
-        this.isLoadedProject = true;
-      });
-    this.managementService.getStageData();
   }
 
   onShowSideInfo(index) {
-    this.managementService.sideInfo = this.managementService.stageDataArray[index];
-    this.managementService.editStageIndex = index;
-    console.log(this.managementService.sideInfo);
+    this.store.select(stageDataStateSelector)
+      .pipe(take(1))
+      .subscribe((stagesData: StagesState[]) => {
+        const data = {index: index, stages: stagesData[index]};
+        this.store.dispatch(new AuthoringActions.SetStageSideInfo(data));
+      });
   }
 
   onCheckDelete(index) {
@@ -45,18 +48,23 @@ export class EditProjectComponent implements OnInit {
   }
   onAddstage() {
     const stageData = this.stageForm.value;
-    stageData['order'] = this.stageData.length;
-    stageData['createDate'] = new Date();
-    stageData['lastModify'] = new Date();
-    stageData['stageData'] = {};
-    this.stageData.push(stageData);
-    this.managementService.addStageData(stageData);
-    this.stageForm.reset();
+    this.store.pipe(select(stageDataStateSelector))
+      .pipe(take(1))
+      .subscribe((stagesData: StagesState[]) => {
+        stageData['order'] = stagesData.length;
+        stageData['createDate'] = new Date().toString();
+        stageData['lastModify'] = new Date().toString();
+        stageData['stageData'] = [];
+        this.stageForm.reset();
+      });
   }
   onDeleteStage() {
-    this.managementService.deleteStageData(this.deleteIndex);
+    this.store.pipe(select(deleteDataSetSelector, {K:1}))
+      .pipe(take(1))
+      .subscribe((deleteDataSet: {uid: string, stageName: string}) => this.store.dispatch(new AuthoringActions.TryDeleteStage({...deleteDataSet, index: this.deleteIndex})));
     this.deleteIndex = -1;
   }
+
   onAddStageDialogOpen() {
     this.dialog.open(this.stageDialog);
   }

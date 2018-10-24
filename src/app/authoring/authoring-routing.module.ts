@@ -10,6 +10,7 @@ import { DiveComponent } from './edit/dive/dive.component';
 import { BlocklyComponent } from './edit/blockly/blockly.component';
 import { DiagnosisComponent } from './edit/diagnosis/diagnosis.component';
 import { EditProjectComponent } from './management/edit-project/edit-project.component';
+import { HierarchyComponent } from './edit/hierarchy/hierarchy.component';
 
 const routes: Routes = [
   {path: '', component: AuthoringComponent, children: [
@@ -22,6 +23,7 @@ const routes: Routes = [
     {path: 'edit', component: EditComponent, children: [
       {path: '', redirectTo: 'dive', pathMatch: 'full'},
       {path: 'dive', component: DiveComponent},
+      {path: 'hierarchy', component: HierarchyComponent},
       {path: 'blockly', component: BlocklyComponent},
       {path: 'bind', component: BindComponent},
       {path: 'diagnosis', component: DiagnosisComponent},
