@@ -1,8 +1,8 @@
 import { UserDataState } from './../../model/auth/auth.model';
 import { map, switchMap, mergeMap } from 'rxjs/operators';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, Effect } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import * as AuthoringActions from './authoring.actions';
 import * as AuthActions from './../../auth/store/auth.actions';
 import { ProjectState, StagesState } from '../../model/authoring/management.model';
@@ -22,8 +22,8 @@ addProject = this.action$
           .then(response => {
             if (response.data() === undefined) {
               res.projectData.uid = uid;
-              res.projectData.createDate = new Date().toString();
-              res.projectData.lastModify = new Date().toString();
+              res.projectData.createDate = new Date();
+              res.projectData.lastModify = new Date();
               res.projectData.author = res.userData.email;
               res.userData.project.push(res.projectData.uid);
               this.afStore.collection('user').doc(res.userData.email).update({project: res.userData.project});

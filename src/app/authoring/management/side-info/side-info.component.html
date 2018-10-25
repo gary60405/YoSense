@@ -49,14 +49,22 @@
     <div class="row">
       <div class="col p-0">
         <h5>最後修改：</h5>
-        <p class="pl-4 py-1">{{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify : (stageInfo$ | async).lastModify) | date:'y年M月d日 HH:mm:ss'}}</p>
+        <p class="pl-4 py-1"
+           *ngIf="(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify.getFullYear() !== 1970 : (stageInfo$ | async).lastModify.getFullYear() !== 1970;else emptyDate">
+           {{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify : (stageInfo$ | async).lastModify) | date:'y年M月d日 HH:mm:ss'}}</p>
       </div>
     </div>
     <div class="row">
       <div class="col p-0">
         <h5>建立日期：</h5>
-        <p class="pl-4 py-1">{{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate : (stageInfo$ | async).createDate) | date:'y年M月d日 HH:mm:ss'}}</p>
+        <p class="pl-4 py-1"
+           *ngIf="(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate.getFullYear() !== 1970 : (stageInfo$ | async).createDate.getFullYear() !== 1970;else emptyDate">
+           {{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate : (stageInfo$ | async).createDate) | date:'y年M月d日 HH:mm:ss'}}</p>
       </div>
     </div>
   </div>
 </mat-card-content>
+
+<ng-template #emptyDate>
+  <p class="pl-4 py-1"></p>
+</ng-template>

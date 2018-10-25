@@ -52,14 +52,14 @@ export class EditProjectComponent implements OnInit {
       .pipe(take(1))
       .subscribe((stagesData: StagesState[]) => {
         stageData['order'] = stagesData.length;
-        stageData['createDate'] = new Date().toString();
-        stageData['lastModify'] = new Date().toString();
+        stageData['createDate'] = new Date();
+        stageData['lastModify'] = new Date();
         stageData['stageData'] = [];
         this.stageForm.reset();
       });
   }
   onDeleteStage() {
-    this.store.pipe(select(deleteDataSetSelector, {K:1}))
+    this.store.pipe(select(deleteDataSetSelector, this.deleteIndex))
       .pipe(take(1))
       .subscribe((deleteDataSet: {uid: string, stageName: string}) => this.store.dispatch(new AuthoringActions.TryDeleteStage({...deleteDataSet, index: this.deleteIndex})));
     this.deleteIndex = -1;

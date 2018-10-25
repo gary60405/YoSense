@@ -5,17 +5,17 @@ export const initailState: ManipulationState = {
   editMode: 'PROJECT_MODE',
   projectSideInfo: {
     author: '',
-    createDate: '',
+    createDate: new Date(0),
     description: '',
-    lastModify: '',
+    lastModify: new Date(0),
     name: '',
     uid: '',
     stages: []
   },
   stageSideInfo:  {
-    createDate: '',
+    createDate: new Date(0),
     description: '',
-    lastModify: '',
+    lastModify: new Date(0),
     name: '',
     order: '',
     stageData: {

@@ -46,9 +46,9 @@ export interface StageDataState {
   hierarchyData: {};
 }
 export interface StagesState {
-  createDate: string;
+  createDate: Date;
   description: string;
-  lastModify: string;
+  lastModify: Date;
   name: string;
   order: string;
   stageData: StageDataState;
@@ -56,9 +56,9 @@ export interface StagesState {
 
 export interface ProjectState {
   author: string;
-  createDate: string;
+  createDate: Date;
   description: string;
-  lastModify: string;
+  lastModify: Date;
   name: string;
   uid: string;
   stages: StagesState[];
