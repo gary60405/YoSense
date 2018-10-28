@@ -152,11 +152,14 @@ export function authoringRuducer(state = initialState, action) {
         }
       };
     case AuthoringActions.DELETE_STAGE:
+      const editProjectIndex = state.managementState.editProjectIndex;
+      const projects = [...state.managementState.projectDataState];
+      projects[editProjectIndex].stages.splice(action.payload.index, 1);
       return {
         ...state,
         managementState: {
           ...state.managementState,
-          projectDataState: state.managementState.projectDataState[action.payload.uid].stages.splice(action.payload.index, 1)
+          projectDataState: [...projects]
         }
       };
     case AuthoringActions.ADD_PROJECT:

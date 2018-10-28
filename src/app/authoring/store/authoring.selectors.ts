@@ -37,8 +37,10 @@ export const projectUidStateSelector = createSelector(
 
 export const deleteDataSetSelector = createSelector(
   (state: Appstate, props: number) => {
-    const uid = state.authoring.projectSideInfo.uid;
-    const stageName = state.authoring.managementState.projectDataState.filter(res => res.uid === uid)[0].stages[props].name;
+    const editProjectIndex = state.authoring.managementState.editProjectIndex;
+    const uid = state.authoring.managementState.projectDataState[editProjectIndex]['uid'];
+    const stage = state.authoring.managementState.projectDataState.filter(res => res.uid === uid)[0].stages[props];
+    const stageName = stage === undefined ? '' : stage.name;
     return {uid: uid, stageName: stageName};
   },
   (deleteDataSet: {uid: string, stageName: string}) => deleteDataSet

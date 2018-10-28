@@ -12,7 +12,6 @@ import { UserDataState } from '../../../model/auth/auth.model';
 import * as AuthoringActions from './../../store/authoring.actions';
 import { projectLoadedStateSelector } from '../../store/authoring.selectors';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireFunctions } from '@angular/fire/functions';
 @Component({
   selector: 'app-manage-project',
   templateUrl: './manage-project.component.html',
@@ -28,8 +27,7 @@ export class ManageProjectComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private store: Store<Appstate>,
-              public afStore: AngularFirestore,
-              private afFunction: AngularFireFunctions
+              public afStore: AngularFirestore
               ) {
     this.projectData$ = store.pipe(select(projectDataStateSelector));
     this.isProjectLoaded$ = store.pipe(select(projectLoadedStateSelector));
