@@ -64,6 +64,18 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
           project: [...action.payload]
         }
       };
+    case AuthActions.DELETE_USER_PROJECT:
+      const project = [...state.userData.project];
+      const index = project.indexOf(action.payload);
+      console.log(action.payload, index);
+      project.splice(index, 1);
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          project: [...project]
+        }
+      };
     default:
       return state;
   }

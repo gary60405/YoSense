@@ -9,6 +9,7 @@ export const LOGOUT = 'LOGOUT';
 export const INITAIL_DIALOGUE = 'INITAIL_DIALOGUE';
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
 export const UPDATE_USER_PROJECT = 'UPDATE_USER_PROJECT';
+export const DELETE_USER_PROJECT = 'DELETE_USER_PROJECT';
 
 export class TrySignup implements Action {
   readonly type = TRY_SIGNUP;
@@ -47,6 +48,12 @@ export class UpdateUserProject implements Action {
   constructor(public payload: string[]) {}
 }
 
+export class DeleteUserProject implements Action {
+  readonly type = DELETE_USER_PROJECT;
+  constructor(public payload: string) {}
+}
+
+
 export type AuthActions = Signup |
                           Signin |
                           Logout |
@@ -54,4 +61,5 @@ export type AuthActions = Signup |
                           TrySignin |
                           InitailDialogue |
                           SetAuthenticated |
-                          UpdateUserProject;
+                          UpdateUserProject |
+                          DeleteUserProject;

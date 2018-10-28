@@ -20,7 +20,6 @@ import { AuthService } from '../auth/auth.service';
     AppRoutingModule,
     HeaderComponent,
     HomeComponent,
-
   ],
   declarations: [
     HeaderComponent,

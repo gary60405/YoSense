@@ -11,6 +11,8 @@ import { userDataStateSelector } from '../../../auth/store/auth.selectors';
 import { UserDataState } from '../../../model/auth/auth.model';
 import * as AuthoringActions from './../../store/authoring.actions';
 import { projectLoadedStateSelector } from '../../store/authoring.selectors';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireFunctions } from '@angular/fire/functions';
 @Component({
   selector: 'app-manage-project',
   templateUrl: './manage-project.component.html',
@@ -25,7 +27,10 @@ export class ManageProjectComponent implements OnInit {
   deleteIndex = -1;
 
   constructor(public dialog: MatDialog,
-              private store: Store<Appstate>) {
+              private store: Store<Appstate>,
+              public afStore: AngularFirestore,
+              private afFunction: AngularFireFunctions
+              ) {
     this.projectData$ = store.pipe(select(projectDataStateSelector));
     this.isProjectLoaded$ = store.pipe(select(projectLoadedStateSelector));
   }
@@ -41,13 +46,14 @@ export class ManageProjectComponent implements OnInit {
     //         }
     //       });
     //   });
-    //   this.afStore.collection('user').doc('gary60405@gmail.com').update({project: ['F2nV']});
-    // this.afStore.collection('project').doc('F2nV').update({
+      // this.afStore.collection('user').doc('gary60405@gmail.com').update({project: ['F2nV']});
+    // this.afStore.collection('project').doc('9esW').update({
+    //   author: 'gary60405@gmail.com',
     //   createDate: new Date(),
     //   description: 'good',
     //   lastModify: new Date(),
     //   name: 'gf',
-    //   uid: 'F2nV'
+    //   uid: '9esW'
     // });
     // this.afStore.collection('project').valueChanges()
     //   .subscribe(res => {
@@ -66,7 +72,6 @@ export class ManageProjectComponent implements OnInit {
       description: new FormControl('', [Validators.required])
     });
   }
-
   onShowSideInfo(index: number) {
     this.store.select(projectDataStateSelector)
       .pipe(take(1))

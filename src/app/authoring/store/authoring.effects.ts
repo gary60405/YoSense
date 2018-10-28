@@ -1,12 +1,11 @@
 import { UserDataState } from './../../model/auth/auth.model';
-import { map, switchMap, mergeMap } from 'rxjs/operators';
+import { map, switchMap, mergeMap, take } from 'rxjs/operators';
 import { Actions, Effect } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as AuthoringActions from './authoring.actions';
 import * as AuthActions from './../../auth/store/auth.actions';
 import { ProjectState, StagesState } from '../../model/authoring/management.model';
-
 @Injectable()
 export class AuthoringEffects {
 
@@ -61,11 +60,29 @@ deleteProject = this.action$
   .pipe(
     map((action: AuthoringActions.TryDeleteProject) => action.payload),
     mergeMap((uid: string) => {
+      this.afStore.doc(`project/${uid}`).valueChanges()
+        .pipe(take(1))
+        .subscribe(projectData => {
+            this.afStore.doc(`user/${projectData['author']}`).valueChanges()
+              .pipe(take(1))
+              .subscribe(userInfo => {
+                const index = userInfo['project'].indexOf(uid);
+                userInfo['project'].splice(index, 1);
+                this.afStore.doc(`user/${projectData['author']}`).update({...userInfo});
+              });
+        });
+      this.afStore.collection(`project/9esW/stage`).get()
+        .pipe(take(1))
+        .subscribe(rows => rows.docs.forEach(data => this.afStore.doc(`project/${uid}/stage/${data.id}`).delete()));
       this.afStore.collection('project').doc(uid).delete();
       return [{
-        type: AuthoringActions.DELETE_PROJECT,
-        payload: uid
-      }];
+          type: AuthoringActions.DELETE_PROJECT,
+          payload: uid
+        },
+        {
+          type: AuthActions.DELETE_USER_PROJECT,
+          payload: uid
+        }];
     })
   );
 
@@ -75,7 +92,7 @@ deleteProject = this.action$
     .pipe(
       map((action: AuthoringActions.TryDeleteStage) => action.payload),
       mergeMap((deleteDataSet: {uid: string, stageName: string, index: number}) => {
-        this.afStore.collection('project').doc(deleteDataSet.uid).collection('stage').doc(deleteDataSet.stageName).delete();
+        this.afStore.doc(`project/${deleteDataSet.uid}/stage/${deleteDataSet.stageName}`).delete();
         return [{
           type: AuthoringActions.DELETE_STAGE,
           payload: deleteDataSet
@@ -114,7 +131,7 @@ loadStagesData = this.action$
       map((action: AuthoringActions.TryLoadStagesData) => action.payload),
       switchMap((uid: string) => {
         const stagesPromise = new Promise((resolve, reject) => {
-          this.afStore.collection('project').doc(uid).collection('stage').valueChanges()
+          this.afStore.collection(`project/${uid}/stage`).valueChanges()
             .subscribe(data => {
               data.map(stage => {
                 stage['lastModify'] = stage['lastModify'].toDate();
