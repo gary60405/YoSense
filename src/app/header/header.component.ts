@@ -1,6 +1,6 @@
 import { StepDisplayState } from './../model/header/header.model';
 import { authenticateStateSelector, userDataStateSelector } from './../auth/store/auth.selectors';
-import { Appstate } from './../store/app.reducers';
+import { AppState } from './../model/app/app.model';
 import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import * as AuthActions from '../auth/store/auth.actions';
 import * as HeaderActions from './store/header.actions';
+import * as AppActions from './../store/app.actions';
 import { Observable } from 'rxjs';
 import { stepDisplayStateSelector } from './store/header.selectors';
 
@@ -32,7 +33,7 @@ export class HeaderComponent implements OnInit {
   constructor(private route: Router,
               private overlay: Overlay,
               private viewContainerRef: ViewContainerRef,
-              private store: Store<Appstate>) {
+              private store: Store<AppState>) {
     this.isLogin$ = store.pipe(select(authenticateStateSelector));
     this.stepDisplayState$ = store.pipe(select(stepDisplayStateSelector));
   }
@@ -102,12 +103,13 @@ export class HeaderComponent implements OnInit {
       email: this.signInForm.value.mail,
       password: this.signInForm.value.password
     };
+    // console.log(userdata);
     this.store.dispatch(new AuthActions.TrySignin(userdata));
   }
 
   onSignOut() {
     this.overlayRef.detach();
-    this.store.dispatch(new AuthActions.Logout);
+    this.store.dispatch(new AppActions.TryLogout);
     this.redirectPage();
   }
 

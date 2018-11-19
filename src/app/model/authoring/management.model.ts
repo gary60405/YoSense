@@ -1,12 +1,15 @@
+import { HierarchyState } from './authoring.model';
+
 export interface PassConditionState {
   condition: ConditionState;
   logical: string;
 }
 
 export interface ValueState {
-  id: number;
-  name: string;
+  dataValue: string;
+  viewValue: string;
 }
+
 export interface DiveDataState {
   inValue: ValueState[];
   outValue: ValueState[];
@@ -17,40 +20,47 @@ export interface ConditionState {
   operator: string;
   value: string;
 }
+
 export interface ConditionsState {
   condition: ConditionState[];
   logical: string;
 }
+
 export interface ConditionDataState {
   conditions: ConditionsState[];
   content: string;
   name: string;
 }
+
 export interface BlocklyDataState {
   blockDef: string;
   blockGen: string;
   isDisabled: Boolean;
   name: string;
 }
+
 export interface BindingDataState {
   blocklyIndex: number;
   diveIndex: number;
 }
+
 export interface StageDataState {
   bindingData: BindingDataState[];
   blocklyData: BlocklyDataState[];
   conditionData: ConditionDataState[];
-  diveData: DiveDataState[];
+  diveData: DiveDataState;
   diveId: string;
   passcondition: PassConditionState[];
-  hierarchyData: {};
+  hierarchyData: HierarchyState[];
 }
+
 export interface StagesState {
+  uid: string;
   createDate: Date;
   description: string;
   lastModify: Date;
   name: string;
-  order: string;
+  order: number;
   stageData: StageDataState;
 }
 
@@ -66,7 +76,7 @@ export interface ProjectState {
 
 export interface ManagementState {
   projectDataState: ProjectState[];
-  deleteIndex: number;
   editProjectIndex: number;
   editStageIndex: number;
 }
+

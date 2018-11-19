@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div class="row overflow">
           <button type="button"
-                  *ngFor="let block of blocklys;let i = index"
+                  *ngFor="let block of (blocklys$ | async);let i = index"
                   class="btn btn-primary btn-sm d-flex justify-content-between align-items-center ml-3">
             <span>{{block.name}}</span>
             <button type="button" class="close text-white" (click)="deleteBlock(i)">
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="col-1">
-        <button class="ml-auto justfy" routerLink="/authoring/edit/bind" (click)="moveStep()" mat-raised-button color="primary">完成</button>
+        <button class="ml-auto justfy" routerLink="/authoring/edit/bind" mat-raised-button color="primary">完成</button>
       </div>
   </div>
 </div>

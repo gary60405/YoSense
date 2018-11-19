@@ -28,14 +28,14 @@
                 <div class="form-row" formGroupName="condition">
                   <div class="col-5">
                       <select formControlName="diveAttribute" class="form-control">
-                          <option *ngFor="let item of diveItems;" [value]="item.dataValue">
+                          <option *ngFor="let item of (diveItems$ | async).outValue;" [value]="item.dataValue">
                             {{item.viewValue}}
                           </option>
                         </select>
                   </div>
                   <div class="col-2">
                     <select formControlName="operator" class="form-control">
-                      <option *ngFor="let operator of operators" [value]="operator">
+                      <option *ngFor="let operator of (operators$ | async)" [value]="operator">
                         {{ operator }}
                       </option>
                     </select>

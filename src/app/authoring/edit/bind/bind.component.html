@@ -14,16 +14,15 @@
                 <div class="col-5">Blockly積木</div>
                 <div class="col-2"></div>
                 <div class="col-5">Dive屬性代碼</div>
-                <!-- <div class="col-1"></div> -->
               </div>
               <div formArrayName="bindingArray">
                 <div class="form-row mt-2" [formGroupName]="i" *ngFor="let blockly of bindingArray; let i = index">
                   <div class="col-5">
-                      <input type="text" [value]="transformIndex(blockly.value.blocklyIndex)" class="form-control" disabled>
-                      <input type="hidden" [ngModel]="i" class="form-control" formControlName="blocklyIndex">
+                      <input type="text" [value]="(blocklyItems$ | async)[blockly.value.blocklyIndex].name" class="form-control" disabled>
+                      <input type="hidden" class="form-control" formControlName="blocklyIndex">
                   </div>
                   <div class="col-2 d-flex justify-content-center">
-                    <button *ngIf="true" class="fix-position" (click)="toggleBindingRow(i)" mat-icon-button>
+                    <button *ngIf="true" class="fix-position" mat-icon-button>
                       <mat-icon class="fix-position">link</mat-icon>
                     </button>
                     <!-- <button *ngIf="!blockly.isDisabled" class="fix-position" (click)="toggleBindingRow(i)" mat-icon-button>
@@ -32,7 +31,7 @@
                   </div>
                   <div class="col-5">
                     <select formControlName="diveIndex" class="form-control">
-                      <option *ngFor="let item of diveItems;let i_item = index;" [value]="i_item">
+                      <option *ngFor="let item of (diveItems$ | async).inValue;let i_item = index;" [value]="i_item">
                         {{item.viewValue}}
                       </option>
                     </select>

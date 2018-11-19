@@ -29,18 +29,6 @@ export class EditService {
     };
     this.managementService.updateStageProject(data);
   }
-  transDataFormat(res: {}) {
-    this.diveDataArray['inValue'] = res['inValue'].map((row) => {
-      const newRow = {dataValue: '', viewValue: ''};
-      [newRow['dataValue'], newRow['viewValue']] = [row['id'].toString(), row['name']];
-      return newRow;
-    });
-    this.diveDataArray['outValue'] = res['outValue'].map((row) => {
-      const newRow = {dataValue: '', viewValue: ''};
-      [newRow['dataValue'], newRow['viewValue']] = [row['id'].toString(), row['name']];
-      return newRow;
-    });
-  }
   getPassConditionArray() {
     return this.passConditionArray.slice();
   }

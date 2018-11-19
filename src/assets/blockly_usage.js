@@ -1,6 +1,6 @@
 let workspace = null;
 
-function init(str, opt = 1) {
+function init(str) {
     const blocksData = str.split('#^&').map(data => {
       const newData = {}
       const splited = data.split('@^&');
@@ -10,10 +10,6 @@ function init(str, opt = 1) {
       return newData;
     }).slice(0, -1);
     initCodeGenerator(blocksData)
-    if (opt === 2 ) {
-      eval('Blockly.mainWorkspace.clear()');
-      eval('Blockly.mainWorkspace.dispose()');
-    }
     this.workspace = Blockly.inject('blocklyDiv', {
       toolbox: Blockly.Xml.textToDom(getXmlText(blocksData)),
       trashcan: true,
@@ -32,6 +28,11 @@ function init(str, opt = 1) {
         scaleSpeed: 1.2
       },
   });
+}
+
+function resetBlocklyWorkSpace() {
+  eval('Blockly.mainWorkspace.clear()');
+  eval('Blockly.mainWorkspace.dispose()');
 }
 
 function getXmlText(blocksData) {
@@ -54,6 +55,7 @@ function initCodeGenerator(blocksData) {
 }
 
 function getCode() {
+  console.log(Blockly.JavaScript.workspaceToCode(this.workspace));
   return Blockly.JavaScript.workspaceToCode(this.workspace);
 }
 

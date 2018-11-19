@@ -15,7 +15,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { environment } from '../environments/environment';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { AuthoringEffects } from './authoring/store/authoring.effects';
+import { AuthoringStageEffects } from './authoring/edit/store/authoringStage.effects';
+import { ManagementEffects } from './authoring/management/store/management.effects';
+import { ManipulationEffects } from './manipulation/store/manipulation.effects';
+import { AppEffects } from './store/app.effects';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBoTwHjqBNIluVzQJUyHu2spnB2AtlkNY8',
@@ -36,9 +39,8 @@ export const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AngularFireFunctionsModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AuthEffects, AuthoringEffects]),
+    EffectsModule.forRoot([AuthEffects, ManagementEffects, AuthoringStageEffects, ManipulationEffects, AppEffects]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],

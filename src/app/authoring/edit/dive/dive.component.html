@@ -1,4 +1,4 @@
-<button *ngIf="!isChecked;else checkButton"
+<button *ngIf="!(isChecked$ | async);else checkButton"
         mat-fab color="primary"
         class="stick mr-5 mb-5"
         (click)="open()"
@@ -6,10 +6,7 @@
   <mat-icon>eject</mat-icon>
 </button>
 <iframe  id="iframe" [src]="url | safe" name="mainExperiment"></iframe>
-
-<!-- http://bootstrap.hexschool.com/docs/4.0/components/progress/ -->
-<!-- http://dive.nutn.edu.tw:8080/Experiment/ -->
-<div *ngIf="!isDiveLoaded" class="position-absolute container-fluid">
+<div *ngIf="!(isDiveLoaded$ | async)" class="position-absolute container-fluid">
   <div id="loading-background" class="row">
     <div class="col">
       <div class="loading d-flex flex-column justify-content-center align-items-center">
@@ -21,7 +18,7 @@
 </div>
 
 <ng-template #checkButton>
-    <button matTooltip="前往下個步驟" mat-fab routerLink="/authoring/edit/blockly" color="primary" class="stick mr-5 mb-5">
+    <button matTooltip="前往下個步驟" mat-fab routerLink="/authoring/edit/hierarchy" color="primary" class="stick mr-5 mb-5">
         <mat-icon>done_all</mat-icon>
       </button>
 </ng-template>

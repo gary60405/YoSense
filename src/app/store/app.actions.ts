@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
-import { UserDataState } from '../../model/auth/auth.model';
-import { ProjectState, StagesState } from '../../model/authoring/management.model';
+import { UserDataState } from './../model/auth/auth.model';
+import { ProjectState, StagesState } from './../model/authoring/management.model';
+import { AddProjectState, DeleteStageState, DeleteProjectState, JoinProjectSetState } from '../model/selector/selector.model';
 
 export const TRY_LOAD_PROJECTS_DATA = 'TRY_LOAD_PROJECTS_DATA';
 export const LOAD_PROJECTS_DATA = 'LOAD_PROJECTS_DATA';
@@ -23,11 +24,14 @@ export const TRY_ADD_PROJECT = 'TRY_ADD_PROJECT';
 export const TRY_ADD_STAGE = 'TRY_ADD_STAGE';
 export const ADD_PROJECT = 'ADD_PROJECT';
 export const ADD_STAGE = 'ADD_STAGE';
-export const TRY_UPDATE_PROJECT = 'TRY_UPDATE_PROJECT';
-export const TRY_UPDATE_STAGE = 'TRY_UPDATE_STAGE';
-export const UPDATE_PROJECT = 'UPDATE_PROJECT';
-export const UPDATE_STAGE = 'UPDATE_STAGE';
-export const BUILD_HIERARCHY = 'BUILD_HIERARCHY';
+export const TRY_UPDATE_PROJECT_INFO = 'TRY_UPDATE_PROJECT_INFO';
+export const TRY_UPDATE_STAGE_INFO = 'TRY_UPDATE_STAGE_INFO';
+export const UPDATE_PROJECT_INFO = 'UPDATE_PROJECT_INFO';
+export const UPDATE_STAGE_INFO = 'UPDATE_STAGE_INFO';
+export const TRY_DELETE_USER_PROJECT = 'TRY_DELETE_USER_PROJECT';
+export const TRY_ADD_USER_PROJECT = 'TRY_ADD_USER_PROJECT';
+export const INITAIL_APP_STATE = 'INITAIL_APP_STATE';
+export const TRY_LOGOUT = 'TRY_LOGOUT';
 
 export class TryLoadProjectsData implements Action {
   readonly type = TRY_LOAD_PROJECTS_DATA;
@@ -99,7 +103,7 @@ export class TryDeleteProject implements Action {
 
 export class TryDeleteStage implements Action {
   readonly type = TRY_DELETE_STAGE;
-  constructor(public payload: {uid: string, stageName: string, index: number}) {}
+  constructor(public payload: DeleteStageState) {}
 }
 
 export class DeleteProject implements Action {
@@ -114,7 +118,7 @@ export class DeleteStage implements Action {
 
 export class TryAddProject implements Action {
   readonly type = TRY_ADD_PROJECT;
-  constructor(public payload: {userData: UserDataState, projectData: ProjectState}) {}
+  constructor(public payload: AddProjectState) {}
 }
 
 export class AddProject implements Action {
@@ -132,53 +136,68 @@ export class AddStage implements Action {
   constructor(public payload: any) {}
 }
 
-export class TryUpdateProject implements Action {
-  readonly type = TRY_UPDATE_PROJECT;
+export class TryUpdateProjectInfo implements Action {
+  readonly type = TRY_UPDATE_PROJECT_INFO;
   constructor(public payload: any) {}
 }
 
-export class UpdateProject implements Action {
-  readonly type = UPDATE_PROJECT;
+export class UpdateProjectInfo implements Action {
+  readonly type = UPDATE_PROJECT_INFO;
   constructor(public payload: any) {}
 }
 
-export class TryUpdateStage implements Action {
-  readonly type = TRY_UPDATE_STAGE;
+export class TryUpdateStageInfo implements Action {
+  readonly type = TRY_UPDATE_STAGE_INFO;
   constructor(public payload: any) {}
 }
 
-export class UpdateStage implements Action {
-  readonly type = UPDATE_STAGE;
+export class UpdateStageInfo implements Action {
+  readonly type = UPDATE_STAGE_INFO;
   constructor(public payload: any) {}
 }
 
-export class BuildHierarchy implements Action {
-  readonly type = BUILD_HIERARCHY;
-  constructor(public payload: {}) {}
+export class TryDeleteUserProject implements Action {
+  readonly type = TRY_DELETE_USER_PROJECT;
+  constructor(public payload: DeleteProjectState) {}
 }
 
-export type AuthoringActions = TryLoadProjectsData |
-                               LoadProjectsData |
-                               TryLoadStagesData |
-                               LoadStagesData |
-                               SetProjectsLoadedState |
-                               SetStageLoadedState |
-                               SetEditProjectIndex |
-                               SetEditStageIndex |
-                               SetProjectSideInfo |
-                               SetStageSideInfo |
-                               InitailProjectInfo |
-                               InitailStageInfo |
-                               DeleteProject |
-                               DeleteStage |
-                               TryAddProject |
-                               AddProject |
-                               TryAddStage |
-                               AddStage |
-                               TryUpdateProject|
-                               UpdateProject |
-                               TryUpdateStage |
-                               UpdateStage |
-                               BuildHierarchy
-                               ;
+export class TryAddUserProject implements Action {
+  readonly type = TRY_ADD_USER_PROJECT;
+  constructor(public payload: JoinProjectSetState) {}
+}
+
+export class InitialAppState implements Action {
+  readonly type = INITAIL_APP_STATE;
+}
+
+export class TryLogout implements Action {
+  readonly type = TRY_LOGOUT;
+}
+export type AppActions = TryLoadProjectsData |
+                         LoadProjectsData |
+                         TryLoadStagesData |
+                         LoadStagesData |
+                         SetProjectsLoadedState |
+                         SetStageLoadedState |
+                         SetEditProjectIndex |
+                         SetEditStageIndex |
+                         SetProjectSideInfo |
+                         SetStageSideInfo |
+                         InitailProjectInfo |
+                         InitailStageInfo |
+                         DeleteProject |
+                         DeleteStage |
+                         TryAddProject |
+                         AddProject |
+                         TryAddStage |
+                         AddStage |
+                         TryUpdateProjectInfo |
+                         UpdateProjectInfo |
+                         TryUpdateStageInfo |
+                         UpdateStageInfo |
+                         TryDeleteUserProject |
+                         TryAddUserProject |
+                         InitialAppState |
+                         TryLogout
+                         ;
 

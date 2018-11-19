@@ -1,13 +1,15 @@
-import { StagesState } from './../../../model/authoring/management.model';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import {MatDialog } from '@angular/material';
-import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { Appstate } from '../../../store/app.reducers';
-import { stageLoadedStateSelector, deleteDataSetSelector, stageDataStateSelector } from '../../store/authoring.selectors';
-import * as AuthoringActions from './../../store/authoring.actions';
+
+import * as AppActions from './../../../store/app.actions';
+import { AppState } from '../../../model/app/app.model';
+import { StagesState } from './../../../model/authoring/management.model';
+import { stageLoadedStateSelector, deleteDataSetSelector, stageDataStateSelector, projectUidStateSelector, addStageSelector } from './../../../store/app.selectors';
+import { AddStageState } from '../../../model/selector/selector.model';
 
 @Component({
   selector: 'app-edit-project',
@@ -22,11 +24,14 @@ export class EditProjectComponent implements OnInit {
   isStageLoaded$: Observable<boolean>;
   stageData$: Observable<StagesState[]>;
   constructor(public dialog: MatDialog,
-              private store: Store<Appstate>) {
+              private store: Store<AppState>) {
     this.stageData$ = store.pipe(select(stageDataStateSelector));
     this.isStageLoaded$ = store.pipe(select(stageLoadedStateSelector));
   }
   ngOnInit() {
+    this.store
+        .pipe(select(projectUidStateSelector), take(1))
+        .subscribe((uid: string) => uid !== null ? this.store.dispatch(new AppActions.TryLoadStagesData(uid)) : '');
     this.stageForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required])
@@ -34,34 +39,32 @@ export class EditProjectComponent implements OnInit {
   }
 
   onShowSideInfo(index) {
-    this.store.select(stageDataStateSelector)
-      .pipe(take(1))
-      .subscribe((stagesData: StagesState[]) => {
-        const data = {index: index, stages: stagesData[index]};
-        this.store.dispatch(new AuthoringActions.SetStageSideInfo(data));
-      });
+    this.store
+        .pipe(select(stageDataStateSelector), take(1))
+        .subscribe((stagesData: StagesState[]) => {
+          const data = {index: index, stages: stagesData[index]};
+          this.store.dispatch(new AppActions.SetStageSideInfo(data));
+        });
   }
 
   onCheckDelete(index) {
     this.deleteIndex = index;
     this.dialog.open(this.deleteStageDialog);
   }
+
   onAddstage() {
-    const stageData = this.stageForm.value;
-    this.store.pipe(select(stageDataStateSelector))
-      .pipe(take(1))
-      .subscribe((stagesData: StagesState[]) => {
-        stageData['order'] = stagesData.length;
-        stageData['createDate'] = new Date();
-        stageData['lastModify'] = new Date();
-        stageData['stageData'] = [];
-        this.stageForm.reset();
-      });
+    this.store
+        .pipe(select(addStageSelector, this.stageForm.value), take(1))
+        .subscribe((addStageData: AddStageState) => {
+          this.store.dispatch(new AppActions.TryAddStage(addStageData));
+          this.stageForm.reset();
+        });
   }
+
   onDeleteStage() {
-    this.store.pipe(select(deleteDataSetSelector, this.deleteIndex))
-      .pipe(take(1))
-      .subscribe((deleteDataSet: {uid: string, stageName: string}) => this.store.dispatch(new AuthoringActions.TryDeleteStage({...deleteDataSet, index: this.deleteIndex})));
+    this.store
+        .pipe(select(deleteDataSetSelector, this.deleteIndex), take(1))
+        .subscribe((deleteDataSet: {projectUid: string, stageUid: string}) => this.store.dispatch(new AppActions.TryDeleteStage({...deleteDataSet, index: this.deleteIndex})));
     this.deleteIndex = -1;
   }
 

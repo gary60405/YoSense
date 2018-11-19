@@ -27,14 +27,14 @@
                 <div formGroupName="condition" class="form-row">
                   <div class="col">
                     <select class="form-control" formControlName="diveAttribute">
-                      <option *ngFor="let item of diveItems" [value]="item.dataValue">
+                      <option *ngFor="let item of (diveItems$ | async).outValue" [value]="item.dataValue">
                         {{ item.viewValue }}
                       </option>
                     </select>
                   </div>
                   <div class="col-2">
                     <select class="form-control" formControlName="operator">
-                      <option *ngFor="let operator of operators" [value]="operator">
+                      <option *ngFor="let operator of (operators$ | async)" [value]="operator">
                         {{ operator }}
                       </option>
                     </select>
@@ -130,14 +130,14 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div *ngFor="let conditions of conditionDataArray;let i = index;" class="alert alert-info" (click)="onEditDiagnos(i)">
+          <div *ngFor="let conditions of (conditionDataArray$ | async);let i = index;" class="alert alert-info" (click)="onEditDiagnos(i)">
             <strong>{{conditions.name}}</strong>
             <button type="button" class="close" (click)="onDeleteDiagnos(i)">
               <span aria-hidden="true ">&times;</span>
             </button>
           </div>
-          <div *ngIf="conditionDataArray.length !== 0" class="form-row justify-content-center mt-2">
-            <button class="btn btn-primary" routerLink="/authoring/edit/pass" (click)="onSubmit()">完成</button>
+          <div *ngIf="(conditionDataArray$ | async).length !== 0" class="form-row justify-content-center mt-2">
+            <button class="btn btn-primary" routerLink="/authoring/edit/pass">完成</button>
           </div>
         </mat-card-content>
       </mat-card>

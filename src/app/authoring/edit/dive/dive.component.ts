@@ -1,65 +1,53 @@
-import { Subscription ,  Subject } from 'rxjs';
-import { EditService } from './../edit.service';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import {MatDialog } from '@angular/material';
-import { ShareService } from '../../../share/share.service';
-import * as intro from 'intro.js/minified/intro.min.js';
-import { ManagementService } from '../../management/management.service';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { MatDialog } from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+
+import { AppState } from '../../../model/app/app.model';
+import { DiveDataState } from './../../../model/authoring/management.model';
+import * as AuthoringStageActions from './../store/authoringStage.actions';
+import * as HeaderActions from './../../../header/store/header.actions';
+import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelector } from '../store/authoringStage.selectors';
 
 @Component({
   selector: 'app-dive',
   templateUrl: './dive.component.html',
   styleUrls: ['./dive.component.css']
 })
-export class DiveComponent implements OnInit, OnDestroy {
-  url = 'http://dive.nutn.edu.tw:8080/Experiment/';
+export class DiveComponent implements OnInit {
   @ViewChild('diveDialog') diveDialog;
   @ViewChild('code') code;
-  isDiveLoaded = true;
-  isChecked = false;
-  diveLoadedSubject = new Subject<boolean>();
-  diveLoadedSubscription = new Subscription();
-  constructor(public dialog: MatDialog,
-              private editService: EditService,
-              private shareService: ShareService,
-              private managementService: ManagementService) { }
+  isDiveLoaded$: Observable<boolean>; // Dive是否讀取完成
+  isChecked$: Observable<boolean>; // 是否填完DIVE ID
+  url = 'http://dive.nutn.edu.tw:8080/Experiment/';
 
+  constructor(public dialog: MatDialog,
+              private store: Store<AppState>) {
+    this.isDiveLoaded$ = store.pipe(select(diveLoadedStateSelector));
+    this.isChecked$ = store.pipe(select(diveIdCheckedSelector));
+  }
 
   ngOnInit() {
-    const stageData = this.managementService.stageDataArray;
-    const index = this.managementService.editStageIndex;
-    if (stageData[index]['lastModify'].toString() !== stageData[index]['createDate'].toString()) {
-      this.shareService.displayStepArray = [true, true, true, true, true];
-    }
-    this.diveLoadedSubject.subscribe(res => this.isDiveLoaded = res);
+    this.store.pipe(select(selectedStageDateSelector), take(1))
+      .subscribe(date => {
+        if (date.createDate.toString() !== date.lastModify.toString()) {
+          this.store.dispatch(new HeaderActions.SetStepDisplayState('ALL_DISPLAY'));
+        }
+      });
   }
+
   open() {
     this.dialog.open(this.diveDialog);
   }
+
   confirm() {
-    this.diveLoadedSubject.next(false);
-    this.shareService.displayStepArray[1] = true;
-    const code = this.code.nativeElement.value;
-    this.editService.diveId = code;
-    this.url = `http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=${code}`;
-    const solvePromise = (text, timer) => {
-      return new Promise((resolve, reject) =>　{
-        setTimeout(() => {
-          // tslint:disable-next-line:no-eval
-          resolve(eval(text));
-        }, timer);
-      });
-    };
+    this.store.dispatch(new AuthoringStageActions.SetDiveLoadedState(false));
+    this.store.dispatch(new AuthoringStageActions.SetDiveIdState(this.code.nativeElement.value));
+    this.url = `http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=${this.code.nativeElement.value}`;
+    const solvePromise = (text, timer) => new Promise(resolve => setTimeout(() => resolve(eval(text)), timer));
     solvePromise('diveLinker.Hello()', 3000)
-      .then((res) => {
-      return solvePromise('diveLinker.IOArray', 100);
-    }).then((res: {}) => {
-      this.isChecked = true;
-      this.diveLoadedSubject.next(true);
-      this.editService.transDataFormat(res);
-    });
-  }
-  ngOnDestroy() {
-    this.diveLoadedSubscription.unsubscribe();
+      .then((res) => solvePromise('diveLinker.IOArray', 100))
+      .then((res: DiveDataState) => this.store.dispatch(new AuthoringStageActions.TryAddDiveData(res)));
   }
 }

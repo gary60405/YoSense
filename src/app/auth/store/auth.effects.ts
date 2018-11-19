@@ -10,7 +10,7 @@ import * as AuthActions from './auth.actions';
 export class AuthEffects {
 
 @Effect()
-authSignin = this.action$
+authSigninEffect = this.action$
   .ofType(AuthActions.TRY_SIGNIN)
   .pipe(
     map((action: AuthActions.TrySignin) => action.payload),

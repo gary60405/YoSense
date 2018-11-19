@@ -1,9 +1,12 @@
-import { ChooseService } from './../../choose/choose.service';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { WizardComponent } from '../wizard/wizard.component';
-import { GameService } from '../game.service';
-import { Subscription ,  Subject } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { AppState } from '../../../model/app/app.model';
+import { Store, select } from '@ngrx/store';
+import { diveIdSelector, snackBarStateSelector, studentDiveLoadedStateSelector } from '../../store/manipulation.selectors';
+import * as ManipulationActions from './../../store/manipulation.actions';
+import { SnackBarState } from '../../../model/manipulation/manipulation.model';
 
 @Component({
   selector: 'app-playground',
@@ -11,41 +14,32 @@ import { Subscription ,  Subject } from 'rxjs';
   styleUrls: ['./playground.component.css']
 })
 export class PlaygroundComponent implements OnInit, OnDestroy {
-  constructor(private snackBar: MatSnackBar, private gameService: GameService, private chooseService: ChooseService) { }
-  isDiveLoaded = false;
+
   snackBarSubscription: Subscription;
-  diveUrlSubscription: Subscription;
-  url = '';
+  diveId$: Observable<string>;
+  isDiveLoaded$: Observable<boolean>;
+
+  constructor(private snackBar: MatSnackBar,
+              private store: Store<AppState>) {
+    this.diveId$ = store.pipe(select(diveIdSelector));
+    this.isDiveLoaded$ = store.pipe(select(studentDiveLoadedStateSelector));
+  }
   ngOnInit() {
-  this.snackBarSubscription = this.gameService.snackBarSubject.subscribe(content => {
-    this.involke(content);
-  });
-  this.diveUrlSubscription = this.gameService.diveUrlSubject
-    .subscribe(diveId => {
-      this.isDiveLoaded = false;
-      this.url = `http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=${diveId}`;
-      setTimeout(() => {
-        while (!this.isDiveLoaded) {
-          const temp = eval('diveLinker.Hello()');
-          temp !== [] ? this.isDiveLoaded = true : this.isDiveLoaded = false;
+    this.snackBarSubscription = this.store.pipe(select(snackBarStateSelector))
+      .subscribe((snackBarState: SnackBarState) => {
+        if (snackBarState.isOpen) {
+          this.snackBar.openFromComponent(WizardComponent, {
+            data: {content: snackBarState.content},
+            horizontalPosition: 'left',
+            verticalPosition: 'top',
+            panelClass: 'bar-position'
+          });
         }
-      }, 3000);
-    });
-    const code = this.chooseService.getStageDataArray()['diveId'];
-    this.gameService.diveUrlSubject.next(code);
+      });
+  setTimeout(() => this.store.dispatch(new ManipulationActions.TryLoadDive), 3000);
   }
 
-  involke(content) {
-    console.log(content);
-    this.snackBar.openFromComponent(WizardComponent, {
-      data: {content: content},
-      horizontalPosition: 'left',
-      verticalPosition: 'top',
-      panelClass: 'bar-position'
-    });
-  }
   ngOnDestroy() {
     this.snackBarSubscription.unsubscribe();
-    this.diveUrlSubscription.unsubscribe();
   }
 }

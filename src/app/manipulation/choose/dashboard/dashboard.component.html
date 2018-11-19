@@ -5,7 +5,7 @@
 </mat-card-header>
 <mat-card-content>
   <div class="container">
-    <div *ngIf="isLoadedProject;else loading" class="form-row">
+    <div *ngIf="isLoadedProject$ | async;else loading" class="form-row">
       <div class="col-3 mb-3">
         <div class="card item">
           <div class="card-body">
@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <div *ngFor="let project of projectData;let i = index;" class="col-3 mb-3">
+      <div *ngFor="let project of (projectData$ | async);let i = index;" class="col-3 mb-3">
         <div class="card item">
           <div class="card-header">
             <h5 class="card-text text-center font-weight-bold position-absolute">{{project.name}}</h5>
@@ -43,7 +43,7 @@
   <h2 mat-dialog-title>專案代碼</h2>
   <mat-dialog-content>
     <mat-form-field class="w-100 mb-2">
-      <input [(ngModel)]="projectCode" matInput maxlength="8" placeholder="請輸入專案代碼" />
+      <input [(ngModel)]="projectCode" matInput maxlength="4" placeholder="請輸入專案代碼" />
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions>
@@ -52,9 +52,22 @@
   </mat-dialog-actions>
 </ng-template>
 
+<ng-template #repeatDialog>
+  <h2 mat-dialog-title>
+    <i class="mr-1 fas fa-exclamation-triangle"></i>注意
+  </h2>
+  <mat-dialog-content class="mt-3 mb-2">
+    {{specification}}
+  </mat-dialog-content>
+  <mat-dialog-actions class="d-flex justify-content-center mt-1">
+    <button mat-button mat-dialog-close color="warn">了解</button>
+  </mat-dialog-actions>
+</ng-template>
+
 <ng-template #deleteProjectDialog>
   <h2 mat-dialog-title>
-    <i class="mr-1 fas fa-exclamation-triangle"></i>注意</h2>
+    <i class="mr-1 fas fa-exclamation-triangle"></i>注意
+  </h2>
   <mat-dialog-content>
     確定刪除本專案?
   </mat-dialog-content>

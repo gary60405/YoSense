@@ -5,11 +5,11 @@ export const TRY_SIGNUP = 'TRY_SIGNUP';
 export const SIGNUP = 'SIGNUP';
 export const TRY_SIGNIN = 'TRY_SIGNIN';
 export const SIGNIN = 'SIGNIN';
-export const LOGOUT = 'LOGOUT';
 export const INITAIL_DIALOGUE = 'INITAIL_DIALOGUE';
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
 export const UPDATE_USER_PROJECT = 'UPDATE_USER_PROJECT';
 export const DELETE_USER_PROJECT = 'DELETE_USER_PROJECT';
+export const INITAIL_AUTH_STATE = 'INITAIL_AUTH_STATE';
 
 export class TrySignup implements Action {
   readonly type = TRY_SIGNUP;
@@ -31,8 +31,8 @@ export class Signin implements Action {
   constructor(public payload: AuthState) {}
 }
 
-export class Logout implements Action {
-  readonly type = LOGOUT;
+export class InitailAuthState implements Action {
+  readonly type = INITAIL_AUTH_STATE;
 }
 
 export class InitailDialogue implements Action {
@@ -56,10 +56,10 @@ export class DeleteUserProject implements Action {
 
 export type AuthActions = Signup |
                           Signin |
-                          Logout |
                           TrySignup |
                           TrySignin |
                           InitailDialogue |
+                          InitailAuthState |
                           SetAuthenticated |
                           UpdateUserProject |
                           DeleteUserProject;

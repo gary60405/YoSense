@@ -42,6 +42,16 @@ export function headerReducer(state = initialState, action: HeaderActions.Header
         case 'PASS_DISPLAY':
           modifiedState = {passDisplayState: 'OPEN'};
           break;
+        case 'ALL_DISPLAY':
+          modifiedState = {
+            diveDisplayState: 'OPEN',
+            hierarchyDisplayState: 'OPEN',
+            blocklyDisplayState: 'OPEN',
+            bindingDisplayState: 'OPEN',
+            diagnosisDisplayState: 'OPEN',
+            passDisplayState: 'OPEN'
+          };
+          break;
         }
         return {
           ...state,

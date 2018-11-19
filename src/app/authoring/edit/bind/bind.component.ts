@@ -1,92 +1,80 @@
-import { ShareService } from './../../../share/share.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {MatTableDataSource} from '@angular/material';
-import { EditService } from '../edit.service';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+
+import * as AuthoringStageActions from './../store/authoringStage.actions';
+import { AppState } from '../../../model/app/app.model';
+import { diveDataSelector } from '../store/authoringStage.selectors';
+import { blocklyDataSelector, bindingDataSelector } from '../store/authoringStage.selectors';
+import { DiveDataState, BlocklyDataState, BindingDataState } from '../../../model/authoring/management.model';
 @Component({
   selector: 'app-bind',
   templateUrl: './bind.component.html',
   styleUrls: ['./bind.component.css']
 })
-export class BindComponent implements OnInit, OnDestroy {
-  constructor(private editService: EditService, private shareService: ShareService) { }
-  diveItems = [];
-  blocklyItems: any[];
-  bindingArray: AbstractControl[];
+export class BindComponent implements OnInit {
+
   bindingForm: FormGroup;
-  diveDataSubscription = new Subscription();
+  bindingArray: AbstractControl[];
+  diveItems$: Observable<DiveDataState>;
+  blocklyItems$: Observable<BlocklyDataState[]>;
+
+  constructor(private store: Store<AppState>) {
+    this.diveItems$ = store.pipe(select(diveDataSelector));
+    this.blocklyItems$ = store.pipe(select(blocklyDataSelector));
+  }
+
   ngOnInit() {
-    this.diveDataSubscription = this.editService.diveDataSubject
-      .subscribe(diveitem => {
-        this.diveItems = diveitem['inValue'];
-      });
-    this.editService.getDiveDataArray();
-    this.blocklyItems = this.editService.getBlocklyDataArray();
     const bindingArray = new FormArray([]);
-    const bindingArrayData = this.editService.getBindingDataArray();
-    if (bindingArrayData.length === 0) {
-      this.blocklyItems.forEach(blockly => {
-        bindingArray.push(
-          new FormGroup({
-            diveIndex: new FormControl(''),
-            blocklyIndex: new FormControl(blockly.name)
-          })
-        );
+    this.store
+        .pipe(select(bindingDataSelector), take(1))
+        .subscribe((bindingDataArray: BindingDataState[]) => {
+          this.blocklyItems$.pipe(take(1))
+              .subscribe((blocklyItems: BlocklyDataState[]) => {
+                if (bindingDataArray.length === 0) {
+                  blocklyItems.forEach(blockly => {
+                    bindingArray.push(
+                      new FormGroup({
+                        diveIndex: new FormControl(''),
+                        blocklyIndex: new FormControl(blockly.name)
+                      })
+                    );
+                  });
+                } else {
+                  bindingDataArray.forEach(bindingData => {
+                    const d_index = bindingData.diveIndex;
+                    const b_index = bindingData.blocklyIndex;
+                    bindingArray.push(
+                      new FormGroup({
+                        diveIndex: new FormControl(d_index),
+                        blocklyIndex: new FormControl(b_index)
+                      })
+                    );
+                  });
+                  if (blocklyItems.length > bindingDataArray.length) {
+                    let startIndex = blocklyItems.length - bindingDataArray.length;
+                    while (startIndex) {
+                      const currentIndex = blocklyItems.length - bindingDataArray.length - startIndex;
+                      bindingArray.push(
+                        new FormGroup({
+                          diveIndex: new FormControl(''),
+                          blocklyIndex: new FormControl(blocklyItems[currentIndex].name)
+                        })
+                      );
+                      startIndex--;
+                    }
+                  }
+                }
+              });
       });
-    } else {
-      bindingArrayData.forEach(bindingData => {
-        const d_index = bindingData.diveIndex;
-        const b_index = bindingData.blocklyIndex;
-        bindingArray.push(
-          new FormGroup({
-            diveIndex: new FormControl(parseInt(d_index, 10)),
-            blocklyIndex: new FormControl(parseInt(b_index, 10))
-          })
-        );
-      });
-      if (this.blocklyItems.length > bindingArrayData.length) {
-        let startIndex = this.blocklyItems.length - bindingArrayData.length;
-        console.log(this.blocklyItems.length, bindingArrayData.length);
-        while (startIndex) {
-          const currentIndex = this.blocklyItems.length - bindingArrayData.length - startIndex;
-          bindingArray.push(
-            new FormGroup({
-              diveIndex: new FormControl(''),
-              blocklyIndex: new FormControl(this.blocklyItems[currentIndex].name)
-            })
-          );
-          startIndex--;
-        }
-      }
-    }
-    this.bindingForm = new FormGroup({
-      bindingArray: bindingArray
-    });
+    this.bindingForm = new FormGroup({bindingArray: bindingArray});
     this.bindingArray = (<FormArray>this.bindingForm.controls.bindingArray).controls;
   }
+
   onSubmit() {
-    this.shareService.displayStepArray[3] = true;
-    this.editService.bindingDataArray = this.bindingForm.value.bindingArray.map(row => {
-      // const compare = (row['diveIndex']).toString();
-      // let i = 0;
-      // this.diveItems.forEach(item => {
-      //   if ((item['dataValue']).toString() === compare) {
-      //     row['diveIndex'] = i;
-      //   }
-      //   i++;
-      // });
-      return row;
-    });
-  }
-  transformIndex(index) {
-    return this.blocklyItems[index].name;
+    this.store.dispatch(new AuthoringStageActions.AddBindingData(this.bindingForm.value.bindingArray));
   }
 
-  toggleBindingRow(index) {
-
-  }
-  ngOnDestroy() {
-    this.diveDataSubscription.unsubscribe();
-  }
 }

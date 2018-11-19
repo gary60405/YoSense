@@ -1,4 +1,4 @@
-import { AngularFirestore } from 'angularfire2/firestore';
+  import { AngularFirestore } from 'angularfire2/firestore';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { Subject } from 'rxjs';

@@ -1,8 +1,8 @@
 import { StepDisplayState, HeaderState } from './../../model/header/header.model';
-import { Appstate } from './../../store/app.reducers';
+import { AppState } from './../../model/app/app.model';
 import { createSelector } from '@ngrx/store';
 
 export const stepDisplayStateSelector = createSelector(
-  (state: Appstate) => state.header.stepDisplayState,
+  (state: AppState) => state.header.stepDisplayState,
   (stepDisplayState: StepDisplayState) => stepDisplayState
 );

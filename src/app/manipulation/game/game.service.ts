@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 export class GameService {
   public snackBarSubject = new Subject();
   public stageDataSubject = new Subject();
-  public snackBarOffSubject = new Subject();
   public diveUrlSubject = new Subject();
   public stageData = {};
   constructor(private chooseService: ChooseService) {}

@@ -4,8 +4,8 @@
   </mat-card-title>
 </mat-card-header>
 <mat-card-content>
-  <div *ngIf="isLoadedProject;else loading" class="form-row">
-    <div *ngFor="let stage of stageData;let i = index;" class="col-3 mb-3">
+  <div *ngIf="isLoadedProject$ | async;else loading" class="form-row">
+    <div *ngFor="let stage of (stageData$ | async);let i = index;" class="col-3 mb-3">
       <div class="card item">
         <div class="card-header">
           <h5 class="card-text text-center font-weight-bold">{{stage.name}}</h5>

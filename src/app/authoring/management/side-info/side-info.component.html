@@ -7,12 +7,14 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <button type="button"
-              (click)="onEditStage()"
-              routerLink="/authoring/edit"
+              routerLink="/authoring/management/editProject"
               class="btn btn-primary btn-sm"
-              *ngIf="!((editMode$ | async) === 'PROJECT_MODE');else elseBtn">編輯關卡</button>
+              *ngIf="(editMode$ | async) === 'PROJECT_MODE';else elseBtn">編輯專案</button>
       <ng-template #elseBtn>
-          <button type="button" (click)="onEditProject()" routerLink="/authoring/management/editProject" class="btn btn-primary btn-sm">編輯專案</button>
+          <button type="button"
+          (click)="onEditStage()"
+          routerLink="/authoring/edit"
+          class="btn btn-primary btn-sm">編輯關卡</button>
       </ng-template>
     </div>
     <div class="row">

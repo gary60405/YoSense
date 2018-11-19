@@ -1,8 +1,13 @@
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatDialog } from '@angular/material';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { EditService } from '../edit.service';
-import { ShareService } from '../../../share/share.service';
+
+import * as AuthoringStageActions from './../store/authoringStage.actions';
+import { AppState } from '../../../model/app/app.model';
+import { BlocklyDataState } from '../../../model/authoring/management.model';
+import { blocklyDataSelector } from '../store/authoringStage.selectors';
 @Component({
   selector: 'app-blockly',
   templateUrl: './blockly.component.html',
@@ -10,12 +15,16 @@ import { ShareService } from '../../../share/share.service';
 })
 export class BlocklyComponent implements OnInit {
 
-  constructor(private dialog: MatDialog, private editService: EditService, private shareService: ShareService) { }
+  constructor(private dialog: MatDialog,
+              private store: Store<AppState>) {
+    this.blocklys$ = store.pipe(select(blocklyDataSelector));
+  }
+
   @ViewChild('blocklyDialog') blocklyDialog;
   blocklyFormGroup: FormGroup;
-  blocklys: any[];
+  blocklys$: Observable<BlocklyDataState[]>;
+
   ngOnInit() {
-    this.blocklys = this.editService.getBlocklyDataArray();
     this.blocklyFormGroup = new FormGroup({
       name: new FormControl('', [Validators.required, ]),
       blockDef: new FormControl('', [Validators.required, ]),
@@ -23,20 +32,14 @@ export class BlocklyComponent implements OnInit {
     });
   }
 
-  moveStep() {
-    this.shareService.displayStepArray[2] = true;
-  }
-
   submitForm() {
     this.blocklyFormGroup.value['isDisabled'] = false;
-    this.editService.blocklyDataArray.push(this.blocklyFormGroup.value);
+    this.store.dispatch(new AuthoringStageActions.AddBlocklyDataState(this.blocklyFormGroup.value));
     this.blocklyFormGroup.reset();
-    this.blocklys = this.editService.getBlocklyDataArray();
   }
 
   deleteBlock(index) {
-    this.blocklys.splice(index, 1);
-    this.editService.blocklyDataArray = this.blocklys;
+    this.store.dispatch(new AuthoringStageActions.DeleteBlocklyDataState(index));
   }
 
   open() {

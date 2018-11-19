@@ -42,7 +42,7 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
         progressbarState: action.payload.progressbarState,
         dialogueState: action.payload.dialogueState
       };
-    case AuthActions.LOGOUT:
+    case AuthActions.INITAIL_AUTH_STATE:
       return {
         ...initialState
       };

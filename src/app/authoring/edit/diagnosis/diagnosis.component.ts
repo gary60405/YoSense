@@ -1,46 +1,40 @@
-import { ShareService } from './../../../share/share.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {MatTableDataSource} from '@angular/material';
-import { EditService } from '../edit.service';
+import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, FormArray, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+
+import * as AuthoringStageActions from './../store/authoringStage.actions';
+import { AppState } from '../../../model/app/app.model';
+import { DiveDataState, ConditionDataState } from '../../../model/authoring/management.model';
+import { operatersSelector, conditionDataSelector, diveDataSelector } from '../store/authoringStage.selectors';
+
 @Component({
   selector: 'app-diagnosis',
   templateUrl: './diagnosis.component.html',
   styleUrls: ['./diagnosis.component.css']
 })
-export class DiagnosisComponent implements OnInit, OnDestroy {
+export class DiagnosisComponent implements OnInit {
 
-  constructor(private editService: EditService, private shareService: ShareService) {}
-  diveItems = [];
-  operators = this.editService.getOperators();
-  conditionDataArray = this.editService.getConditionDataArray();
+  diveItems$: Observable<DiveDataState>;
+  operators$: Observable<string[]>;
+  conditionDataArray$: Observable<ConditionDataState[]>;
   conditionArray: AbstractControl[];
-  // descriptionForm: FormGroup;
-  // successForm: FormGroup;
-  // failForm: FormGroup;
   conditionForm: FormGroup;
   editIndex = -1;
   panelOpenState = false;
-  diveDataSubscription = new Subscription();
+
+  constructor(private store: Store<AppState>) {
+    this.diveItems$ = store.pipe(select(diveDataSelector));
+    this.operators$ = store.pipe(select(operatersSelector));
+    this.conditionDataArray$ = store.pipe(select(conditionDataSelector));
+  }
+
   ngOnInit() {
-    this.diveDataSubscription = this.editService.diveDataSubject
-      .subscribe(diveitem => {
-        this.diveItems = diveitem['outValue'];
-      });
-    this.editService.getDiveDataArray();
     this.conditionForm = this.initForm();
-    // this.descriptionForm = new FormGroup({
-    //   description: new FormControl()
-    // });
-    // this.successForm = new FormGroup({
-    //   successText: new FormControl()
-    // });
-    // this.failForm = new FormGroup({
-    //   failText: new FormControl()
-    // });
     this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
   }
+
   initForm() {
     return new FormGroup({
       name: new FormControl('', [Validators.required, ]),
@@ -57,21 +51,20 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
       content: new FormControl('', [Validators.required, ]),
     });
   }
-  onSubmit() {
-    this.shareService.displayStepArray[4] = true;
-    this.editService.conditionDataArray = this.conditionDataArray;
-  }
+
   onAddDiagnos() {
     if (this.editIndex === -1) {
-      this.conditionDataArray.push(this.conditionForm.value);
-      this.editService.conditionDataArray = this.conditionDataArray;
+      this.store.dispatch(new AuthoringStageActions.AddDiagnosisData(this.conditionForm.value));
     } else {
-      this.conditionDataArray[this.editIndex] = this.conditionForm.value;
-      this.editService.conditionDataArray = this.conditionDataArray;
+      this.conditionDataArray$
+          .pipe(take(1))
+          .subscribe((conditionDataArray: ConditionDataState[]) => {
+            conditionDataArray[this.editIndex] = this.conditionForm.value;
+            this.store.dispatch(new AuthoringStageActions.UpdateDiagnosisData(conditionDataArray));
+          });
       this.editIndex = -1;
     }
     let num = (<FormArray>this.conditionForm.get('conditions')).length;
-    console.log(num);
     while (num - 1) {
       (<FormArray>this.conditionForm.get('conditions')).removeAt(1);
       num--;
@@ -79,29 +72,33 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
     this.conditionForm.reset();
   }
   onDeleteDiagnos(index) {
-    this.conditionDataArray.splice(index, 1);
-    this.editService.conditionDataArray = this.conditionDataArray;
+    this.store.dispatch(new AuthoringStageActions.DeleteDiagnosisData(index));
   }
+
   onEditDiagnos(index) {
-    const conditions = this.conditionDataArray[index];
-    const conditonArray = new FormArray([]);
-    for (const condition of conditions.conditions) {
-      conditonArray.push(new FormGroup({
-        condition: new FormGroup({
-          diveAttribute: new FormControl(condition.condition['diveAttribute'], [Validators.required, ]),
-          operator: new FormControl(condition.condition['operator'], [Validators.required, ]),
-          value: new FormControl(condition.condition['value'], [Validators.required, ])
-        }),
-        logical: new FormControl(condition['logical'], [Validators.required, ])
-      }));
-    }
-    this.conditionForm = new FormGroup({
-      name: new FormControl(conditions.name, [Validators.required, ]),
-      conditions: conditonArray,
-      content: new FormControl(conditions.content, [Validators.required, ])
-    });
-    this.editIndex = index;
-    this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
+    this.conditionDataArray$
+        .pipe(take(1))
+        .subscribe((conditionDataArray: ConditionDataState[]) => {
+          const conditions = conditionDataArray[index];
+          const conditonArray = new FormArray([]);
+          for (const condition of conditions.conditions) {
+            conditonArray.push(new FormGroup({
+              condition: new FormGroup({
+                diveAttribute: new FormControl(condition.condition['diveAttribute'], [Validators.required, ]),
+                operator: new FormControl(condition.condition['operator'], [Validators.required, ]),
+                value: new FormControl(condition.condition['value'], [Validators.required, ])
+              }),
+              logical: new FormControl(condition['logical'], [Validators.required, ])
+            }));
+          }
+          this.conditionForm = new FormGroup({
+            name: new FormControl(conditions.name, [Validators.required, ]),
+            conditions: conditonArray,
+            content: new FormControl(conditions.content, [Validators.required, ])
+          });
+          this.editIndex = index;
+          this.conditionArray = (<FormArray>this.conditionForm.controls.conditions).controls;
+        });
   }
 
   onAddCondition() {
@@ -118,9 +115,6 @@ export class DiagnosisComponent implements OnInit, OnDestroy {
 
   ondeleteCondition(index) {
     (<FormArray>this.conditionForm.get('conditions')).removeAt(index);
-  }
-  ngOnDestroy() {
-    this.diveDataSubscription.unsubscribe();
   }
 }
 

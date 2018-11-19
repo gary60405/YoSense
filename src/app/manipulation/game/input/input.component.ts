@@ -1,14 +1,15 @@
-import { ChooseService } from './../../choose/choose.service';
-import { WizardComponent } from './../wizard/wizard.component';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { take, map } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { MatDialog } from '@angular/material';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { GameService } from '../game.service';
-// import * as esprima from 'esprima';
-// import * as escodegen from 'escodegen';
-// import * as Interpreter from 'js-interpreter';
-// import { parse } from 'esprima';
-// import { generate } from 'escodegen';
-import { Subject } from 'rxjs';
+
+import * as AppActions from './../../../store/app.actions';
+import * as ManipulationActions from './../../store/manipulation.actions';
+import { AppState } from '../../../model/app/app.model';
+import { editStageIndexSelector } from '../../../store/app.selectors';
+import { selectedStageSelector, stageLengthSelector, passConditionSelector, diagnosisSelector } from '../../store/manipulation.selectors';
+import { StagesState, PassConditionState, ConditionDataState } from '../../../model/authoring/management.model';
 
 @Component({
   selector: 'app-input',
@@ -18,138 +19,115 @@ import { Subject } from 'rxjs';
 export class InputComponent implements OnInit, OnDestroy {
   @ViewChild('passDialog') passDialog;
   @ViewChild('failDialog') failDialog;
-  constructor(public gameService: GameService,
-              private chooseService: ChooseService,
-              private snackBar: MatSnackBar,
-              private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog,
+              private store: Store<AppState>) { }
   intervalID = [];
-  isEnd: Boolean;
+  isEnd$: Observable<boolean>;
   ngOnInit() {
-    this.gameService.getStageData();
-    const diveId = this.gameService.stageData['diveId'];
-    eval(`init(\`${this.gameService.transformBlockDef()}\`, 1)`);
-    this.updateStageInfo();
+    this.store
+        .pipe(select(selectedStageSelector), take(1))
+        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.BuildBlocklyWorkSpace(stage)));
+    this.checkEndedState();
   }
   restart() {
-    const diveId = this.gameService.stageData['diveId'];
-    eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
+    eval('resetBlocklyWorkSpace()');
+    this.store
+        .pipe(select(selectedStageSelector), take(1))
+        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.BuildBlocklyWorkSpace(stage)));
   }
   nextStage() {
-    this.gameService.moveEditStageIndex();
-    const diveId = this.gameService.stageData['diveId'];
-    this.gameService.diveUrlSubject.next(diveId);
-    eval(`init(\`${this.gameService.transformBlockDef()}\`, 2)`);
+    const stageLength$ = this.store.pipe(select(stageLengthSelector));
+    const editIndex$ = this.store.pipe(select(editStageIndexSelector));
+    forkJoin(stageLength$, editIndex$)
+      .pipe(take(1), map(([stageLength, editIndex]) => {
+        return {stageLength: stageLength, editIndex: editIndex};
+      }))
+      .subscribe((data: {stageLength: number, editIndex: number}) => {
+        if (data.stageLength !== data.editIndex + 1) {
+          this.store.dispatch(new AppActions.SetEditStageIndex(data.editIndex + 1));
+        }
+      });
+      this.restart();
   }
-  updateStageInfo() {
-    const editStageIndex = this.chooseService.editStageIndex;
-    const sumOfStage = this.chooseService.getAllStageDataArray().length;
-    this.isEnd = sumOfStage - 1 !== editStageIndex;
+  checkEndedState() {
+    const stageLength$ = this.store.pipe(select(stageLengthSelector));
+    const editStageIndex$ = this.store.pipe(select(editStageIndexSelector));
+    this.isEnd$ = forkJoin(stageLength$, editStageIndex$).pipe(map(([stageLength, editStageIndex]) => stageLength - 1 !== editStageIndex));
   }
   backToMenu() {
-    this.chooseService.editStageIndex = -1;
+    this.store.dispatch(new AppActions.SetEditStageIndex(-1));
   }
   diagnosisMonitor() {
-    const diagnosis = this.gameService.getDiagnosis().map(item => {
-      return {conditions: item['conditions'], content: item['content']};
-    });
-    const diveAttribute = new Set();
-    diagnosis.forEach(items => {
-      items['conditions'].forEach(item => {
-        diveAttribute.add(item['condition']['diveAttribute']);
-      });
-    });
-    const diveValue = {};
-    let i = 0;
-    diagnosis.forEach(items => {
-      this.intervalID.push(
-        setInterval(() => {
-          diveAttribute.forEach(attr => {
-                    diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`);
-          });
-          let isTrigger = true;
-          items['conditions'].forEach(item => {
-            if (item.condition['operator'] === '=') {
-              item.condition['operator'] = '==';
-            }
-            console.log(`${diveValue[item['condition']['diveAttribute']]}
-            ${item.condition['operator']}
-            ${Number(item.condition['value'])}`);
-                    const compareValue = eval(`${diveValue[item['condition']['diveAttribute']]}
-                                        ${item.condition['operator']}
-                                        ${Number(item.condition['value'])}`);
+    this.store
+        .pipe(select(diagnosisSelector), take(1))
+        .subscribe((diagnosis: ConditionDataState[]) => {
+          const diveAttribute = new Set();
+          const diveValue = {};
+          diagnosis
+            .map(item => {
+              return {conditions: item['conditions'], content: item['content']};
+            })
+            .map(items => {
+              items['conditions'].forEach(item => diveAttribute.add(item['condition']['diveAttribute']));
+              return items;
+            })
+            .forEach(items => {
+              this.intervalID.push(
+                setInterval(() => {
+                  diveAttribute.forEach(attr => diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`));
+                  let isTrigger = true;
+                  items['conditions'].forEach(item => {
+                    item.condition['operator'] = item.condition['operator'] === '=' ? '==' : '==';
+                    console.log(`${diveValue[item['condition']['diveAttribute']]}${item.condition['operator']}${Number(item.condition['value'])}`);
+                    const compareValue = eval(`${diveValue[item['condition']['diveAttribute']]}${item.condition['operator']}${Number(item.condition['value'])}`);
                     isTrigger = eval(`${isTrigger} && ${compareValue}`);
-          });
-          // isTrigger = true;
-          if (isTrigger) {
-            this.gameService.snackBarSubject.next(items['content']);
-            console.log(i, this.intervalID, this.intervalID[i]);
-            this.intervalID.forEach(id => {
-              clearInterval(id);
+                  });
+                  if (isTrigger) {
+                    this.store.dispatch(new ManipulationActions.SetSnackbarContent(items['content']));
+                    this.intervalID.forEach(id => clearInterval(id));
+                  }
+                }, 100)
+              );
             });
-            // clearInterval(this.intervalID[i]);
-          }
-        }, 100)
-      );
-      i++;
-  });
-  console.log(this.intervalID);
+        });
   }
   passMonitor() {
-    this.updateStageInfo();
-    this.intervalID.forEach(id => {
-      clearInterval(id);
-    });
-    this.intervalID = [];
+    this.checkEndedState();
+    this.clearIntervalArray();
     const data = {diveAttribute: [], operator: [], value: [], logical: []};
-    this.gameService.getPassCondition().forEach(item => {
-      data['diveAttribute'].push(item['condition']['diveAttribute']);
-      data['operator'].push(item['condition']['operator'].replace(/^=$/, '=='));
-      data['value'].push(item['condition']['value']);
-      data['logical'].push(item['logical']);
-    });
-    const condition = [];
-    for ( const index in data['diveAttribute']) {
-      if (data['diveAttribute'].hasOwnProperty(index)) {
-            const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
-        condition.push(temp === Number(data['value'][index]));
-        console.log(temp, data['value'][index], temp === data['value'][index]);
-      }
-    }
-    let isPass = true;
-    for (const index in condition) {
-      if (condition.hasOwnProperty(index)) {
-        const element = condition[index];
-        if (index !== '0') {
-                isPass = eval(`${isPass} ${data['logical'][index]} ${element}`);
-        } else {
-          isPass = isPass && element;
-        }
-      }
-    }
-    condition.forEach(item => {
-      isPass = isPass && item;
-    });
-    // isPass = true;
-    if (isPass) {
-      this.dialog.open(this.passDialog);
-    } else {
-      this.dialog.open(this.failDialog);
-    }
+    this.store
+        .pipe(select(passConditionSelector), take(1))
+        .subscribe((passCondition: PassConditionState[]) => {
+          passCondition.forEach(item => {
+            data['diveAttribute'].push(item['condition']['diveAttribute']);
+            data['operator'].push(item['condition']['operator'].replace(/^=$/, '=='));
+            data['value'].push (item['condition']['value']);
+            data['logical'].push(item['logical']);
+          });
+          const condition = [];
+          for ( const index in data['diveAttribute']) {
+            if (data['diveAttribute'].hasOwnProperty(index)) {
+              const temp = eval(`diveLinker.Get(${data['diveAttribute'][index]})`);
+              condition.push(temp === Number(data['value'][index]));
+            }
+          }
+          let isPass = true;
+          for (const index in condition) {
+            if (condition.hasOwnProperty(index)) {
+              const element = condition[index];
+              isPass = index !== '0' ? eval(`${isPass} ${data['logical'][index]} ${element}`) : isPass = isPass && element;
+            }
+          }
+          condition.forEach(item => isPass = isPass && item);
+          isPass ? this.dialog.open(this.passDialog) : this.dialog.open(this.failDialog);
+        });
   }
 
  getCode() {
    this.diagnosisMonitor();
-    const commands = eval('getCode()').split(';').map(item => {
-      return item + ';';
-    }).slice(0, -1);
-    // console.log(commands);
-    const solvePromise = (command, time) => {
-      return new Promise((resolve, reject) =>　{
-        setTimeout(() => {
-                resolve(eval(command));
-        }, time);
-      });
-    };
+    const commands = eval('getCode()').split(';').map(item => item + ';').slice(0, -1);
+    console.log(commands);
+    const solvePromise = (command, time) => new Promise(resolve => setTimeout(() => resolve(eval(command)), time));
     let code = '';
     let commandIndex = 0;
     let timer = 0;
@@ -183,12 +161,14 @@ export class InputComponent implements OnInit, OnDestroy {
     }
     eval(code);
   }
-ngOnDestroy() {
-  this.gameService.snackBarOffSubject.next();
-  this.intervalID.forEach(id => {
-    clearInterval(id);
-  });
+
+clearIntervalArray() {
+  this.intervalID.forEach(id => clearInterval(id));
   this.intervalID = [];
+}
+ngOnDestroy() {
+  this.store.dispatch(new ManipulationActions.SetSnackbarOpenState(false));
+  this.clearIntervalArray();
 }
 
 }
