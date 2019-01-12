@@ -8,10 +8,15 @@ const initialState: AuthoringStageState = {
   },
   editState: {
     diveId: -1,
-    diveData: {inValue: [], outValue: []},
+    diveData: {
+      inValue: [],
+      outValue: []
+    },
+    blocklyData: {
+      toolBoxState: [],
+      customBlocksState: [],
+    },
     hierarchyData: [],
-    blocklyData: [],
-    bindingData: [],
     conditionData: [],
     passConditionData: [],
     operators: ['=', '!=', '>', '>=', '<', '<=']
@@ -47,7 +52,10 @@ export function authoringStageReducer(state = initialState, action) {
     case AuthoringStage.SET_DIVE_ID_STATE:
       return {
         ...state,
-        diveId: action.payload
+        editState: {
+          ...state.editState,
+          diveId: action.payload
+        }
       };
     case AuthoringStage.SET_CHECKED_STATE:
       return {
@@ -66,37 +74,6 @@ export function authoringStageReducer(state = initialState, action) {
             ...state.editState.diveData,
             ...action.payload
           }
-        }
-      };
-    case AuthoringStage.ADD_BLOCKLY_DATA:
-      return {
-        ...state,
-        editState: {
-          ...state.editState,
-          blocklyData: [
-            ...state.editState.blocklyData,
-            action.payload
-          ]
-        }
-      };
-    case AuthoringStage.DELETE_BLOCKLY_DATA:
-      const blocklyData = [...state.editState.blocklyData];
-      blocklyData.splice(action.payload, 1);
-      return {
-        ...state,
-        editState: {
-          ...state.editState,
-          blocklyData: [
-            ...blocklyData
-          ]
-        }
-      };
-    case AuthoringStage.ADD_BINDING_DATA:
-      return {
-        ...state,
-        editState: {
-          ...state.editState,
-          bindingData: [...action.payload]
         }
       };
 
@@ -145,7 +122,102 @@ export function authoringStageReducer(state = initialState, action) {
 
     case AuthoringStage.INITAIL_AUTHORING_STAGE_STATE:
       return {
-        ...initialState
+        ...initialState,
+        toggleState: {
+          ...initialState.toggleState
+        },
+        editState: {
+          ...initialState.editState,
+          diveId: -1,
+          diveData: {
+            ...initialState.editState.diveData
+          },
+          blocklyData: {
+            ...initialState.editState.blocklyData
+          },
+        }
+      };
+    case AuthoringStage.ADD_CATEGORY_BLOCK:
+    return {
+      ...state,
+      editState: {
+        ...state.editState,
+        blocklyData: {
+          ...state.editState.blocklyData,
+          toolBoxState: [
+            ...state.editState.blocklyData.toolBoxState,
+            {
+              category: action.payload.category,
+              data: action.payload.data
+            }
+          ]
+        }
+      }
+    };
+    case AuthoringStage.DELETE_CATEGORY_BLOCK:
+      return {
+        ...state,
+        editState: {
+          ...state.editState,
+          blocklyData: {
+            ...state.editState.blocklyData,
+            toolBoxState: [...state.editState.blocklyData.toolBoxState.filter((block) => block.data !== action.payload.data)]
+          }
+        }
+      };
+    case AuthoringStage.ADD_CUSTOM_BLOCK:
+    return {
+      ...state,
+      editState: {
+        ...state.editState,
+        blocklyData: {
+          ...state.editState.blocklyData,
+          customBlocksState: [
+            ...state.editState.blocklyData.customBlocksState,
+            action.payload
+          ]
+        }
+      }
+    };
+    case AuthoringStage.UPDATE_CUSTOM_BLOCK:
+      return {
+        ...state,
+        editState: {
+          ...state.editState,
+          blocklyData: {
+            ...state.editState.blocklyData,
+            customBlocksState: [
+              ...state.editState.blocklyData.customBlocksState.map(block => block.blockId !== action.payload.blockId ? block : action.payload),
+            ]
+          }
+        }
+      };
+    case AuthoringStage.DELETE_CUSTOM_BLOCK:
+      return {
+        ...state,
+        editState: {
+          ...state.editState,
+          blocklyData: {
+            ...state.editState.blocklyData,
+            customBlocksState: [
+              ...state.editState.blocklyData.customBlocksState.filter(block => block.blockId !== action.payload),
+            ]
+          }
+        }
+      };
+    case AuthoringStage.SET_BLOCK_ENABLE_STATE:
+      state.editState.blocklyData.customBlocksState.find(block => block.blockId === action.payload.id).isEnable = action.payload.checked;
+      return {
+        ...state,
+        editState: {
+          ...state.editState,
+          blocklyData: {
+            ...state.editState.blocklyData,
+            customBlocksState: [
+              ...state.editState.blocklyData.customBlocksState
+            ]
+          }
+        }
       };
     default:
       return state;

@@ -1,5 +1,4 @@
 import { ManageProjectComponent } from './management/manage-project/manage-project.component';
-import { BindComponent } from './edit/bind/bind.component';
 import { PassComponent } from './edit/pass/pass.component';
 import { EditComponent } from './edit/edit.component';
 import { NgModule } from '@angular/core';
@@ -25,7 +24,6 @@ const routes: Routes = [
       {path: 'dive', component: DiveComponent},
       {path: 'hierarchy', component: HierarchyComponent},
       {path: 'blockly', component: BlocklyComponent},
-      {path: 'bind', component: BindComponent},
       {path: 'diagnosis', component: DiagnosisComponent},
       {path: 'pass', component: PassComponent}
     ]}

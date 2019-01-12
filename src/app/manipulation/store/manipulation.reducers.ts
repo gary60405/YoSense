@@ -14,7 +14,10 @@ export function manipulationRuducer(state = initailState, action) {
   switch (action.type) {
     case ManipulationActions.INITAIL_MANIPULATION_STATE:
       return {
-        ...initailState
+        ...initailState,
+        snackBarState: {
+          ...initailState.snackBarState
+        }
       };
     case ManipulationActions.SET_STUDENT_DIVE_LOADED_STATE:
       return {

@@ -29,7 +29,7 @@ export class SideInfoComponent implements OnInit {
     this.store
         .pipe(select(selectedStageDataSelector), take(1))
         .subscribe(selectedStage => {
-          this.store.dispatch(new AuthoringStageActions.LoadSelectedStage(selectedStage));
+          this.store.dispatch(new AuthoringStageActions.TryLoadSelectedStage(selectedStage));
           this.store.dispatch(new AppActions.InitailStageInfo());
         });
   }

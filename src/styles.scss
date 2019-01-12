@@ -25,3 +25,17 @@ html, body {
 .toolStyle {
   background-color: #333;
 }
+
+.blocklyMainBackground {
+  stroke-width: 0px;
+  stroke: #fff !important;
+}
+
+.mat-vertical-content {
+  padding-bottom: 0px;
+}
+
+#blocklyPreviewer1 svg[class=blocklySvg] {
+  background-color: #efefef !important;
+  border-radius: 10px;
+}

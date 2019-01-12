@@ -8,6 +8,10 @@ export const projectDataStateSelector = createSelector(
   (state: AppState) => state.gloabalData.projectData,
   (projectDataState: ProjectState[]) => projectDataState
 );
+export const projectSideInfoStateSelector = (index: number) => createSelector(
+  (state: AppState) => state.gloabalData.projectData,
+  (projectDataState: ProjectState[]) => Object.assign({}, projectDataState[index])
+);
 
 export const stageDataStateSelector = createSelector(
   (state: AppState) => {
@@ -16,6 +20,13 @@ export const stageDataStateSelector = createSelector(
   },
   (stageDataState: StagesState[]) => stageDataState
 );
+export const stageDataSideInfoStateSelector =  (index: number) => createSelector(
+  (state: AppState) => {
+    const editProjectIndex = state.gloabalData.editProjectIndex;
+    return state.gloabalData.projectData[editProjectIndex]['stages'];
+  },
+  (stageDataState: StagesState[]) => Object.assign({}, stageDataState[index]));
+
 export const selectedStageDataSelector  = createSelector(
   (state: AppState) => {
     const editProjectIndex = state.gloabalData.editProjectIndex;

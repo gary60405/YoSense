@@ -4,6 +4,7 @@ import * as fromAuth from '../auth/store/auth.reducers';
 import * as fromAuthoringManagement from '../authoring/management/store/management.reducers';
 import * as fromAuthoringStage from '../authoring/edit/store/authoringStage.reducers';
 import * as fromManipulation from '../manipulation/store/manipulation.reducers';
+import * as fromBlockly from './../authoring/edit/blockly/store/blockly.reducers';
 import * as fromHeader from '../header/store/header.reducers';
 import * as AppActions from './app.actions';
 
@@ -14,6 +15,7 @@ export const reducers: ActionReducerMap<AppState> = {
   auth: fromAuth.authReducer,
   authoringManagement: fromAuthoringManagement.authoringManagementRuducer,
   authoringStage: fromAuthoringStage.authoringStageReducer,
+  blockly: fromBlockly.BlocklyRuducer,
   gloabalData: globalDataRuducer,
   manipulation: fromManipulation.manipulationRuducer,
   header: fromHeader.headerReducer,
@@ -32,8 +34,7 @@ const initialState: GlobalState = {
     description: '',
     lastModify: new Date(0),
     name: '',
-    uid: '',
-    stages: []
+    uid: ''
   },
   stageSideInfo: {
     uid: '',
@@ -41,16 +42,7 @@ const initialState: GlobalState = {
     description: '',
     lastModify: new Date(0),
     name: '',
-    order: -1,
-    stageData: {
-      bindingData: [],
-      blocklyData: [],
-      conditionData: [],
-      diveData: {inValue: [], outValue: []},
-      diveId: '',
-      passcondition: [],
-      hierarchyData: []
-    }
+    order: -1
   }
 };
 
@@ -100,14 +92,16 @@ export function globalDataRuducer(state = initialState, action) {
         editStageIndex: action.payload
       };
     case AppActions.SET_PROJECT_SIDE_INFO:
+      delete action.payload.stages;
       return {
         ...state,
-        projectSideInfo: action.payload.projects
+        projectSideInfo: action.payload
       };
     case AppActions.SET_STAGE_SIDE_INFO:
+      delete action.payload.stageData;
       return {
         ...state,
-        stageSideInfo: action.payload.stages
+        stageSideInfo: action.payload
       };
     case AppActions.SET_EDIT_MODE_STATE:
       return {
@@ -151,7 +145,13 @@ export function globalDataRuducer(state = initialState, action) {
       };
     case AppActions.INITAIL_APP_STATE:
       return {
-        ...initialState
+        ...initialState,
+        projectSideInfo: {
+          ...initialState.projectSideInfo
+        },
+        stageSideInfo: {
+          ...initialState.stageSideInfo
+        }
       };
     default:
       return state;

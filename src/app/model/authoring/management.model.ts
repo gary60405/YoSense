@@ -1,4 +1,5 @@
 import { HierarchyState } from './authoring.model';
+import { BlocklyDataState } from './blockly.model';
 
 export interface PassConditionState {
   condition: ConditionState;
@@ -32,21 +33,8 @@ export interface ConditionDataState {
   name: string;
 }
 
-export interface BlocklyDataState {
-  blockDef: string;
-  blockGen: string;
-  isDisabled: Boolean;
-  name: string;
-}
-
-export interface BindingDataState {
-  blocklyIndex: number;
-  diveIndex: number;
-}
-
 export interface StageDataState {
-  bindingData: BindingDataState[];
-  blocklyData: BlocklyDataState[];
+  blocklyData: BlocklyDataState;
   conditionData: ConditionDataState[];
   diveData: DiveDataState;
   diveId: string;
@@ -63,6 +51,14 @@ export interface StagesState {
   order: number;
   stageData: StageDataState;
 }
+export interface StagesSideInfoState {
+  uid: string;
+  createDate: Date;
+  description: string;
+  lastModify: Date;
+  name: string;
+  order: number;
+}
 
 export interface ProjectState {
   author: string;
@@ -72,6 +68,14 @@ export interface ProjectState {
   name: string;
   uid: string;
   stages: StagesState[];
+}
+export interface ProjectSideInfoState {
+  author: string;
+  createDate: Date;
+  description: string;
+  lastModify: Date;
+  name: string;
+  uid: string;
 }
 
 export interface ManagementState {

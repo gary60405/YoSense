@@ -10,9 +10,9 @@ import * as AppActions from './../../../store/app.actions';
 import { AppState } from '../../../model/app/app.model';
 import { UserDataState } from '../../../model/auth/auth.model';
 import { AddProjectState } from '../../../model/selector/selector.model';
-import { ProjectState } from '../../../model/authoring/management.model';
+import { ProjectState, ProjectSideInfoState } from '../../../model/authoring/management.model';
 import { userDataStateSelector } from './../../../auth/store/auth.selectors';
-import { projectLoadedStateSelector, projectDataStateSelector, addProjectSelector } from './../../../store/app.selectors';
+import { projectLoadedStateSelector, projectDataStateSelector, addProjectSelector, projectSideInfoStateSelector } from './../../../store/app.selectors';
 
 @Component({
   selector: 'app-manage-project',
@@ -72,9 +72,10 @@ export class ManageProjectComponent implements OnInit {
   }
 
   onShowSideInfo(index: number) {
+    this.store.dispatch(new AppActions.SetEditProjectIndex(index));
     this.store
-        .pipe(select(projectDataStateSelector), take(1))
-        .subscribe((projectData: ProjectState[]) => this.store.dispatch(new AppActions.SetProjectSideInfo({index: index, projects: projectData[index]})));
+        .pipe(select(projectSideInfoStateSelector(index)), take(1))
+        .subscribe((projectData: ProjectSideInfoState) => this.store.dispatch(new AppActions.SetProjectSideInfo(projectData)));
   }
 
   onDeleteProject() {

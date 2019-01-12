@@ -1,4 +1,4 @@
-import { StepDisplayState, HeaderState } from './../../model/header/header.model';
+import { StepDisplayState } from './../../model/header/header.model';
 import { AppState } from './../../model/app/app.model';
 import { createSelector } from '@ngrx/store';
 

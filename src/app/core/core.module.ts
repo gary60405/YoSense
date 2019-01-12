@@ -7,8 +7,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
-import { BlocklyComponent } from '../authoring/edit/blockly/blockly.component';
-import { SafePipe } from './safe2.pipe';
 
 @NgModule({
   imports: [
@@ -26,8 +24,6 @@ import { SafePipe } from './safe2.pipe';
   declarations: [
     HeaderComponent,
     HomeComponent,
-    SafePipe,
-    BlocklyComponent
   ],
   providers: [
     AuthService,

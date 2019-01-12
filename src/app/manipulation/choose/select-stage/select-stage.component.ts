@@ -6,6 +6,8 @@ import { Store, select } from '@ngrx/store';
 import * as AppActions from './../../../store/app.actions';
 import { stageDataStateSelector, projectLoadedStateSelector, projectUidStateSelector } from './../../../store/app.selectors';
 import { take } from 'rxjs/operators';
+import { stageDataSideInfoStateSelector } from '../../../store/app.selectors';
+import { StagesSideInfoState } from '../../../model/authoring/management.model';
 
 @Component({
   selector: 'app-select-stage',
@@ -26,10 +28,9 @@ export class SelectStageComponent implements OnInit {
   }
   onShowSideInfo(index) {
     this.store
-        .pipe(select(stageDataStateSelector), take(1))
-        .subscribe((stagesData: StagesState[]) => {
-          const data = {index: index, stages: stagesData[index]};
-          this.store.dispatch(new AppActions.SetStageSideInfo(data));
+        .pipe(select(stageDataSideInfoStateSelector(index)), take(1))
+        .subscribe((stagesData: StagesSideInfoState) => {
+          this.store.dispatch(new AppActions.SetStageSideInfo(stagesData ));
         });
   }
 

@@ -31,8 +31,8 @@ function init(str) {
 }
 
 function resetBlocklyWorkSpace() {
-  eval('Blockly.mainWorkspace.clear()');
-  eval('Blockly.mainWorkspace.dispose()');
+  Blockly.mainWorkspace.clear();
+  Blockly.mainWorkspace.dispose();
 }
 
 function getXmlText(blocksData) {
@@ -47,6 +47,7 @@ function getXmlText(blocksData) {
   xmlText += '</xml>';
   return xmlText;
 }
+
 function initCodeGenerator(blocksData) {
   for (block in blocksData) {
     block = blocksData[block];

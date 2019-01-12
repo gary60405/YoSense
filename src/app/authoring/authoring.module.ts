@@ -11,7 +11,6 @@ import { DiveComponent } from './edit/dive/dive.component';
 import { BlocklyComponent } from './edit/blockly/blockly.component';
 import { DiagnosisComponent } from './edit/diagnosis/diagnosis.component';
 import { PassComponent } from './edit/pass/pass.component';
-import { BindComponent } from './edit/bind/bind.component';
 import { SafePipe } from './../core/safe.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManagementService } from './management/management.service';
@@ -36,7 +35,6 @@ import { HierarchyComponent } from './edit/hierarchy/hierarchy.component';
     BlocklyComponent,
     DiagnosisComponent,
     PassComponent,
-    BindComponent,
     SafePipe,
     EditProjectComponent,
     ManageProjectComponent,

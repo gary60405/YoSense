@@ -8,7 +8,6 @@
       <button *ngIf="(stepDisplayState$ | async).diveDisplayState === 'OPEN'" type="button" routerLink="/authoring/edit/dive" routerLinkActive="active" class="btn btn-dark">互動內容</button>
       <button *ngIf="(stepDisplayState$ | async).hierarchyDisplayState === 'OPEN'" type="button" routerLink="/authoring/edit/hierarchy" routerLinkActive="active" class="btn btn-dark">建立資料結構</button>
       <button *ngIf="(stepDisplayState$ | async).blocklyDisplayState === 'OPEN'" type="button" routerLink="/authoring/edit/blockly" routerLinkActive="active" class="btn btn-dark">Blockly積木</button>
-      <button *ngIf="(stepDisplayState$ | async).bindingDisplayState === 'OPEN'" type="button" routerLink="/authoring/edit/bind" routerLinkActive="active" class="btn btn-dark">綁定功能</button>
       <button *ngIf="(stepDisplayState$ | async).diagnosisDisplayState === 'OPEN'" type="button" routerLink="/authoring/edit/diagnosis" routerLinkActive="active" class="btn btn-dark">學習診斷</button>
       <button *ngIf="(stepDisplayState$ | async).passDisplayState === 'OPEN'" type="button" routerLink="/authoring/edit/pass" routerLinkActive="active" class="btn btn-dark">過關條件</button>
     </div>

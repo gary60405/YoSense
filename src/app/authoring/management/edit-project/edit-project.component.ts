@@ -8,8 +8,9 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import * as AppActions from './../../../store/app.actions';
 import { AppState } from '../../../model/app/app.model';
 import { StagesState } from './../../../model/authoring/management.model';
-import { stageLoadedStateSelector, deleteDataSetSelector, stageDataStateSelector, projectUidStateSelector, addStageSelector } from './../../../store/app.selectors';
+import { stageLoadedStateSelector, deleteDataSetSelector, stageDataStateSelector, projectUidStateSelector, addStageSelector, stageDataSideInfoStateSelector } from './../../../store/app.selectors';
 import { AddStageState } from '../../../model/selector/selector.model';
+import { StagesSideInfoState } from '../../../model/authoring/management.model';
 
 @Component({
   selector: 'app-edit-project',
@@ -39,12 +40,10 @@ export class EditProjectComponent implements OnInit {
   }
 
   onShowSideInfo(index) {
+    this.store.dispatch(new AppActions.SetEditStageIndex(index));
     this.store
-        .pipe(select(stageDataStateSelector), take(1))
-        .subscribe((stagesData: StagesState[]) => {
-          const data = {index: index, stages: stagesData[index]};
-          this.store.dispatch(new AppActions.SetStageSideInfo(data));
-        });
+        .pipe(select(stageDataSideInfoStateSelector(index)), take(1))
+        .subscribe((stagesData: StagesSideInfoState) => this.store.dispatch(new AppActions.SetStageSideInfo(stagesData)));
   }
 
   onCheckDelete(index) {

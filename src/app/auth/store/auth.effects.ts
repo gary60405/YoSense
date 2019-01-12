@@ -3,7 +3,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Injectable } from '@angular/core';
 import { map, switchMap, mergeMap } from 'rxjs/operators';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as AuthActions from './auth.actions';
 
 @Injectable()
@@ -11,8 +11,8 @@ export class AuthEffects {
 
 @Effect()
 authSigninEffect = this.action$
-  .ofType(AuthActions.TRY_SIGNIN)
-  .pipe(
+.pipe(
+    ofType(AuthActions.TRY_SIGNIN),
     map((action: AuthActions.TrySignin) => action.payload),
     switchMap((authData: UserDataState) => {
       const email = authData.email;
@@ -73,8 +73,8 @@ authSigninEffect = this.action$
 
 @Effect()
 authSignup = this.action$
-  .ofType(AuthActions.TRY_SIGNUP)
-  .pipe(
+.pipe(
+    ofType(AuthActions.TRY_SIGNUP),
     map((action: AuthActions.TrySignup) => action.payload),
     switchMap((authData: UserDataState) => {
       const email = authData.email;

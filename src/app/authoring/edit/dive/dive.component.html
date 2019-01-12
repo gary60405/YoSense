@@ -27,7 +27,7 @@
   <h2 mat-dialog-title>專案資訊表單</h2>
   <mat-dialog-content class="post-form">
     <mat-form-field>
-      <input matInput maxlength="4" placeholder="Dive專案代碼" #code/>
+      <input matInput [value]="diveId$ | async" maxlength="4" placeholder="Dive專案代碼" #code/>
       <mat-hint>請輸入四碼數字</mat-hint>
     </mat-form-field>
   </mat-dialog-content>

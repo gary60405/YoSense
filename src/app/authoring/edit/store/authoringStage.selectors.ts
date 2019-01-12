@@ -1,11 +1,17 @@
 import { createSelector } from '@ngrx/store';
 
-import { DiveDataState, BlocklyDataState, ConditionDataState, StagesState } from '../../../model/authoring/management.model';
+import { DiveDataState, ConditionDataState, StagesState } from '../../../model/authoring/management.model';
 import { AppState } from '../../../model/app/app.model';
-import { BindingDataState, PassConditionState } from '../../../model/authoring/management.model';
+import { PassConditionState } from '../../../model/authoring/management.model';
 import { EditState } from '../../../model/authoring/edit.model';
+import { BlocklyDataState } from '../../../model/authoring/blockly.model';
 
 
+
+export const diveIdStateSelector = createSelector(
+  (state: AppState) => state.authoringStage.editState.diveId,
+  (diveId: number) => diveId
+);
 
 export const diveLoadedStateSelector = createSelector(
   (state: AppState) => state.authoringStage.toggleState.isDiveLoaded,
@@ -37,16 +43,6 @@ export const selectedStageDateSelector  = createSelector(
 export const hierarchyDataSelector = createSelector(
   (state: AppState) => state.authoringStage.editState.hierarchyData,
   (hierarchyData: {}) => hierarchyData
-);
-
-export const blocklyDataSelector = createSelector(
-  (state: AppState) => state.authoringStage.editState.blocklyData,
-  (blocklyData: BlocklyDataState[]) => blocklyData
- );
-
-export const bindingDataSelector = createSelector(
-  (state: AppState) => state.authoringStage.editState.bindingData,
-  (bindingData: BindingDataState[]) => bindingData
 );
 
 export const conditionDataSelector = createSelector(

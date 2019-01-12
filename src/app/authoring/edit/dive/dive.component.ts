@@ -8,7 +8,7 @@ import { AppState } from '../../../model/app/app.model';
 import { DiveDataState } from './../../../model/authoring/management.model';
 import * as AuthoringStageActions from './../store/authoringStage.actions';
 import * as HeaderActions from './../../../header/store/header.actions';
-import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelector } from '../store/authoringStage.selectors';
+import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelector, diveIdStateSelector } from '../store/authoringStage.selectors';
 
 @Component({
   selector: 'app-dive',
@@ -18,12 +18,14 @@ import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelect
 export class DiveComponent implements OnInit {
   @ViewChild('diveDialog') diveDialog;
   @ViewChild('code') code;
+  diveId$: Observable<number>;
   isDiveLoaded$: Observable<boolean>; // Dive是否讀取完成
   isChecked$: Observable<boolean>; // 是否填完DIVE ID
   url = 'http://dive.nutn.edu.tw:8080/Experiment/';
 
   constructor(public dialog: MatDialog,
               private store: Store<AppState>) {
+    this.diveId$ = store.pipe(select(diveIdStateSelector));
     this.isDiveLoaded$ = store.pipe(select(diveLoadedStateSelector));
     this.isChecked$ = store.pipe(select(diveIdCheckedSelector));
   }

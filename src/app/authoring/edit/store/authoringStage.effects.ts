@@ -2,18 +2,18 @@ import { SubmitDataState } from '../../../model/authoring/authoring.model';
 import { Injectable } from '@angular/core';
 import * as AuthoringStageActions from './authoringStage.actions';
 import * as HeaderActions from '../../../header/store/header.actions';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, mergeMap } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { DiveDataState } from '../../../model/authoring/management.model';
+import { DiveDataState, StageDataState } from '../../../model/authoring/management.model';
 
 @Injectable()
 export class AuthoringStageEffects {
 
 @Effect()
 SumitAllDataEffect = this.action$
-  .ofType(AuthoringStageActions.SUBMIT_ALL_DATA)
-  .pipe(
+.pipe(
+    ofType(AuthoringStageActions.SUBMIT_ALL_DATA),
     map((action: AuthoringStageActions.SubmitAllData) => action.payload),
     mergeMap((submitData: SubmitDataState) => {
       delete submitData.editState.operators;
@@ -38,11 +38,27 @@ SumitAllDataEffect = this.action$
   );
 
 @Effect()
+tryLoadSelectedStageEffect = this.action$
+.pipe(
+    ofType(AuthoringStageActions.TRY_LOAD_SELECTED_STAGE),
+    map((action: AuthoringStageActions.TryLoadSelectedStage) => action.payload),
+    mergeMap((selectedStage: StageDataState) => {
+      return [
+        {
+          type: AuthoringStageActions.LOAD_SELECTED_STAGE,
+          payload: selectedStage
+        }
+      ];
+    })
+);
+
+@Effect()
 tryAddDiveDataEffect = this.action$
-  .ofType(AuthoringStageActions.TRY_ADD_DIVE_DATA)
-  .pipe(
+.pipe(
+    ofType(AuthoringStageActions.TRY_ADD_DIVE_DATA),
     map((action: AuthoringStageActions.TryAddDiveData) => action.payload),
     mergeMap((diveData: DiveDataState) => {
+      console.log(diveData);
       const diveDataArray = {};
       diveDataArray['inValue'] = diveData['inValue'].map((row) => {
         const newRow = {dataValue: '', viewValue: ''};

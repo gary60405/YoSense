@@ -73,15 +73,9 @@ export class HierarchyComponent implements OnInit {
       .subscribe((diveData: DiveDataState) => {
         const stateArray = (<FormArray>this.hierarchyForm.get('objects')).controls[index].get('states');
         const statesData = (<FormArray>stateArray).controls[index2];
-        const classState = (<FormControl>statesData.get('class')).value;
-        switch (classState) {
-          case 'setter':
-            const setterRow = diveData.inValue.find(data => data.dataValue === value);
-            return (<FormGroup>statesData.get('diveData')).controls.diveName.setValue(setterRow.viewValue);
-          case 'getter':
-            const getterRow = diveData.outValue.find(data => data.dataValue === value);
-            return (<FormGroup>statesData.get('diveData')).controls.diveName.setValue(getterRow.viewValue);
-        }
+        (<FormControl>statesData.get('class')).value === 'setter' ?
+          (<FormGroup>statesData.get('diveData')).controls.diveName.setValue(diveData.inValue.find(data => data.dataValue === value).viewValue)
+          : (<FormGroup>statesData.get('diveData')).controls.diveName.setValue(diveData.outValue.find(data => data.dataValue === value).viewValue);
       });
   }
   onSubmitData() {

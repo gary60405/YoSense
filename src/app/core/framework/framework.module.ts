@@ -21,7 +21,14 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { OverlayModule } from '@angular/cdk/overlay';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {MatTreeModule} from '@angular/material/tree';
+import {MatRippleModule} from '@angular/material/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {ScrollDispatchModule} from '@angular/cdk/scrolling';
 
 @NgModule({
   imports: [
@@ -45,7 +52,14 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatTooltipModule,
     MatMenuModule,
     OverlayModule,
-    CommonModule
+    MatTreeModule,
+    MatRippleModule,
+    MatButtonToggleModule,
+    MatSlideToggleModule,
+    MatBottomSheetModule,
+    MatCheckboxModule,
+    CommonModule,
+    ScrollDispatchModule
   ],
   exports: [
     MatToolbarModule,
@@ -68,7 +82,14 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatProgressBarModule,
     MatTooltipModule,
     OverlayModule,
-    MatMenuModule
+    MatTreeModule,
+    MatRippleModule,
+    MatButtonToggleModule,
+    MatSlideToggleModule,
+    MatBottomSheetModule,
+    MatMenuModule,
+    MatCheckboxModule,
+    ScrollDispatchModule
   ],
 
 })

@@ -1,7 +1,8 @@
 import { Action } from '@ngrx/store';
 import { UserDataState } from './../model/auth/auth.model';
-import { ProjectState, StagesState } from './../model/authoring/management.model';
+import { ProjectState, StagesState, StagesSideInfoState } from './../model/authoring/management.model';
 import { AddProjectState, DeleteStageState, DeleteProjectState, JoinProjectSetState } from '../model/selector/selector.model';
+import { ProjectSideInfoState } from '../model/authoring/management.model';
 
 export const TRY_LOAD_PROJECTS_DATA = 'TRY_LOAD_PROJECTS_DATA';
 export const LOAD_PROJECTS_DATA = 'LOAD_PROJECTS_DATA';
@@ -31,6 +32,8 @@ export const UPDATE_STAGE_INFO = 'UPDATE_STAGE_INFO';
 export const TRY_DELETE_USER_PROJECT = 'TRY_DELETE_USER_PROJECT';
 export const TRY_ADD_USER_PROJECT = 'TRY_ADD_USER_PROJECT';
 export const INITAIL_APP_STATE = 'INITAIL_APP_STATE';
+export const TRY_INITAIL_PROJECT_STATE = 'TRY_INITAIL_PROJECT_STATE';
+export const TRY_INITAIL_STAGE_STATE = 'TRY_INITAIL_STAGE_STATE';
 export const TRY_LOGOUT = 'TRY_LOGOUT';
 
 export class TryLoadProjectsData implements Action {
@@ -80,12 +83,12 @@ export class SetEditStageIndex implements Action {
 
 export class SetProjectSideInfo implements Action {
   readonly type = SET_PROJECT_SIDE_INFO;
-  constructor(public payload: {index: number, projects: ProjectState}) {}
+  constructor(public payload: ProjectSideInfoState) {}
 }
 
 export class SetStageSideInfo implements Action {
   readonly type = SET_STAGE_SIDE_INFO;
-  constructor(public payload: {index: number, stages: StagesState}) {}
+  constructor(public payload: StagesSideInfoState) {}
 }
 
 export class InitailProjectInfo implements Action {
@@ -170,6 +173,14 @@ export class InitialAppState implements Action {
   readonly type = INITAIL_APP_STATE;
 }
 
+export class TryInitialProjectState implements Action {
+  readonly type = TRY_INITAIL_PROJECT_STATE;
+}
+
+export class TryInitialStageState implements Action {
+  readonly type = TRY_INITAIL_STAGE_STATE;
+}
+
 export class TryLogout implements Action {
   readonly type = TRY_LOGOUT;
 }
@@ -198,6 +209,8 @@ export type AppActions = TryLoadProjectsData |
                          TryDeleteUserProject |
                          TryAddUserProject |
                          InitialAppState |
-                         TryLogout
+                         TryLogout |
+                         TryInitialProjectState |
+                         TryInitialStageState
                          ;
 

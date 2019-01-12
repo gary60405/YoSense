@@ -9,12 +9,13 @@ import * as AppActions from './../../../store/app.actions';
 import * as ManipulationActions from './../../store/manipulation.actions';
 import { AppState } from '../../../model/app/app.model';
 import { UserDataState } from './../../../model/auth/auth.model';
-import { ProjectState } from '../../../model/authoring/management.model';
+import { ProjectState, ProjectSideInfoState } from '../../../model/authoring/management.model';
 import { JoinProjectSetState } from '../../../model/selector/selector.model';
 import { DeleteProjectState } from './../../../model/selector/selector.model';
 import { userDataStateSelector } from './../../../auth/store/auth.selectors';
 import { joinProjectSetSelector, deleteProjectSelector } from '../../store/manipulation.selectors';
 import { projectDataStateSelector, projectLoadedStateSelector } from './../../../store/app.selectors';
+import { projectSideInfoStateSelector } from '../../../store/app.selectors';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,8 +45,8 @@ export class DashboardComponent implements OnInit {
   }
   onShowSideInfo(index) {
     this.store
-        .pipe(select(projectDataStateSelector), take(1))
-        .subscribe((projectData: ProjectState[]) => this.store.dispatch(new AppActions.SetProjectSideInfo({index: index, projects: projectData[index]})));
+        .pipe(select(projectSideInfoStateSelector(index)), take(1))
+        .subscribe((projectData: ProjectSideInfoState) => this.store.dispatch(new AppActions.SetProjectSideInfo(projectData)));
   }
   onAddProjectDialogOpen() {
     this.projectCode = '';

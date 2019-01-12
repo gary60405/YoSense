@@ -44,30 +44,30 @@ export class HeaderComponent implements OnInit {
       mail: new FormControl(),
       password: new FormControl()
     });
-    this.store.pipe(select(userDataStateSelector))
-      .subscribe(userData => {
-        this.userName = userData.displayName;
-        this.identification = userData.identification;
-        this.redirectPage();
-      });
+    this.store
+        .pipe(select(userDataStateSelector))
+        .subscribe(userData => {
+          this.userName = userData.displayName;
+          this.identification = userData.identification;
+          this.redirectPage();
+        });
     let current = '';
     this.route.events.subscribe(res => {
       if (current !== this.route.url) {
         current = this.route.url;
-        if (this.route.url === '/authoring/edit/dive') {
-          this.store.dispatch(new HeaderActions.SetStepDisplayState('DIVE_DISPLAY'));
-        } else if (this.route.url === '/authoring/edit/hierarchy') {
-          this.store.dispatch(new HeaderActions.SetStepDisplayState('HIERARCHY_DISPLAY_DISPLAY'));
-        } else if (this.route.url === '/authoring/edit/blockly') {
-          this.store.dispatch(new HeaderActions.SetStepDisplayState('BLOCKLY_DISPLAY'));
-        } else if (this.route.url === '/authoring/edit/bind') {
-          this.store.dispatch(new HeaderActions.SetStepDisplayState('BINDING_DISPLAY'));
-        } else if (this.route.url === '/authoring/edit/diagnosis') {
-          this.store.dispatch(new HeaderActions.SetStepDisplayState('DIAGNOSIS_DISPLAY'));
-        } else if (this.route.url === '/authoring/edit/pass') {
-          this.store.dispatch(new HeaderActions.SetStepDisplayState('PASS_DISPLAY'));
-        } else {
-          this.store.dispatch(new HeaderActions.InitailStepDisplayState);
+        switch (this.route.url) {
+          case '/authoring/edit/dive':
+            return this.store.dispatch(new HeaderActions.SetStepDisplayState('DIVE_DISPLAY'));
+          case '/authoring/edit/hierarchy':
+            return this.store.dispatch(new HeaderActions.SetStepDisplayState('HIERARCHY_DISPLAY'));
+          case '/authoring/edit/blockly':
+            return this.store.dispatch(new HeaderActions.SetStepDisplayState('BLOCKLY_DISPLAY'));
+          case '/authoring/edit/diagnosis':
+            return this.store.dispatch(new HeaderActions.SetStepDisplayState('DIAGNOSIS_DISPLAY'));
+          case '/authoring/edit/pass':
+            return this.store.dispatch(new HeaderActions.SetStepDisplayState('PASS_DISPLAY'));
+          default:
+            return this.store.dispatch(new HeaderActions.InitailStepDisplayState);
         }
       }
     });
@@ -82,28 +82,33 @@ export class HeaderComponent implements OnInit {
   }
 
   redirectPage() {
-    if (this.identification === 'teacher') {
-      if (this.route.url.indexOf('management') !== -1) {
-        this.route.navigateByUrl('/authoring');
-      } else {
-        this.route.navigateByUrl('/authoring/management/editProject');
-      }
-    } else if (this.identification === 'student') {
-      if (this.route.url.indexOf('choose') !== -1) {
-        this.route.navigateByUrl('/manipulation');
-      } else {
-        this.route.navigateByUrl('/manipulation/choose/select-stage');
-      }
-    } else {
-      this.route.navigateByUrl('/');
+    switch (this.identification) {
+      case 'teacher':
+        if (this.route.url.indexOf('management') !== -1) {
+          this.store.dispatch(new AppActions.TryInitialProjectState());
+          return this.route.navigateByUrl('/authoring');
+        } else {
+          this.store.dispatch(new AppActions.TryInitialStageState());
+          return this.route.navigateByUrl('/authoring/management/editProject');
+        }
+      case 'student':
+        if (this.route.url.indexOf('choose') !== -1) {
+          this.store.dispatch(new AppActions.TryInitialProjectState());
+          return this.route.navigateByUrl('/manipulation');
+        } else {
+          this.store.dispatch(new AppActions.TryInitialStageState());
+          return this.route.navigateByUrl('/manipulation/choose/select-stage');
+        }
+      default:
+        return this.route.navigateByUrl('/');
     }
+
   }
   onSignIn() {
     const userdata = {
       email: this.signInForm.value.mail,
       password: this.signInForm.value.password
     };
-    // console.log(userdata);
     this.store.dispatch(new AuthActions.TrySignin(userdata));
   }
 

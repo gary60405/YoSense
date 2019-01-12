@@ -19,6 +19,7 @@ import { AuthoringStageEffects } from './authoring/edit/store/authoringStage.eff
 import { ManagementEffects } from './authoring/management/store/management.effects';
 import { ManipulationEffects } from './manipulation/store/manipulation.effects';
 import { AppEffects } from './store/app.effects';
+import { BlocklyEffects } from './authoring/edit/blockly/store/blockly.effects';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBoTwHjqBNIluVzQJUyHu2spnB2AtlkNY8',
@@ -40,7 +41,7 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFirestoreModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AuthEffects, ManagementEffects, AuthoringStageEffects, ManipulationEffects, AppEffects]),
+    EffectsModule.forRoot([AuthEffects, ManagementEffects, AuthoringStageEffects, ManipulationEffects, AppEffects, BlocklyEffects]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
