@@ -10,6 +10,7 @@ export class ManipulationComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

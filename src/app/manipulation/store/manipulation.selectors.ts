@@ -3,6 +3,11 @@ import { createSelector } from '@ngrx/store';
 import { UserDataState } from '../../model/auth/auth.model';
 import { StagesState, StageDataState } from '../../model/authoring/management.model';
 
+export const diveStateSelector = createSelector(
+  (state: AppState) => state.manipulation.diveState,
+  (diveState: string) => diveState
+);
+
 export const joinProjectSetSelector = createSelector(
   (state: AppState, props: string) => state.auth.userData,
   (userData: UserDataState, props: string) => {

@@ -7,7 +7,7 @@ export const initailState: ManipulationState = {
     isOpen: false,
     content: '',
   },
-  blocklyData: ''
+  diveState: ''
 };
 
 export function manipulationRuducer(state = initailState, action) {
@@ -40,10 +40,10 @@ export function manipulationRuducer(state = initailState, action) {
             content: action.payload
           }
         };
-      case ManipulationActions.SET_BLOCKLY_TRANSFORMED_STATE:
+      case ManipulationActions.SetDiveState:
         return {
           ...state,
-          blocklyData: action.payload
+          diveState: action.payload
         };
     default:
       return state;

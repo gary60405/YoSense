@@ -13,13 +13,15 @@ import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { environment } from '../environments/environment';
-import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AuthoringStageEffects } from './authoring/edit/store/authoringStage.effects';
 import { ManagementEffects } from './authoring/management/store/management.effects';
 import { ManipulationEffects } from './manipulation/store/manipulation.effects';
 import { AppEffects } from './store/app.effects';
 import { BlocklyEffects } from './authoring/edit/blockly/store/blockly.effects';
+import { BlocklyService } from './authoring/edit/blockly/blockly.service';
+import { CustomSerializer } from './app-routing.serializer';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBoTwHjqBNIluVzQJUyHu2spnB2AtlkNY8',
@@ -41,11 +43,13 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFirestoreModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AuthEffects, ManagementEffects, AuthoringStageEffects, ManipulationEffects, AppEffects, BlocklyEffects]),
-    StoreRouterConnectingModule,
+    EffectsModule.forRoot([AuthEffects, ManagementEffects, AuthoringStageEffects, ManipulationEffects,   AppEffects, BlocklyEffects]),
+    StoreRouterConnectingModule.forRoot({
+      serializer: CustomSerializer
+    }),
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
-  providers: [],
+  providers: [BlocklyService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

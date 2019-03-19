@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
         .subscribe((userData: UserDataState) => this.store.dispatch(new AppActions.TryLoadProjectsData(userData)));
   }
   onShowSideInfo(index) {
+    this.store.dispatch(new AppActions.SetEditProjectIndex(index));
     this.store
         .pipe(select(projectSideInfoStateSelector(index)), take(1))
         .subscribe((projectData: ProjectSideInfoState) => this.store.dispatch(new AppActions.SetProjectSideInfo(projectData)));

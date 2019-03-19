@@ -1,8 +1,13 @@
-import { createSelector } from '@ngrx/store';
-import { AppState } from '../model/app/app.model';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { AppState, RouterStateUrl } from '../model/app/app.model';
 import { UserDataState } from './../model/auth/auth.model';
 import { StagesState } from './../model/authoring/management.model';
 import { ProjectState, StageDataState } from './../model/authoring/management.model';
+import * as fromRouter from '@ngrx/router-store';
+
+export const getRouterState = createFeatureSelector<
+  fromRouter.RouterReducerState<RouterStateUrl>
+>('routerReducer');
 
 export const projectDataStateSelector = createSelector(
   (state: AppState) => state.gloabalData.projectData,

@@ -27,6 +27,7 @@ export class SelectStageComponent implements OnInit {
         .subscribe((uid: string) => uid !== null ? this.store.dispatch(new AppActions.TryLoadStagesData(uid)) : '');
   }
   onShowSideInfo(index) {
+    this.store.dispatch(new AppActions.SetEditStageIndex(index));
     this.store
         .pipe(select(stageDataSideInfoStateSelector(index)), take(1))
         .subscribe((stagesData: StagesSideInfoState) => {

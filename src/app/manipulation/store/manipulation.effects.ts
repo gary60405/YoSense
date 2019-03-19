@@ -1,9 +1,11 @@
+import { BlocklyDataState } from './../../model/authoring/blockly.model';
 import { map, switchMap, mergeMap } from 'rxjs/operators';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as ManipulationActions from './../store/manipulation.actions';
 import { StagesState } from '../../model/authoring/management.model';
+import { BlocklyService } from '../../authoring/edit/blockly/blockly.service';
 
 @Injectable()
 export class ManipulationEffects {
@@ -29,44 +31,33 @@ export class ManipulationEffects {
         }];
       })
     );
-  @Effect()
+  @Effect({ dispatch: false })
   buildBlocklyWorkSpaceEffects = this.action$
   .pipe(
-      ofType(ManipulationActions.BUILD_BLOCKLY_WORKSPACE),
-      map((action: ManipulationActions.BuildBlocklyWorkSpace) => action.payload),
+      ofType(ManipulationActions.TRY_INITIAL_WORKSPACE),
+      map((action: ManipulationActions.TryInitialWorkspace) => action.payload),
       mergeMap((stage: StagesState) => {
-        function rebuiltCodegen(blockIndex, defCode, genCode) {
-          const diveData = stage.stageData.diveData.inValue;
-          let diveIndex = '';
-          const type = defCode.indexOf('Number') !== -1 ? 'number' : 'angle';
-          // stage.stageData.bindingData.forEach(item => {
-          //   if (item.blocklyIndex === blockIndex) {
-          //     diveIndex = item.diveIndex + '';
-          //   }
-          // });
-          const diveId = diveData[diveIndex].dataValue;
-          const value = genCode.split('var')[1].split(' = ')[1].split(';')[0].replace(/"/g, '\'');
-          return `return "const type=\\\`${type}\\\`;diveLinker.Send(${diveId}, " + ${value} + ");";`;
-        }
-        let i = 0;
-        let str = '';
-        // const blockData = stage.stageData.blocklyData.map(item => {
-        //   const data = {};
-        //   data['type'] = item.blockDef.split('\'')[1];
-        //   data['content'] = item.blockDef.split('{')[2].split('}')[0];
-        //   data['generator'] = rebuiltCodegen(i, item.blockDef, item.blockGen);
-        //   i++;
-        //   return data;
-        // });
-        // blockData.forEach(data => str += `${data['type']}@^&${data['content']}@^&${data['generator']}#^&`);
-        str = str.replace(/\n/g, '');
-        eval(`init(\`${str}\`)`);
+        let xmlText = '';
+        const blocks = {};
+        const diveState = this.blocklyService.getDiveState(stage.stageData.hierarchyData);
+        const customBlocks = stage.stageData.blocklyData.customBlocksState;
+        const customBlockDef = customBlocks.map(block => block.blockDef.content).join('');
+        const customBlockGen = customBlocks.map(block => this.blocklyService.getBlockGenCode(block.blockId, block.blockGen.content)).join('');
+        blocks[customBlocks.some(block => block.isEnable) ? 'general' : ''] = customBlocks
+          .filter(block => block.isEnable === true)
+          .map(block => `<block type="${block.blockId}"></block>`)
+          .join('');
+        stage.stageData.blocklyData.toolBoxState
+          .forEach(block => blocks[block.category] = blocks.hasOwnProperty(block.category) ? blocks[block.category] + block.data : block.data);
+        Object.keys(blocks).forEach(blockname => xmlText += this.blocklyService.mergeCategory(blockname, blocks[blockname]));
+        eval(diveState + customBlockDef + customBlockGen);
+        this.blocklyService.injectStandardWorkspace('blocklyDiv', xmlText);
         return [{
-          type: ManipulationActions.SET_BLOCKLY_TRANSFORMED_STATE,
-          payload: str
+          type: ManipulationActions.SET_DIVE_STATE,
+          payload: diveState
         }];
       })
     );
   constructor(private action$: Actions,
-              private afStore: AngularFirestore) {}
+              private blocklyService: BlocklyService) {}
 }

@@ -6,9 +6,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ChooseComponent } from './choose/choose.component';
 import { PorfolioComponent } from './choose/porfolio/porfolio.component';
-import { InputComponent } from './game/input/input.component';
-import { PlaygroundComponent } from './game/playground/playground.component';
-import { WizardComponent } from './game/wizard/wizard.component';
 
 const routes: Routes = [
   {path: '', component: ManipulationComponent, children: [

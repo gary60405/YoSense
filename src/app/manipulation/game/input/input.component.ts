@@ -8,8 +8,9 @@ import * as AppActions from './../../../store/app.actions';
 import * as ManipulationActions from './../../store/manipulation.actions';
 import { AppState } from '../../../model/app/app.model';
 import { editStageIndexSelector } from '../../../store/app.selectors';
-import { selectedStageSelector, stageLengthSelector, passConditionSelector, diagnosisSelector } from '../../store/manipulation.selectors';
+import { selectedStageSelector, stageLengthSelector, passConditionSelector, diagnosisSelector, diveStateSelector } from '../../store/manipulation.selectors';
 import { StagesState, PassConditionState, ConditionDataState } from '../../../model/authoring/management.model';
+import { BlocklyService } from '../../../authoring/edit/blockly/blockly.service';
 
 @Component({
   selector: 'app-input',
@@ -20,20 +21,21 @@ export class InputComponent implements OnInit, OnDestroy {
   @ViewChild('passDialog') passDialog;
   @ViewChild('failDialog') failDialog;
   constructor(private dialog: MatDialog,
-              private store: Store<AppState>) { }
+              private store: Store<AppState>,
+              private blocklyService: BlocklyService) { }
   intervalID = [];
   isEnd$: Observable<boolean>;
   ngOnInit() {
     this.store
         .pipe(select(selectedStageSelector), take(1))
-        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.BuildBlocklyWorkSpace(stage)));
+        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.TryInitialWorkspace(stage)));
     this.checkEndedState();
   }
   restart() {
     eval('resetBlocklyWorkSpace()');
     this.store
         .pipe(select(selectedStageSelector), take(1))
-        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.BuildBlocklyWorkSpace(stage)));
+        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.TryInitialWorkspace(stage)));
   }
   nextStage() {
     const stageLength$ = this.store.pipe(select(stageLengthSelector));
@@ -78,7 +80,7 @@ export class InputComponent implements OnInit, OnDestroy {
                   let isTrigger = true;
                   items['conditions'].forEach(item => {
                     item.condition['operator'] = item.condition['operator'] === '=' ? '==' : '==';
-                    console.log(`${diveValue[item['condition']['diveAttribute']]}${item.condition['operator']}${Number(item.condition['value'])}`);
+                    // console.log(`${diveValue[item['condition']['diveAttribute']]}${item.condition['operator']}${Number(item.condition['value'])}`);
                     const compareValue = eval(`${diveValue[item['condition']['diveAttribute']]}${item.condition['operator']}${Number(item.condition['value'])}`);
                     isTrigger = eval(`${isTrigger} && ${compareValue}`);
                   });
@@ -125,47 +127,14 @@ export class InputComponent implements OnInit, OnDestroy {
 
  getCode() {
    this.diagnosisMonitor();
-    const commands = eval('getCode()').split(';').map(item => item + ';').slice(0, -1);
-    console.log(commands);
-    const solvePromise = (command, time) => new Promise(resolve => setTimeout(() => resolve(eval(command)), time));
-    let code = '';
-    let commandIndex = 0;
-    let timer = 0;
-    let tempTimer = 0;
-    for (const index in commands) {
-      if (commands.hasOwnProperty(index)) {
-        const baseTime = 350;
-        const i = Number(index);
-        if (commands[i].indexOf('number') !== -1 && commands[i].indexOf('diveLinker') === -1) {
-          timer = baseTime * Number(commands[i + 1].split(',')[1].split(')')[0]);
-        } else if (commands[i].indexOf('angle') !== -1 && commands[i].indexOf('diveLinker') === -1) {
-          timer = baseTime;
-        }
-        if (commands[i].indexOf('diveLinker') !== -1) {
-          if (commands.length === 2) {
-            code = `solvePromise('${commands[i]}', 100).then(res => res)`;
-            code += ';';
-            setTimeout(() => this.passMonitor(), timer);
-          } else if (commandIndex === 0) {
-            code = `solvePromise('${commands[i]}', 100).then(res => {return solvePromise('${commands[i + 2]}', ${timer})})`;
-          } else if (i === commands.length - 1) {
-            code += ';';
-            setTimeout(() => this.passMonitor(), timer + tempTimer);
-          } else {
-            code += `.then(res => {return solvePromise('${commands[i + 2]}', ${timer})})`;
-          }
-          tempTimer += timer;
-          commandIndex++;
-        }
-      }
-    }
-    eval(code);
-  }
+   eval('const a = Blockly.JavaScript.workspaceToCode(workspace); console.log(a)');
+}
 
 clearIntervalArray() {
   this.intervalID.forEach(id => clearInterval(id));
   this.intervalID = [];
 }
+
 ngOnDestroy() {
   this.store.dispatch(new ManipulationActions.SetSnackbarOpenState(false));
   this.clearIntervalArray();

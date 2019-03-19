@@ -7,6 +7,7 @@ import * as fromManipulation from '../manipulation/store/manipulation.reducers';
 import * as fromBlockly from './../authoring/edit/blockly/store/blockly.reducers';
 import * as fromHeader from '../header/store/header.reducers';
 import * as AppActions from './app.actions';
+import * as fromRouter from '@ngrx/router-store';
 
 import { ProjectState } from '../model/authoring/management.model';
 import { AppState, GlobalState } from '../model/app/app.model';
@@ -19,6 +20,7 @@ export const reducers: ActionReducerMap<AppState> = {
   gloabalData: globalDataRuducer,
   manipulation: fromManipulation.manipulationRuducer,
   header: fromHeader.headerReducer,
+  routerReducer: fromRouter.routerReducer
 };
 
 const initialState: GlobalState = {

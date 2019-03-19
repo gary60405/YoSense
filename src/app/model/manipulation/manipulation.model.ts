@@ -1,8 +1,7 @@
-import { StagesState, ProjectState } from '../authoring/management.model';
 export interface ManipulationState {
   isDiveLoaded: boolean;
   snackBarState: SnackBarState;
-  blocklyData: string;
+  diveState: string;
 }
 
 export interface SnackBarState {
