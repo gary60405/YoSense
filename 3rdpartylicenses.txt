@@ -733,7 +733,7 @@ THE SOFTWARE.
 
 @angular/material/card
 
-@angular/cdk
+@angular/material
 MIT
 The MIT License
 
@@ -1035,7 +1035,7 @@ MIT
 @angular/common
 MIT
 
-@angular/material
+@angular/cdk
 MIT
 The MIT License
 
