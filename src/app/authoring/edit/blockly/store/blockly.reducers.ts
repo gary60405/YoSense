@@ -19,7 +19,7 @@ const initialState: BlocklyState = {
       blockTempText: ['text1', 'text2', 'text3']
     },
     blockGen: {
-      content: '',
+      content: `Blockly.JavaScript['block_type'] = (block) => {};`,
       blockType: 'NONE',
       blockTypeContent: '',
       diveStateName: '',
@@ -86,7 +86,7 @@ export function BlocklyRuducer(state = initialState, action) {
           },
           blockGen: {
             ...state.blockBuildState.blockGen,
-            content: state.blockBuildState.blockGen.content ? state.blockBuildState.blockGen.content.replace(`JavaScript['block_type']`, `JavaScript['${id}']`) : ''
+            content: state.blockBuildState.blockGen.content ? state.blockBuildState.blockGen.content.replace(`Blockly.JavaScript['block_type']`, `Blockly.JavaScript['${id}']`) : ''
           }
         }
       };
@@ -155,7 +155,9 @@ export function BlocklyRuducer(state = initialState, action) {
           ...state.blockBuildState,
           blockDef: {
             ...state.blockBuildState.blockDef,
-            blockTempText: [...initialState.blockBuildState.blockDef.blockTempText]
+            blockTempText: [
+              ...initialState.blockBuildState.blockDef.blockTempText
+            ]
           },
         }
       };
@@ -303,6 +305,9 @@ export function BlocklyRuducer(state = initialState, action) {
           ...initialState.blockBuildState,
           blockDef: {
             ...initialState.blockBuildState.blockDef,
+            blockTempText: [
+              ...initialState.blockBuildState.blockDef.blockTempText,
+            ]
           },
           blockGen: {
             ...initialState.blockBuildState.blockGen,
@@ -334,6 +339,9 @@ export function BlocklyRuducer(state = initialState, action) {
           ...initialState.blockBuildState,
           blockDef: {
             ...initialState.blockBuildState.blockDef,
+            blockTempText: [
+              ...initialState.blockBuildState.blockDef.blockTempText,
+            ]
           },
           blockGen: {
             ...initialState.blockBuildState.blockGen,

@@ -12,6 +12,9 @@ import { isDiveObjectName, isDiveObjectAction, isDiveLocked } from './js/rule';
 import { ToolBoxState, BlockBuildState } from '../../../model/authoring/blockly.model';
 import { MatSnackBar, MatDialog} from '@angular/material';
 import { take } from 'rxjs/operators';
+
+
+
 @Component({
   selector: 'app-blockly',
   templateUrl: './blockly.component.html',
@@ -64,9 +67,9 @@ export class BlocklyComponent implements OnInit, OnDestroy {
   diveStateName: string;
   diveStateAction: string;
   blockTypeContents: Map<string, []>;
-
   blockId = '';
   isNewBlock: boolean;
+  isInitialWorkPanel: boolean;
   isSpinerDisplay = false;
   diveState = {};
   categoryName = [];
@@ -74,6 +77,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
   isDiveObjectAction = [];
   isDiveLocked = [];
   ngOnInit() {
+    this.isInitialWorkPanel = true;
     this.blockTypeContents = blockTypeContents;
     this.categoryName = categoryName;
     this.isDiveObjectName = isDiveObjectName;
@@ -119,6 +123,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
   }
 
   setBlockType(event) {
+    this.isInitialWorkPanel = false;
     this.store.dispatch(new BlocklyActions.SetBlockType(event.value));
   }
 
@@ -161,10 +166,12 @@ export class BlocklyComponent implements OnInit, OnDestroy {
   }
 
   setPortalType(event) {
+    this.isInitialWorkPanel = false;
     this.store.dispatch(new BlocklyActions.TrySetPortalType(event.value));
   }
 
   setConnectionType(event) {
+    this.isInitialWorkPanel = false;
     this.store.dispatch(new BlocklyActions.TrySetConnectionType(event.value));
   }
 
@@ -177,6 +184,7 @@ export class BlocklyComponent implements OnInit, OnDestroy {
   }
 
   editBlockResultText(order: number, text: string) {
+    this.isInitialWorkPanel = false;
     this.store.dispatch(new BlocklyActions.TryEditBlockResultText({order: order, text: text}));
   }
 
@@ -185,11 +193,13 @@ export class BlocklyComponent implements OnInit, OnDestroy {
   }
 
   setBlockName(event) {
+    this.isInitialWorkPanel = false;
     this.store.dispatch(new BlocklyActions.SetBlockName(event.target.value));
   }
 
   editCustomBlock(id) {
     this.isNewBlock = false;
+    this.isInitialWorkPanel = false;
     this.store.pipe(select(customBlockSelector), take(1))
         .subscribe((customBlock: BlockBuildState[]) => this.store.dispatch(new BlocklyActions.TryEditCustomBlock({id: id, customBlocksState: customBlock})));
   }
@@ -215,17 +225,19 @@ export class BlocklyComponent implements OnInit, OnDestroy {
 
   revertEdit() {
     this.isNewBlock = true;
+    this.isInitialWorkPanel = true;
     this.store.dispatch(new BlocklyActions.InitailBuildBlockState());
     this.store.dispatch(new BlocklyActions.SetBlockResult());
   }
   submitBlockData() {
+    this.isInitialWorkPanel = true;
     if (this.isNewBlock) {
       this.store.dispatch(new BlocklyActions.SetBlockId);
       this.store.dispatch(new BlocklyActions.SetBlockStateIsOld(false));
     }
     this.snackBar
         .openFromTemplate(this.hint, {panelClass: ['p-0'], duration: 3000})
-        .afterDismissed().subscribe(() => this.isNewBlock = undefined);
+        .afterDismissed().subscribe(() => this.isNewBlock = true);
     this.store
         .pipe(select(submitBlockDataSelector), take(1))
         .subscribe( (blockData: BlockBuildState) => {
@@ -238,7 +250,8 @@ export class BlocklyComponent implements OnInit, OnDestroy {
               .set('BLOCKLY_GETTER_SET_DIVE_WITH_DIVE_STATE', getBlocklyGetterSetDiveWithDiveState(blockData.blockGen.diveStateAction, blockData.blockGen.isAsync))
               .set('BLOCKLY_GETTER_SET_DIVE_WITH_BLOCK_VALUE', getBlocklyGetterSetDiveWithBlockValue(blockData.blockGen.diveStateAction, blockData.blockGen.isAsync))
               .set('BLOCKLY_GETTER_ASYNC_SET_DIVE_WITH_BLOCK_VALUE', getBlocklyGetterAsyncSetDiveWithBlockValue(blockData.blockGen.diveStateAction, blockData.blockGen.isAsync))
-              .set('BLOCKLY_GETTER_COMPARE_WITH_DIVE_GETTER', getBlocklyGetterCompareWithDiveGetter(blockData.blockGen.diveStateAction, blockData.blockGen.payload));
+              .set('BLOCKLY_GETTER_COMPARE_WITH_DIVE_GETTER', getBlocklyGetterCompareWithDiveGetter(blockData.blockGen.diveStateAction, blockData.blockGen.payload))
+              .set('', '');
           this.store.dispatch(new BlocklyActions.TrySubmitBlockData({isNew: this.isNewBlock, blockData: blockData, content: blockTypeMap.get(blockData.blockGen.blockTypeContent)}));
         });
   }

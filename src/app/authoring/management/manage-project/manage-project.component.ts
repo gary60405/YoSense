@@ -36,31 +36,6 @@ export class ManageProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.store.pipe(select(userDataStateSelector))
-    //   .subscribe((res: UserDataState) => {
-    //     res.project
-    //       .filter(data => data !== 'F2nV')
-    //       .forEach(data => {
-    //         if (data !== 'F2nV') {
-    //           this.afStore.collection('project').doc(data).delete();
-    //         }
-    //       });
-    //   });
-      // this.afStore.collection('user').doc('gary60405@gmail.com').update({project: ['F2nV']});
-    // this.afStore.collection('project').doc('9esW').update({
-    //   author: 'gary60405@gmail.com',
-    //   createDate: new Date(),
-    //   description: 'good',
-    //   lastModify: new Date(),
-    //   name: 'gf',
-    //   uid: '9esW'
-    // });
-    // this.afStore.collection('project').valueChanges()
-    //   .subscribe(res => {
-    //     res.filter(data => data['author'] === 'gary60405@gmail.com' && data['uid'] !== 'F2nV')
-    //        .map(data => data['uid'])
-    //        .forEach(uid => this.afStore.collection('project').doc(uid).delete());
-    //   });
     this.store.dispatch(new AppActions.InitailProjectInfo());
     this.store
         .pipe(select(userDataStateSelector), take(1))

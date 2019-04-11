@@ -9,7 +9,21 @@
           </mat-button-toggle-group>
           <button class="ml-auto mr-3" mat-stroked-button color="primary" routerLink="/authoring/edit/diagnosis">編輯完成</button>
         </div>
-        <mat-accordion >
+        <mat-accordion>
+            <mat-expansion-panel #primitive_panel class="mat-elevation-z0" (click)="setBlocklyMode('PREVIEW_MODE')">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    設定預覽選項
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="overflow pr-2 blockList-max-height">
+                    <mat-list>
+                        <mat-list-item (click)="1" mat-ripple  class="list-item m-1">
+                          開啟圖控預覽
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+              </mat-expansion-panel>
           <mat-expansion-panel #custom_panel class="mat-elevation-z0" (click)="setBlocklyMode('SET_CUSTOM_BLOCK')">
             <mat-expansion-panel-header>
               <mat-panel-title>
@@ -39,16 +53,16 @@
             </mat-expansion-panel-header>
             <h5 *ngIf="(blocklyMode$ | async) === 'SET_PRIMITIVE_BLOCK'" class="font-weight-bold">預覽區：</h5>
             <div *ngIf="(blocklyMode$ | async) === 'SET_PRIMITIVE_BLOCK'" id="blocklyPreviewer1" class="border border-white"
-              style="height: calc(100vh - 265px - 7.5rem); width: 100%;"></div>
+              style="height: calc(100vh - 313px - 7.5rem); width: 100%;"></div>
           </mat-expansion-panel>
         </mat-accordion>
       </mat-card>
     </div>
     <div *ngSwitchCase="'SET_CUSTOM_BLOCK'" class="col-6 mt-3">
       <mat-card class="fix-height p-0">
-        <div *ngIf="!isNewBlock" class="d-flex p-3">
-            <button class="ml-auto btn btn-danger btn-sm btn-block" (click)="stepper.reset();revertEdit()">取消編輯</button>
-            </div>
+        <div *ngIf="!isInitialWorkPanel" class="d-flex p-3">
+          <button class="ml-auto btn btn-danger btn-sm btn-block" (click)="stepper.reset();revertEdit()">{{!isNewBlock ? '取消編輯' : '清空資料'}}</button>
+        </div>
           <mat-vertical-stepper #stepper [linear]="isNewBlock" >
             <mat-step>
               <ng-template matStepLabel>步驟一：選擇積木造型</ng-template>

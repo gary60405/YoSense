@@ -1,4 +1,4 @@
-<iframe id="iframe" [ngClass]="{'fix-dive-scale':!(isDiveLoaded$ | async)}" [src]="'http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=' + (diveId$ | async) | safe" name="mainExperiment"></iframe>
+<iframe id="iframe" [ngClass]="{'fix-dive-scale':!(isDiveLoaded$ | async)}" [src]="'http://dive.nutn.edu.tw:8080/Experiment/kaleTestExperiment5.jsp?eid=' + (diveId$ | async) | safe" name="mainExperiment"></iframe>
 
 <div *ngIf="!(isDiveLoaded$ | async)" class="position-absolute container-fluid">
   <div id="loading-background" class="row">

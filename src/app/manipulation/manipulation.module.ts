@@ -1,4 +1,3 @@
-import { GameService } from './game/game.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +12,6 @@ import { DashboardComponent } from './choose/dashboard/dashboard.component';
 import { SelectStageComponent } from './choose/select-stage/select-stage.component';
 import { PorfolioComponent } from './choose/porfolio/porfolio.component';
 
-import { ChooseService } from './choose/choose.service';
 import { SidePanelComponent } from './choose/side-panel/side-panel.component';
 import { FrameworkModule } from '../core/framework/framework.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -44,8 +42,6 @@ import { SafePipe } from '../core/safe2.pipe';
     WizardComponent,
   ],
   providers: [
-    ChooseService,
-    GameService
   ]
 })
 export class ManipulationModule { }

@@ -21,10 +21,6 @@ export class BlocklyService {
     eval(`Blockly.Xml.appendDomToWorkspace(Blockly.Xml.textToDom('<xml><block id="a" type="block_type" x="${x}" y="${y}"></block></xml>'), ${workspaceName});`);
   }
 
-  getBlockGenCode(blockId: string, content: string) {
-    return `Blockly.JavaScript['${blockId}'] = (block) => {${content}};`;
-  }
-
   getDiveState(stateArray: HierarchyState[]) {
     const diveState = {};
     stateArray.forEach((state: HierarchyState) => {

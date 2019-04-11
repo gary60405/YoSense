@@ -8,7 +8,7 @@ import { AppState } from '../../../model/app/app.model';
 import { DiveDataState } from './../../../model/authoring/management.model';
 import * as AuthoringStageActions from './../store/authoringStage.actions';
 import * as HeaderActions from './../../../header/store/header.actions';
-import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelector, diveIdStateSelector } from '../store/authoringStage.selectors';
+import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelector, diveIdStateSelector, diveReadTimeStateSelector } from '../store/authoringStage.selectors';
 
 @Component({
   selector: 'app-dive',
@@ -18,6 +18,8 @@ import { diveLoadedStateSelector, diveIdCheckedSelector, selectedStageDateSelect
 export class DiveComponent implements OnInit {
   @ViewChild('diveDialog') diveDialog;
   @ViewChild('code') code;
+  @ViewChild('time') time;
+  diveReadTime$: Observable<number>;
   diveId$: Observable<number>;
   isDiveLoaded$: Observable<boolean>; // Dive是否讀取完成
   isChecked$: Observable<boolean>; // 是否填完DIVE ID
@@ -25,6 +27,7 @@ export class DiveComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private store: Store<AppState>) {
+    this.diveReadTime$ = store.pipe(select(diveReadTimeStateSelector));
     this.diveId$ = store.pipe(select(diveIdStateSelector));
     this.isDiveLoaded$ = store.pipe(select(diveLoadedStateSelector));
     this.isChecked$ = store.pipe(select(diveIdCheckedSelector));
@@ -48,7 +51,7 @@ export class DiveComponent implements OnInit {
     this.store.dispatch(new AuthoringStageActions.SetDiveIdState(this.code.nativeElement.value));
     this.url = `http://120.114.170.2:8080/Experiment/kaleTestExperiment5.jsp?eid=${this.code.nativeElement.value}`;
     const solvePromise = (text, timer) => new Promise(resolve => setTimeout(() => resolve(eval(text)), timer));
-    solvePromise('diveLinker.Hello()', 3000)
+    solvePromise('diveLinker.Hello()', this.time.nativeElement.value * 1000)
       .then((res) => solvePromise('diveLinker.IOArray', 100))
       .then((res: DiveDataState) => this.store.dispatch(new AuthoringStageActions.TryAddDiveData(res)));
   }

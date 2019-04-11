@@ -1,3 +1,4 @@
+import { HierarchyDataState } from './../../../model/authoring/authoring.model';
 import { take, map } from 'rxjs/operators';
 import { forkJoin, Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
@@ -11,6 +12,7 @@ import { editStageIndexSelector } from '../../../store/app.selectors';
 import { selectedStageSelector, stageLengthSelector, passConditionSelector, diagnosisSelector, diveStateSelector } from '../../store/manipulation.selectors';
 import { StagesState, PassConditionState, ConditionDataState } from '../../../model/authoring/management.model';
 import { BlocklyService } from '../../../authoring/edit/blockly/blockly.service';
+import { hierarchyDataSelector } from '../../../authoring/edit/store/authoringStage.selectors';
 
 @Component({
   selector: 'app-input',
@@ -76,7 +78,7 @@ export class InputComponent implements OnInit, OnDestroy {
             .forEach(items => {
               this.intervalID.push(
                 setInterval(() => {
-                  diveAttribute.forEach(attr => diveValue[`${attr}`] = eval(`diveLinker.Get(${attr})`));
+                  diveAttribute.forEach(attr => diveValue[`'${attr}'`] = eval(`diveLinker.Get(${attr})`));
                   let isTrigger = true;
                   items['conditions'].forEach(item => {
                     item.condition['operator'] = item.condition['operator'] === '=' ? '==' : '==';
@@ -126,8 +128,22 @@ export class InputComponent implements OnInit, OnDestroy {
   }
 
  getCode() {
-   this.diagnosisMonitor();
-   eval('const a = Blockly.JavaScript.workspaceToCode(workspace); console.log(a)');
+  //  this.diagnosisMonitor();
+   this.store.pipe(select(diveStateSelector), take(1))
+       .subscribe((diveState) => {
+        //  console.log(`
+        //  const a = Blockly.JavaScript.workspaceToCode(workspace);
+        //  ${diveState}
+        //  console.log(a);
+        //  eval(a);
+        //  `);
+         eval(`
+          const a = Blockly.JavaScript.workspaceToCode(workspace);
+          ${diveState}
+          console.log(a);
+          eval(a);
+          `);
+       });
 }
 
 clearIntervalArray() {

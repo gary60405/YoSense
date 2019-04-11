@@ -1,6 +1,6 @@
 import { AuthEffects } from './auth/store/auth.effects';
 import { reducers } from './store/app.reducers';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { environment } from '../environments/environment';
-import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AuthoringStageEffects } from './authoring/edit/store/authoringStage.effects';
 import { ManagementEffects } from './authoring/management/store/management.effects';
@@ -50,6 +50,7 @@ export const firebaseConfig = {
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [BlocklyService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

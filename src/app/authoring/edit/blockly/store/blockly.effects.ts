@@ -32,14 +32,23 @@ trySubmitBlockDataEffect = this.action$
     ofType(BlocklyActions.TRY_SUBMIT_BLOCK_DATA),
     map((action: BlocklyActions.TrySubmitBlockData) => action.payload),
     mergeMap((data: {isNew: boolean, content: string, blockData: BlockBuildState}) => {
+      console.log(data);
+      const genCode = data.content.replace(`Blockly.JavaScript['block_type']`, `Blockly.JavaScript['${data.blockData.blockId}']`);
+      console.log(genCode);
       return [
         {
           type: BlocklyActions.SET_BLOCK_CODE_GENERATOR,
-          payload: data.content ? data.content : ''
+          payload: genCode
         },
         {
           type: data.isNew ? AuthoringActions.ADD_CUSTOM_BLOCK : AuthoringActions.UPDATE_CUSTOM_BLOCK,
-          payload: data.blockData
+          payload: {
+            ...data.blockData,
+            blockGen: {
+              ...data.blockData.blockGen,
+              content: genCode
+            }
+          }
         },
         {
           type: BlocklyActions.INITAIL_BUILD_BLOCK_STATE

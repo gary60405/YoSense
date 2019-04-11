@@ -13,14 +13,16 @@ import { HierarchyComponent } from './edit/hierarchy/hierarchy.component';
 
 const routes: Routes = [
   {path: '', component: AuthoringComponent, children: [
-    {path: '', redirectTo: 'management', pathMatch: 'full'},
-    {path: 'management', component: ManagementComponent, children: [
-      {path: '', redirectTo: 'manageProject', pathMatch: 'full'},
-      {path: 'manageProject', component: ManageProjectComponent},
-      {path: 'editProject', component: EditProjectComponent}
-    ]},
+    {path: '', redirectTo: 'edit', pathMatch: 'full'},
+    // {path: '', redirectTo: 'management', pathMatch: 'full'},
+    // {path: 'management', component: ManagementComponent, children: [
+    //   {path: '', redirectTo: 'manageProject', pathMatch: 'full'},
+    //   {path: 'manageProject', component: ManageProjectComponent},
+    //   {path: 'editProject', component: EditProjectComponent}
+    // ]},
     {path: 'edit', component: EditComponent, children: [
-      {path: '', redirectTo: 'dive', pathMatch: 'full'},
+      {path: '', redirectTo: 'blockly', pathMatch: 'full'},
+      // {path: '', redirectTo: 'dive', pathMatch: 'full'},
       {path: 'dive', component: DiveComponent},
       {path: 'hierarchy', component: HierarchyComponent},
       {path: 'blockly', component: BlocklyComponent},

@@ -40,7 +40,7 @@ export function manipulationRuducer(state = initailState, action) {
             content: action.payload
           }
         };
-      case ManipulationActions.SetDiveState:
+      case ManipulationActions.SET_DIVE_STATE:
         return {
           ...state,
           diveState: action.payload

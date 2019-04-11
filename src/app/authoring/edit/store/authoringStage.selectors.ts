@@ -12,6 +12,10 @@ export const diveIdStateSelector = createSelector(
   (state: AppState) => state.authoringStage.editState.diveId,
   (diveId: number) => diveId
 );
+export const diveReadTimeStateSelector = createSelector(
+  (state: AppState) => state.authoringStage.editState.diveReadTime,
+  (diveId: number) => diveId
+);
 
 export const diveLoadedStateSelector = createSelector(
   (state: AppState) => state.authoringStage.toggleState.isDiveLoaded,

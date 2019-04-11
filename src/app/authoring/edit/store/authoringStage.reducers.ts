@@ -7,6 +7,7 @@ const initialState: AuthoringStageState = {
     isChecked: false,
   },
   editState: {
+    diveReadTime: 3,
     diveId: -1,
     diveData: {
       inValue: [],
