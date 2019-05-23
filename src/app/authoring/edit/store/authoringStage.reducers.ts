@@ -7,13 +7,14 @@ const initialState: AuthoringStageState = {
     isChecked: false,
   },
   editState: {
-    diveReadTime: 3,
     diveId: -1,
     diveData: {
       inValue: [],
       outValue: []
     },
     blocklyData: {
+      codeFontSize: 1.5,
+      blockCodeState: '',
       toolBoxState: [],
       customBlocksState: [],
     },
@@ -56,6 +57,28 @@ export function authoringStageReducer(state = initialState, action) {
         editState: {
           ...state.editState,
           diveId: action.payload
+        }
+      };
+    case AuthoringStage.SET_CODE_FONT_SIZE:
+      return {
+        ...state,
+        editState: {
+          ...state.editState,
+          blocklyData: {
+            ...state.editState.blocklyData,
+            codeFontSize: action.payload
+          }
+        }
+      };
+    case AuthoringStage.SET_BLOCK_CODE_STATE:
+      return {
+        ...state,
+        editState: {
+          ...state.editState,
+          blocklyData: {
+            ...state.editState.blocklyData,
+            blockCodeState: action.payload
+          }
         }
       };
     case AuthoringStage.SET_CHECKED_STATE:
@@ -129,12 +152,12 @@ export function authoringStageReducer(state = initialState, action) {
         },
         editState: {
           ...initialState.editState,
-          diveId: -1,
+          diveId: initialState.editState.diveId,
           diveData: {
-            ...initialState.editState.diveData
+            ...initialState.editState.diveData,
           },
           blocklyData: {
-            ...initialState.editState.blocklyData
+            ...initialState.editState.blocklyData,
           },
         }
       };

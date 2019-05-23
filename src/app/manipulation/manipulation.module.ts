@@ -40,8 +40,6 @@ import { SafePipe } from '../core/safe2.pipe';
   ],
   entryComponents: [
     WizardComponent,
-  ],
-  providers: [
   ]
 })
 export class ManipulationModule { }

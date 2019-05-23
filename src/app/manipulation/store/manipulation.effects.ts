@@ -1,10 +1,13 @@
-import { BlocklyDataState } from './../../model/authoring/blockly.model';
-import { map, switchMap, mergeMap } from 'rxjs/operators';
+import { map, switchMap, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import * as ManipulationActions from './../store/manipulation.actions';
 import { StagesState } from '../../model/authoring/management.model';
 import { BlocklyService } from '../../authoring/edit/blockly/blockly.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../model/app/app.model';
+
+declare var DiveLinker: any;
 
 @Injectable()
 export class ManipulationEffects {
@@ -13,15 +16,17 @@ export class ManipulationEffects {
   tryLoadDiveEffects = this.action$
   .pipe(
       ofType(ManipulationActions.TRY_LOAD_DIVE),
-      switchMap(() => {
-        const loadedPromise = new Promise(resolve => {
-          let isLoaded = false;
-          while (!isLoaded) {
-            isLoaded = eval('diveLinker.Hello()') !== [] ? true : false;
+      switchMap(async () => {
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(() => resolve(), ms));
+        const diveLinker = new DiveLinker('mainExperiment');
+        const diveLoadedPromise = new Promise(async resolve => {
+          while (!diveLinker.getLoadingStatus()) {
+            await sleep(50);
           }
           resolve();
         });
-        return loadedPromise.then(() => true);
+        await diveLoadedPromise;
+        return true;
       }),
       mergeMap((data) => {
         return [{
@@ -35,31 +40,38 @@ export class ManipulationEffects {
   buildBlocklyWorkSpaceEffects = this.action$
   .pipe(
       ofType(ManipulationActions.TRY_INITIAL_WORKSPACE),
-      map((action: ManipulationActions.TryInitialWorkspace) => action.payload),
+      withLatestFrom(this.store),
+      map(([action, state]) => {
+        const editProjectIndex = state.gloabalData.editProjectIndex;
+        const editStageIndex = state.gloabalData.editStageIndex;
+        const selectedProject = state.gloabalData.projectData[editProjectIndex];
+        return selectedProject.stages[editStageIndex];
+      }),
       mergeMap((stage: StagesState) => {
         let xmlText = '';
         const blocks = {};
         const diveState = this.blocklyService.getDiveState(stage.stageData.hierarchyData);
         const customBlocks = stage.stageData.blocklyData.customBlocksState;
-        const customBlockDef = customBlocks.map(block => block.blockDef.content).join('\n');
-        const customBlockGen = customBlocks.map(block => block.blockGen.content).join('\n');
         blocks[customBlocks.some(block => block.isEnable) ? 'general' : ''] = customBlocks
           .filter(block => block.isEnable === true)
           .map(block => `<block type="${block.blockId}"></block>`)
           .join('');
         stage.stageData.blocklyData.toolBoxState
-          .forEach(block => blocks[block.category] = blocks.hasOwnProperty(block.category) ? blocks[block.category] + block.data : block.data);
+             .forEach(block => blocks[block.category] = blocks.hasOwnProperty(block.category) ? blocks[block.category] + block.data : block.data);
         Object.keys(blocks).forEach(blockname => xmlText += this.blocklyService.mergeCategory(blockname, blocks[blockname]));
-        eval(diveState + customBlockDef + customBlockGen);
-        // console.log(customBlocks);
-        // console.log(diveState + customBlockDef + customBlockGen);
-        this.blocklyService.injectStandardWorkspace('blocklyDiv', xmlText);
-        return [{
-          type: ManipulationActions.SET_DIVE_STATE,
-          payload: diveState
-        }];
+        return [
+          {
+            type: ManipulationActions.SET_DIVE_STATE,
+            payload: diveState
+          },
+          {
+            type: ManipulationActions.SET_WORKSPACE_STATE,
+            payload: xmlText
+          }
+      ];
       })
     );
   constructor(private action$: Actions,
+              private store: Store<AppState>,
               private blocklyService: BlocklyService) {}
 }

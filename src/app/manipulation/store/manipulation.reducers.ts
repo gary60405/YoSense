@@ -7,7 +7,8 @@ export const initailState: ManipulationState = {
     isOpen: false,
     content: '',
   },
-  diveState: ''
+  diveState: '',
+  workspaceState: ''
 };
 
 export function manipulationRuducer(state = initailState, action) {
@@ -23,6 +24,11 @@ export function manipulationRuducer(state = initailState, action) {
       return {
         ...state,
         isDiveLoaded: action.payload
+      };
+    case ManipulationActions.SET_WORKSPACE_STATE:
+      return {
+        ...state,
+        workspaceState: action.payload
       };
     case ManipulationActions.SET_SNACKBAR_OPEN_STATE:
       return {

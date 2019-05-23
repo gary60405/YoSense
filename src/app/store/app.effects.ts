@@ -74,6 +74,8 @@ export class AppEffects {
                   addStageData.stageData.lastModify = new Date();
                   addStageData.stageData.stageData = {
                     blocklyData: {
+                      codeFontSize: 1.5,
+                      blockCodeState: '',
                       toolBoxState: [],
                       customBlocksState: [],
                     },

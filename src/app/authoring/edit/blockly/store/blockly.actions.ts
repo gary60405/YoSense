@@ -27,6 +27,7 @@ export const TRY_SET_EXTERNAL_TYPE = 'TRY_SET_EXTERNAL_TYPE';
 export const TRY_EDIT_BLOCK_RESULT_TEXT = 'TRY_EDIT_BLOCK_RESULT_TEXT';
 export const TRY_SUBMIT_BLOCK_DATA = 'TRY_SUBMIT_BLOCK_DATA';
 export const TRY_EDIT_CUSTOM_BLOCK = 'TRY_EDIT_CUSTOM_BLOCK';
+export const TRY_BUILD_PREVIEW_WORKSPACE = 'TRY_BUILD_PREVIEW_WORKSPACE';
 
 export const INITAIL_BLOCK_TEMP_TEXT = 'INITAIL_BLOCK_TEMP_TEXT';
 export const INITAIL_OPTION_VALUE = 'INITAIL_OPTION_VALUE';
@@ -50,7 +51,7 @@ export class SetBlockId implements Action {
 
 export class SetToolboxBlockState implements Action {
   readonly type = SET_TOOLBOX_BLOCK_STATE;
-  constructor(public payload: {toolBoxState: ToolBoxState[], customBlocksState: BlockBuildState[]}) {}
+  constructor(public payload: string) {}
 }
 
 export class SetBlockType implements Action {
@@ -183,6 +184,10 @@ export class InitailBlocklyState implements Action {
   readonly type = INITAIL_BLOCKLY_STATE;
 }
 
+export class TryBuildPreviewWorkspace implements Action {
+  readonly type = TRY_BUILD_PREVIEW_WORKSPACE;
+}
+
 export type BlocklyActions = SetBlocklyModeState |
                              SetBlockName |
                              SetToolboxBlockState |
@@ -212,6 +217,7 @@ export type BlocklyActions = SetBlocklyModeState |
                              InitailBuildBlockState |
                              SetBlockStateIsOld |
                              EditCustomBlock |
-                             InitailBlocklyState
+                             InitailBlocklyState |
+                             TryBuildPreviewWorkspace
                              ;
 

@@ -2,9 +2,10 @@ import * as BlocklyActions from './blockly.actions';
 import { blockModel } from '../js/buildBlock';
 import { BlocklyState } from '../../../../model/authoring/blockly.model';
 
+
 const initialState: BlocklyState = {
   blocklyModeState: 'SET_CUSTOM_BLOCK',
-  workspaceState: `Blockly.inject('toolBoxPreviewer',{toolbox:'',trashcan:true,grid:{spacing:30,length:3,colour:'#39261f',snap:true},zoom:{controls:true,wheel:true,startScale:1.0,maxScale:1.2,minScale:0.8,scaleSpeed:1.2},})`,
+  workspaceState: '',
   blockBuildState: {
     blockName: '',
     blockId: '',
@@ -38,32 +39,9 @@ export function BlocklyRuducer(state = initialState, action) {
         blocklyModeState: action.payload
       };
     case BlocklyActions.SET_TOOLBOX_BLOCK_STATE:
-      let xmlText = '';
-      const blocks = {};
-      const categoryOder = new Map()
-        .set('general', 1)
-        .set('logic', 2)
-        .set('controls', 3)
-        .set('math', 4)
-        .set('text', 5)
-        .set('lists', 6)
-        .set('colour', 7)
-        .set('function', 8)
-        .set('variable', 9);
-      blocks[action.payload.customBlocksState.some(block => block.isEnable) ? 'general' : ''] = action.payload.customBlocksState
-        .filter(block => block.isEnable === true)
-        .map(block => `<block type="${block.blockId}"></block>`);
-      action.payload.toolBoxState
-            .sort((a, b) => categoryOder.get(a.category) > categoryOder.get(b.category) ? 1 : -1)
-            .forEach(block => blocks.hasOwnProperty(block.category) ? blocks[block.category].push(block.data) : blocks[block.category] = [block.data]);
-      Object.keys(blocks)
-            .forEach((categoryName) => xmlText += mergeCategory(categoryName, blocks[categoryName].join('')));
-      const customBlockDef = action.payload.customBlocksState.map(block => block.blockDef.content).join('');
-      const toolBoxXml = `Blockly.inject('toolBoxPreviewer',{toolbox:'<xml>${xmlText}</xml>',trashcan:true,grid:{spacing:30,length:3,colour:'#39261f',snap:true},zoom:{controls:true,wheel:true,startScale:1.0,maxScale:2,minScale:0.8,scaleSpeed:1.2},})`;
-      setTimeout(() => eval(customBlockDef + toolBoxXml), 0);
       return {
         ...state,
-        workspaceState: toolBoxXml
+        workspaceState: action.payload
       };
     case BlocklyActions.SET_BLOCK_NAME:
       return {
@@ -167,7 +145,6 @@ export function BlocklyRuducer(state = initialState, action) {
                       : action.payload.order === 1 ? state.blockBuildState.blockDef.content.replace(`\`${currentText}\``, `\`${action.payload.text}\``)
                       : action.payload.order === 2 ? state.blockBuildState.blockDef.content.replace(`'${currentText}'`, `'${action.payload.text}'`)
                       : '';
-      executeText(result, state.blockBuildState.blockId !== '' ? state.blockBuildState.blockId : 'block_type');
       return {
         ...state,
         blockBuildState: {
@@ -196,7 +173,6 @@ export function BlocklyRuducer(state = initialState, action) {
         : '';
       const blockId = state.blockBuildState.blockId !== '' ? state.blockBuildState.blockId : 'block_type';
       const execText = `Blockly.Blocks['${blockId}'] = { init: function() {${connectionTypeCode + embeddingNumberCode + externalTypeCode}this.setColour(230); this.setTooltip(""); this.setHelpUrl("");} };`;
-      executeText(execText, blockId);
       return {
         ...state,
         blockBuildState: {
@@ -353,15 +329,6 @@ export function BlocklyRuducer(state = initialState, action) {
   }
 }
 
-function executeText(execText, blockId = 'block_type') {
-  const previewer = document.getElementById('blocklyPreviewer2');
-  const width = window.getComputedStyle(previewer).getPropertyValue('width').replace('px', '');
-  const height = window.getComputedStyle(previewer).getPropertyValue('height').replace('px', '');
-  eval(execText);
-  eval(`workspace.clear();`);
-  eval(`Blockly.Xml.appendDomToWorkspace(Blockly.Xml.textToDom('<xml><block id="a" type="${blockId}" x="${parseInt(width, 10) / 12}" y="${parseInt(height, 10) / 12}"></block></xml>'), workspace);`);
-}
-
 function genUid() {
   let id = '', i = 6;
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -372,19 +339,4 @@ function genUid() {
     i--;
   }
   return id;
-}
-
-function mergeCategory(categoryName, blocks) {
-  const category = new Map()
-    .set('', '')
-    .set('general', `<category name="一般" colour="#FF4067">${blocks}</category>`)
-    .set('logic', `<category name="邏輯" colour="#5C81A6">${blocks}</category>`)
-    .set('controls', `<category name="迴圈" colour="#5CA65C">${blocks}</category>`)
-    .set('math', `<category name="數學" colour="#5C68A6">${blocks}</category>`)
-    .set('text', `<category name="文字" colour="#5CA68D">${blocks}</category>`)
-    .set('lists', `<category name="列表" colour="#745CA6">${blocks}</category>`)
-    .set('colour', `<category name="顏色" colour="#A6745C">${blocks}</category>`)
-    .set('variable', blocks)
-    .set('function', blocks);
-  return category.get(categoryName);
 }

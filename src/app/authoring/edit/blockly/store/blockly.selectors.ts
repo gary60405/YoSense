@@ -8,9 +8,12 @@ export const blocklyModeStateSelector = createSelector(
   (blocklyModeState: string) => blocklyModeState
 );
 
-export const workspaceSelector = createSelector(
-  (state: AppState) => state.blockly.workspaceState,
-  (workspaceState: string) => workspaceState
+export const appendBlockToWorkspaceSelector = createSelector(
+  (state: AppState) => state.blockly.blockBuildState.blockDef.content,
+  (state: AppState) => state.blockly.blockBuildState.blockId,
+  (content: string, blockId: string) => {
+    return {content: content, blockId: blockId !== '' ? blockId : 'block_type'};
+  }
 );
 
 export const portalTypeSelector = createSelector(
@@ -51,23 +54,6 @@ export const blockTypeSelector = createSelector(
 export const blockTypeContentSelector = createSelector(
   (state: AppState) => state.blockly.blockBuildState.blockGen.blockTypeContent,
   (blockTypeContent: string) => blockTypeContent
-);
-
-export const diveStateSelector = createSelector(
-  (state: AppState) => {
-    const diveState = {};
-    state.authoringStage.editState.hierarchyData.forEach(hierarchyData => {
-      diveState[hierarchyData.name] = {};
-      hierarchyData.states.forEach(data => {
-        diveState[hierarchyData.name][data.stateName] = {
-          diveID: data.diveData.diveNumber,
-          value: data.diveData.diveValue
-        };
-      });
-    });
-    return diveState;
-  },
-  (hierarchyData: HierarchyState[]) => hierarchyData
 );
 
 export const diveStateNamesSelector = createSelector(
@@ -121,6 +107,24 @@ export const submitBlockDataSelector = createSelector(
       });
     }
   );
+
+  export const diveStateSelector = createSelector(
+    (state: AppState) => {
+      const diveState = {};
+      state.authoringStage.editState.hierarchyData.forEach(hierarchyData => {
+        diveState[hierarchyData.name] = {};
+        hierarchyData.states.forEach(data => {
+          diveState[hierarchyData.name][data.stateName] = {
+            diveID: data.diveData.diveNumber,
+            value: data.diveData.diveValue
+          };
+        });
+      });
+      return diveState;
+    },
+    (hierarchyData: HierarchyState[]) => hierarchyData
+  );
+
   export const customBlockSelector = createSelector(
     (state: AppState) => state.authoringStage.editState.blocklyData.customBlocksState,
     (customBlocks: BlockBuildState[]) => customBlocks
@@ -131,10 +135,37 @@ export const submitBlockDataSelector = createSelector(
     (toolBoxState: ToolBoxState[]) => toolBoxState
   );
 
-  export const SetToolboxBlockSelector = createSelector(
-    (state: AppState) => state.authoringStage.editState.blocklyData.toolBoxState,
-    (state: AppState) => state.authoringStage.editState.blocklyData.customBlocksState,
-    (toolBoxState: ToolBoxState[], customBlocksState: BlockBuildState[]) => {
-      return {toolBoxState: toolBoxState, customBlocksState: customBlocksState};
+  export const buildPreviewWorkspaceSelector = createSelector(
+      (state: AppState) => state.blockly.workspaceState,
+      (state: AppState) => state.authoringStage.editState.blocklyData.customBlocksState,
+      (workspaceState: string, customBlocksState: BlockBuildState[]) => {
+        return {workspaceState: workspaceState, customBlocksState: customBlocksState};
+      }
+    );
+
+  export const codeFontSizeSelector = createSelector(
+    (state: AppState) => state.authoringStage.editState.blocklyData.codeFontSize,
+    (codeFontSize: number) => codeFontSize
+  );
+
+  export const blockCodeStateSelector = createSelector(
+    (state: AppState) => state.authoringStage.editState.blocklyData.blockCodeState,
+    (blockCodeState: string) => blockCodeState
+  );
+
+  export const blockDefSelector = createSelector(
+    (state: AppState) => state.blockly.blockBuildState.blockDef.connectionType,
+    (state: AppState) => state.blockly.blockBuildState.blockDef.portalType,
+    (state: AppState) => state.blockly.blockBuildState.blockDef.externalType,
+    (state: AppState) => state.blockly.blockBuildState.blockDef.embeddingNumber,
+    (connectionType: string, portalType: string, externalType: string, embeddingNumber: string) => {
+      return {
+        connectionType: connectionType,
+        portalType: portalType,
+        externalType: externalType,
+        embeddingNumber: embeddingNumber
+      };
     }
   );
+
+

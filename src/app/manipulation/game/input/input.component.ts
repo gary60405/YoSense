@@ -9,10 +9,11 @@ import * as AppActions from './../../../store/app.actions';
 import * as ManipulationActions from './../../store/manipulation.actions';
 import { AppState } from '../../../model/app/app.model';
 import { editStageIndexSelector } from '../../../store/app.selectors';
-import { selectedStageSelector, stageLengthSelector, passConditionSelector, diagnosisSelector, diveStateSelector } from '../../store/manipulation.selectors';
+import { selectedStageSelector, stageLengthSelector, passConditionSelector, diagnosisSelector, diveStateSelector, initailWorkspaceSelector } from '../../store/manipulation.selectors';
 import { StagesState, PassConditionState, ConditionDataState } from '../../../model/authoring/management.model';
 import { BlocklyService } from '../../../authoring/edit/blockly/blockly.service';
 import { hierarchyDataSelector } from '../../../authoring/edit/store/authoringStage.selectors';
+import { BlockBuildState } from '../../../model/authoring/blockly.model';
 
 @Component({
   selector: 'app-input',
@@ -28,16 +29,18 @@ export class InputComponent implements OnInit, OnDestroy {
   intervalID = [];
   isEnd$: Observable<boolean>;
   ngOnInit() {
-    this.store
-        .pipe(select(selectedStageSelector), take(1))
-        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.TryInitialWorkspace(stage)));
+    this.initialWorkspace();
     this.checkEndedState();
   }
-  restart() {
-    eval('resetBlocklyWorkSpace()');
-    this.store
-        .pipe(select(selectedStageSelector), take(1))
-        .subscribe((stage: StagesState) => this.store.dispatch(new ManipulationActions.TryInitialWorkspace(stage)));
+  initialWorkspace() {
+    this.store.dispatch(new ManipulationActions.TryInitialWorkspace());
+    this.store.pipe(select(initailWorkspaceSelector), take(1))
+        .subscribe((data: {workspaceState: string, customBlocks: BlockBuildState[]}) => {
+          this.blocklyService.executeCode(data.customBlocks.map(block => block.blockDef.content).join(''));
+          this.blocklyService.executeCode(data.customBlocks.map(block => block.blockGen.content).join(''));
+          this.blocklyService.injectWorkspace('blocklyDiv', data.workspaceState);
+          console.log(data);
+        });
   }
   nextStage() {
     const stageLength$ = this.store.pipe(select(stageLengthSelector));
@@ -51,7 +54,7 @@ export class InputComponent implements OnInit, OnDestroy {
           this.store.dispatch(new AppActions.SetEditStageIndex(data.editIndex + 1));
         }
       });
-      this.restart();
+      this.initialWorkspace();
   }
   checkEndedState() {
     const stageLength$ = this.store.pipe(select(stageLengthSelector));

@@ -39,3 +39,24 @@ html, body {
   background-color: #efefef !important;
   border-radius: 10px;
 }
+
+.dive-preview {
+  max-width: 1024px !important;
+  max-height: 768px !important;
+  width: 106.67vh !important;
+  height: 80vh !important;
+  overflow: initial !important;
+}
+
+.text-code-preview {
+  max-width: 1280px !important;
+  max-height: 720px !important;
+  width: 128vh !important;
+  height: 72vh !important;
+  overflow: initial !important;
+}
+
+
+ #preview div[class=mat-list-item-content] {
+  padding: 0px !important;
+}

@@ -16,7 +16,9 @@ import { EditProjectComponent } from './management/edit-project/edit-project.com
 import { ManageProjectComponent } from './management/manage-project/manage-project.component';
 import { SideInfoComponent } from './management/side-info/side-info.component';
 import { HierarchyComponent } from './edit/hierarchy/hierarchy.component';
-import { UtilityService } from './management/manage-project/utility.service';
+import { PreviewModeComponent } from './edit/blockly/preview-mode/preview-mode.component';
+import { CustomModeComponent } from './edit/blockly/custom-mode/custom-mode.component';
+import { PrimitiveModeComponent } from './edit/blockly/primitive-mode/primitive-mode.component';
 
 @NgModule({
   imports: [
@@ -38,10 +40,10 @@ import { UtilityService } from './management/manage-project/utility.service';
     EditProjectComponent,
     ManageProjectComponent,
     SideInfoComponent,
-    HierarchyComponent
-  ],
-  providers: [
-    UtilityService
+    HierarchyComponent,
+    PreviewModeComponent,
+    CustomModeComponent,
+    PrimitiveModeComponent
   ]
 })
 export class AuthoringModule { }

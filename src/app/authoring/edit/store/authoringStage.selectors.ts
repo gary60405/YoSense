@@ -4,16 +4,12 @@ import { DiveDataState, ConditionDataState, StagesState } from '../../../model/a
 import { AppState } from '../../../model/app/app.model';
 import { PassConditionState } from '../../../model/authoring/management.model';
 import { EditState } from '../../../model/authoring/edit.model';
-import { BlocklyDataState } from '../../../model/authoring/blockly.model';
+import { HierarchyState } from '../../../model/authoring/authoring.model';
 
 
 
 export const diveIdStateSelector = createSelector(
   (state: AppState) => state.authoringStage.editState.diveId,
-  (diveId: number) => diveId
-);
-export const diveReadTimeStateSelector = createSelector(
-  (state: AppState) => state.authoringStage.editState.diveReadTime,
   (diveId: number) => diveId
 );
 
@@ -46,7 +42,7 @@ export const selectedStageDateSelector  = createSelector(
 
 export const hierarchyDataSelector = createSelector(
   (state: AppState) => state.authoringStage.editState.hierarchyData,
-  (hierarchyData: {}) => hierarchyData
+  (hierarchyData: HierarchyState[]) => hierarchyData
 );
 
 export const conditionDataSelector = createSelector(

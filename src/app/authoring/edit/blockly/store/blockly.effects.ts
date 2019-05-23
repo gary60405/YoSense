@@ -1,10 +1,13 @@
-import { map, mergeMap} from 'rxjs/operators';
+import { AppState } from './../../../../model/app/app.model';
+import { Store } from '@ngrx/store';
+import { map, mergeMap, withLatestFrom, switchMap} from 'rxjs/operators';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as BlocklyActions from './../store/blockly.actions';
 import * as AuthoringActions from './../../../edit/store/authoringStage.actions';
-import { BlockBuildState } from '../../../../model/authoring/blockly.model';
+import { BlockBuildState, BlocklyDataState } from '../../../../model/authoring/blockly.model';
+import { BlocklyService } from '../blockly.service';
 
 @Injectable()
 export class BlocklyEffects {
@@ -32,9 +35,8 @@ trySubmitBlockDataEffect = this.action$
     ofType(BlocklyActions.TRY_SUBMIT_BLOCK_DATA),
     map((action: BlocklyActions.TrySubmitBlockData) => action.payload),
     mergeMap((data: {isNew: boolean, content: string, blockData: BlockBuildState}) => {
-      console.log(data);
       const genCode = data.content.replace(`Blockly.JavaScript['block_type']`, `Blockly.JavaScript['${data.blockData.blockId}']`);
-      console.log(genCode);
+      // console.log(genCode);
       return [
         {
           type: BlocklyActions.SET_BLOCK_CODE_GENERATOR,
@@ -53,7 +55,7 @@ trySubmitBlockDataEffect = this.action$
         {
           type: BlocklyActions.INITAIL_BUILD_BLOCK_STATE
         },
-        {
+             {
           type: BlocklyActions.SET_BLOCK_RESULT
         },
       ];
@@ -172,6 +174,33 @@ trySetExternalEffect = this.action$
       ];
     }));
 
+  @Effect()
+  tryBuildPreviewWorkspaceEffect = this.action$
+    .pipe(
+      ofType(BlocklyActions.TRY_BUILD_PREVIEW_WORKSPACE),
+      withLatestFrom(this.store),
+      map(([action, state]) => state.authoringStage.editState.blocklyData),
+      mergeMap((blocklyData: BlocklyDataState) => {
+        let xmlText = '';
+        const blocks = {};
+        blocks[blocklyData.customBlocksState.some(block => block.isEnable) ? 'general' : ''] = blocklyData.customBlocksState
+          .filter(block => block.isEnable === true)
+          .map(block => `<block type="${block.blockId}"></block>`);
+        blocklyData.toolBoxState
+              .sort((a, b) => this.blocklyService.categoryOder.get(a.category) > this.blocklyService.categoryOder.get(b.category) ? 1 : -1)
+              .forEach(block => blocks.hasOwnProperty(block.category) ? blocks[block.category].push(block.data) : blocks[block.category] = [block.data]);
+        Object.keys(blocks).forEach((categoryName) => xmlText += this.blocklyService.mergeCategory(categoryName, blocks[categoryName]));
+              return [
+                {
+                  type: BlocklyActions.SET_TOOLBOX_BLOCK_STATE,
+                  payload: xmlText
+                },
+              ];
+            })
+    );
+
 constructor(private action$: Actions,
-            public afStore: AngularFirestore) {}
+            private store: Store<AppState>,
+            public afStore: AngularFirestore,
+            private blocklyService: BlocklyService) {}
 }

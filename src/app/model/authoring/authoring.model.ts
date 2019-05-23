@@ -1,6 +1,5 @@
 import { StagesState } from './management.model';
 import { EditState } from './edit.model';
-import { BlocklyState } from './blockly.model';
 
 
 export interface AuthoringManagementState {

@@ -1,0 +1,92 @@
+<mat-card class="fix-height p-0">
+    <div *ngIf="saveMsg != 'UNSAVED'" class="alert alert-success saveMsg text-center" role="alert">
+        積木排列狀態已儲存！😁🎉
+      </div>
+  <div id="toolBoxPreviewer" class="border border-white" style="height: calc(100vh - 64px - 4.25rem); width: 100%;">
+  </div>
+</mat-card>
+
+<ng-template #preview>
+  <button mat-mini-fab class="bg-danger position-absolute close-button" (click)="closePreview()">
+    <mat-icon>close</mat-icon>
+  </button>
+  <mat-button-toggle-group *ngIf="isDiveLoaded" class="function-group bg-secondary" vertical="true">
+    <mat-button-toggle (click)="resetDive()" class="bg-secondary text-white" matTooltip="重新載入"
+      matTooltipPosition="right" value="reload">
+      <mat-icon>replay</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle (click)="executeCode()" class="bg-secondary text-white" matTooltip="執行程式"
+      matTooltipPosition="right" value="execute">
+      <mat-icon>play_arrow</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+  <div class="mask">
+    <iframe #iframe class="iframe border-0" [ngClass]="{'fix-dive-scale': !isDiveLoaded}"
+      [src]="'http://dive.nutn.edu.tw:8080/Experiment/kaleTestExperiment5.jsp?eid=' + (diveId$ | async) | safe"
+      name="mainExperiment"></iframe>
+  </div>
+  <div *ngIf="!isDiveLoaded" class="position-absolute container-fluid">
+    <div id="loading-background" class="row iframe rounded">
+      <div class="col">
+        <div class="loading d-flex flex-column justify-content-center align-items-center">
+          <div class="lds-blocks">
+            <div style="left:38px;top:38px;animation-delay:0s"></div>
+            <div style="left:80px;top:38px;animation-delay:0.125s"></div>
+            <div style="left:122px;top:38px;animation-delay:0.25s"></div>
+            <div style="left:38px;top:80px;animation-delay:0.875s"></div>
+            <div style="left:122px;top:80px;animation-delay:0.375s"></div>
+            <div style="left:38px;top:122px;animation-delay:0.75s"></div>
+            <div style="left:80px;top:122px;animation-delay:0.625s"></div>
+            <div style="left:122px;top:122px;animation-delay:0.5s"></div>
+          </div>
+          <h4>載入中請稍後....</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #view_code>
+  <button mat-mini-fab class="bg-danger position-absolute close-button" (click)="closeTextCode()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div mat-ripple
+       matTooltip="複製程式碼"
+       matTooltipPosition="after"
+       class="bg-secondary copy-button d-flex align-items-center justify-content-center rounded" (click)="copyAllText()">
+      <mat-icon>file_copy</mat-icon>
+    </div>
+
+  <div matTooltip="調整字體大小"
+       matTooltipPosition="after"
+       class="bg-secondary pb-2 font-size-slider d-flex flex-column align-items-center rounded">
+    <div class="w-100 icon-header text-white text-center pt-2 mb-2">
+      <mat-icon>format_size</mat-icon>
+    </div>
+    <mat-slider vertical="true" color="primary" max=2 min=1 step=0.05 [value]="fontSize$ | async" (change)="changeFontSize($event)"></mat-slider>
+  </div>
+  <div *ngIf="copyMsg!='NO_COPY'" class="alert alert-success copyMsg text-center" role="alert">
+      {{copyMsg === 'PARAGRAPH' ? '該段落已複製！😀🎉' : '程式碼全文已複製！😃🎉'}}
+    </div>
+  <div class="text-code bg-dark rounded">
+    <div class="row">
+      <div class="header d-flex justify-content-center">
+        <h2 class="m-3 font-weight-bold">積木程式內容</h2>
+      </div>
+    </div>
+    <div class="row text-board pb-2 d-flex flex-row-reverse" [ngStyle]="{'font-size': (fontSize$ | async) + 'rem', 'line-height': (fontSize$ | async) * 1.8 + 'rem'}">
+      <div #code_line class="col pl-0 col-text">
+        <pre class="text-white text-line mb-0 px-2"
+          [ngClass]="{'opacity-0': text === 'THIS_LINE_IS_EMPTY'}"
+          [ngStyle]="{'line-height': (fontSize$ | async) * 1.8 + 'rem'}"
+          *ngFor="let text of blockCode"
+          (click)="copyParagraph(text)">{{text}}</pre>
+      </div>
+      <div class="col-num mr-2">
+          <div class="text-center position-relative" *ngFor="let text of blockCode;let i = index"
+              [ngStyle]="{'height': code_line.children[i].clientHeight + 'px'}">{{i + 1}}</div>
+        </div>
+    </div>
+  </div>
+</ng-template>

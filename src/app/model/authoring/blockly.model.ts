@@ -1,4 +1,6 @@
 export interface BlocklyDataState {
+  codeFontSize: number;
+  blockCodeState: string;
   toolBoxState: ToolBoxState[];
   customBlocksState: BlockBuildState[];
 }

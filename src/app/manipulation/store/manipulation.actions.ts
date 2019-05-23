@@ -9,6 +9,7 @@ export const SET_STUDENT_DIVE_LOADED_STATE = 'SET_STUDENT_DIVE_LOADED_STATE';
 export const SET_SNACKBAR_OPEN_STATE = 'SET_SNACKBAR_OPEN_STATE';
 export const SET_SNACKBAR_CONTENT = 'SET_SNACKBAR_CONTENT';
 export const SET_DIVE_STATE = 'SET_DIVE_STATE';
+export const SET_WORKSPACE_STATE = 'SET_WORKSPACE_STATE';
 
 export class InitialManipulationState implements Action {
   readonly type = INITAIL_MANIPULATION_STATE;
@@ -35,19 +36,25 @@ export class SetSnackbarContent implements Action {
 
 export class TryInitialWorkspace implements Action {
   readonly type = TRY_INITIAL_WORKSPACE;
-  constructor(public payload: StagesState) {}
 }
 
 export class SetDiveState implements Action {
   readonly type = SET_DIVE_STATE;
   constructor(public payload: string) {}
 }
+
+export class SetWorkspaceState implements Action {
+  readonly type = SET_WORKSPACE_STATE;
+  constructor(public payload: string) {}
+}
+
 export type ManipulationActions = InitialManipulationState |
                                   TryLoadDive |
                                   SetStudentDiveLoadedState |
                                   SetSnackbarOpenState |
                                   SetSnackbarContent |
                                   TryInitialWorkspace |
-                                  SetDiveState
+                                  SetDiveState |
+                                  SetWorkspaceState
                                   ;
 

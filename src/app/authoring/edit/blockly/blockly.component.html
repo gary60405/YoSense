@@ -1,13 +1,9 @@
 <div class="container-fluid">
   <div [ngSwitch]="blocklyMode$ | async" id="workspace" class="row">
-    <div class="col-3 pr-0  mt-3">
+    <div class="col-3 pr-0 mt-3">
       <mat-card class="fix-height">
         <div class="row mb-2">
-          <mat-button-toggle-group class="ml-auto mr-auto" name="fontStyle">
-            <mat-button-toggle [checked]="(blocklyMode$ | async) === 'PREVIEW_MODE'" (click)="setBlocklyMode('PREVIEW_MODE');custom_panel.close();primitive_panel.close()">檢視模式</mat-button-toggle>
-            <mat-button-toggle [checked]="(blocklyMode$ | async) !== 'PREVIEW_MODE'" (click)="setBlocklyMode('SET_CUSTOM_BLOCK')">編輯模式</mat-button-toggle>
-          </mat-button-toggle-group>
-          <button class="ml-auto mr-3" mat-stroked-button color="primary" routerLink="/authoring/edit/diagnosis">編輯完成</button>
+          <button class="ml-auto mr-auto" mat-stroked-button color="primary" routerLink="/authoring/edit/diagnosis">編輯完成</button>
         </div>
         <mat-accordion>
             <mat-expansion-panel #primitive_panel class="mat-elevation-z0" (click)="setBlocklyMode('PREVIEW_MODE')">
@@ -16,10 +12,19 @@
                     設定預覽選項
                   </mat-panel-title>
                 </mat-expansion-panel-header>
-                <div class="overflow pr-2 blockList-max-height">
+                <div id="preview" class="overflow pr-2 blockList-max-height">
                     <mat-list>
-                        <mat-list-item (click)="1" mat-ripple  class="list-item m-1">
-                          開啟圖控預覽
+                        <mat-list-item (click)="onPreview()" class="m-1 text-white p-0 preview-item">
+                            <button mat-flat-button class="btn-primary alpha w-100">預覽圖控內容</button>
+                        </mat-list-item>
+                        <mat-list-item (click)="onViewTextCode()" class="m-1 text-white p-0 preview-item">
+                            <button mat-flat-button class="btn-primary alpha w-100">檢視程式內容</button>
+                        </mat-list-item>
+                        <mat-list-item (click)="onSaveBlockCodeState()" class="m-1 text-white p-0 preview-item">
+                            <button mat-flat-button class="btn-primary alpha w-100">儲存積木排列</button>
+                        </mat-list-item>
+                        <mat-list-item (click)="onRestoreBlockCodeState()" class="m-1 text-white p-0 preview-item">
+                            <button mat-flat-button class="btn-primary alpha w-100">讀取積木排列</button>
                         </mat-list-item>
                     </mat-list>
                 </div>
@@ -52,213 +57,23 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <h5 *ngIf="(blocklyMode$ | async) === 'SET_PRIMITIVE_BLOCK'" class="font-weight-bold">預覽區：</h5>
-            <div *ngIf="(blocklyMode$ | async) === 'SET_PRIMITIVE_BLOCK'" id="blocklyPreviewer1" class="border border-white"
+            <div #blocklyPreviewer1 *ngIf="(blocklyMode$ | async) === 'SET_PRIMITIVE_BLOCK'" id="blocklyPreviewer1" class="border border-white"
               style="height: calc(100vh - 313px - 7.5rem); width: 100%;"></div>
           </mat-expansion-panel>
         </mat-accordion>
       </mat-card>
     </div>
-    <div *ngSwitchCase="'SET_CUSTOM_BLOCK'" class="col-6 mt-3">
-      <mat-card class="fix-height p-0">
-        <div *ngIf="!isInitialWorkPanel" class="d-flex p-3">
-          <button class="ml-auto btn btn-danger btn-sm btn-block" (click)="stepper.reset();revertEdit()">{{!isNewBlock ? '取消編輯' : '清空資料'}}</button>
-        </div>
-          <mat-vertical-stepper #stepper [linear]="isNewBlock" >
-            <mat-step>
-              <ng-template matStepLabel>步驟一：選擇積木造型</ng-template>
-              <div class="row">
-                <mat-form-field class="w-25 mx-2">
-                  <input matInput (change)="setBlockName($event)" [value]="(blockName$ | async)" placeholder="請輸入積木名稱">
-                </mat-form-field>
-              </div>
-              <div class="row">
-                <div class="font-weight-bold">連接類型：</div>
-              </div>
-              <div class="row">
-                <mat-radio-group (change)="setConnectionType($event)" [value]="connectionType$ | async" class="mt-2 ml-3">
-                  <mat-radio-button color="primary" class="mr-3" value="LEFT_OUTPUT">往左輸出</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="UP_CONN">向上連接</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="DOWN_CONN">向下連接</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="UP_DOWN_CONN">上下連接</mat-radio-button>
-                </mat-radio-group>
-              </div>
-              <div class="row">
-                <div class="font-weight-bold">接孔類型：</div>
-              </div>
-              <div class="row">
-                <mat-radio-group (change)="setPortalType($event)" [value]="portalType$ | async" class="mt-2 ml-3">
-                  <mat-radio-button color="primary" class="mr-3" value="NONE">無接孔</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="EMBEDE">內嵌式</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="EXTERNAL">外接式</mat-radio-button>
-                </mat-radio-group>
-              </div>
-              <div *ngIf="(portalType$ | async) === 'EXTERNAL'" class="row">
-                <div class="font-weight-bold">外接樣式：</div>
-              </div>
-              <div *ngIf="(portalType$ | async) === 'EXTERNAL'" class="row">
-                <mat-radio-group (change)="setExternalType($event)" [value]="externalType$ | async" class="mt-2 ml-3">
-                  <mat-radio-button color="primary" class="mr-3" value="TYPE_SINGLE">單孔式</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="TYPE_STATEMENT">陳述式</mat-radio-button>
-                </mat-radio-group>
-              </div>
-              <div *ngIf="(portalType$ | async) === 'EMBEDE'" class="row">
-                <div class="font-weight-bold">內嵌孔數：</div>
-              </div>
-              <div *ngIf="(portalType$ | async) === 'EMBEDE'" class="row">
-                <mat-radio-group (change)="setEmbeddingNumber($event)" [value]="embeddingNumber$ | async" class="mt-2 ml-3">
-                  <mat-radio-button color="primary" class="mr-3" value="NUM_1">1</mat-radio-button>
-                  <mat-radio-button color="primary" class="mr-3" value="NUM_2">2</mat-radio-button>
-                </mat-radio-group>
-              </div>
-              <button class="font-weight-bold mt-2" color="primary" mat-raised-button matStepperNext>下一步</button>
-            </mat-step>
-            <mat-step>
-              <ng-template matStepLabel>步驟二：設定積木語意</ng-template>
-              <div class="d-flex flex-row w-100">
-                <mat-form-field class="w-25 mx-2">
-                  <input #textField1 matInput (input)="editBlockResultText(0, textField1.value)" [value]="(blockTempText$ | async)[0]"
-                    placeholder="文字欄位一">
-                </mat-form-field>
-                <mat-form-field *ngIf="(embeddingNumber$ | async) !== ''" class="w-25 mx-2">
-                  <input #textField2 matInput (input)="editBlockResultText(1, textField2.value)" [value]="(blockTempText$ | async)[1]"
-                    placeholder="文字欄位二">
-                </mat-form-field>
-                <mat-form-field *ngIf="(embeddingNumber$ | async) === 'NUM_2'" class="w-25 mx-2">
-                  <input #textField3 matInput (input)="editBlockResultText(2, textField3.value)" [value]="(blockTempText$ | async)[2]"
-                    placeholder="文字欄位三">
-                </mat-form-field>
-              </div>
-              <button class="font-weight-bold mt-2 mr-2 bg-primary text-white" mat-raised-button matStepperPrevious>上一步</button>
-              <button class="font-weight-bold mt-2" color="primary" mat-raised-button matStepperNext>下一步</button>
-            </mat-step>
-            <mat-step>
-              <ng-template matStepLabel>步驟三：設定積木類型與功能</ng-template>
-              <div class="row">
-                <mat-radio-group [value]="blockType$ | async" class="mt-3" (change)="setBlockType($event)">
-                  <mat-radio-button color="primary" class="my-2 mr-3" checked=checked value="NONE">語意型</mat-radio-button>
-                  <mat-radio-button color="primary" class="my-2 mr-3" value="BLOCKLY">Blockly型</mat-radio-button>
-                  <mat-radio-button color="primary" class="my-2 mr-3" value="DIVE">DIVE型</mat-radio-button>
-                  <mat-radio-button color="primary" class="my-2 mr-3" value="REMIX">混合型</mat-radio-button>
-                </mat-radio-group>
-              </div>
-              <mat-radio-group [value]="blockTypeContent$ | async" *ngIf="(blockType$ | async) !== 'NONE'" class="mt-3"
-                (change)="setBlockTypeContent($event)">
-                <div [ngSwitch]="blockType$ | async" class="blockType-frame mb-2">
-                  <div class="container-fluid justfy-position">
-                    <div *ngSwitchCase="'BLOCKLY'" class="row my-2">
-                      <div *ngFor="let content of blockTypeContents.get('BLOCKLY')" class="col">
-                        <mat-radio-button color="primary" [value]="content.blockTypeContent">{{content.viewName}}</mat-radio-button>
-                      </div>
-                    </div>
-                    <div *ngSwitchCase="'DIVE'" class="row my-2">
-                      <div *ngFor="let content of blockTypeContents.get('DIVE')" class="col">
-                        <mat-radio-button color="primary" [value]="content.blockTypeContent">{{content.viewName}}</mat-radio-button>
-                      </div>
-                    </div>
-                    <div *ngSwitchCase="'REMIX'" class="row my-2">
-                      <div *ngFor="let content of blockTypeContents.get('REMIX')" class="col">
-                        <mat-radio-button color="primary" [value]="content.blockTypeContent">{{content.viewName}}</mat-radio-button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div *ngSwitchDefault>
-                </div>
-              </mat-radio-group>
-              <div *ngIf="(blockTypeContent$ | async) === '' || (blockType$ | async) !== 'NONE'">
-                <div class="row">
-                  <mat-form-field *ngIf="isDiveObjectName.includes(blockTypeContent$ | async)">
-                    <mat-select placeholder="選擇DIVE物件名稱" [value]="diveStateName$ | async" (valueChange)="setDiveStateName($event)">
-                      <mat-option *ngFor="let name of (diveStateNames$ | async)" [value]="name">
-                        {{name}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="row">
-                  <mat-form-field *ngIf="isDiveObjectAction.includes((blockTypeContent$ | async))">
-                    <mat-select placeholder="選擇物件動作" [value]="diveStateAction$ | async" (valueChange)="setDiveStateAction($event)">
-                      <mat-option *ngFor="let name of getStateAction(diveStateName$ | async)" [value]="name">
-                        {{name}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="row my-2">
-                  <mat-slide-toggle #isAsync [checked]="isAsync$ | async" *ngIf="isDiveLocked.includes((blockTypeContent$ | async))"
-                    (toggleChange)="setDiveStateAsyncState(isAsync.checked)" color="primary">傳入DIVE後是否鎖定?</mat-slide-toggle>
-                </div>
-              </div>
-              <div>
-                <button class="font-weight-bold mt-2 mr-2 bg-primary text-white" mat-raised-button matStepperPrevious>上一步</button>
-                <button class="font-weight-bold mt-2 mr-5" color="primary" mat-raised-button matStepperNext>下一步</button>
-              </div>
-            </mat-step>
-            <mat-step>
-              <ng-template matStepLabel>步驟四：完成</ng-template>
-              <div>
-                <button class="font-weight-bold mt-2 mr-2 bg-primary text-white" mat-raised-button matStepperPrevious>上一步</button>
-                <button color="primary" mat-raised-button (click)="submitBlockData();stepper.reset()">{{(isNewBlock$ |
-                  async) ? '新增積木' : '更新積木'}}</button>
-              </div>
-            </mat-step>
-          </mat-vertical-stepper>
-      </mat-card>
+    <div *ngSwitchCase="'SET_CUSTOM_BLOCK'" class="col-9 mt-3">
+      <app-custom-mode #custom_mode></app-custom-mode>
     </div>
-    <div *ngSwitchCase="'SET_CUSTOM_BLOCK'" class="col-3 pl-0 mt-3">
-      <div class="bg-white shadow rounded p-3 ">
-        <h3>Blcokly積木預覽區：</h3>
-        <div id="blocklyPreviewer2" class="border border-white" style="height: calc(100vh - 154px - 4.25rem); width: 100%;"></div>
-      </div>
-    </div>
-
     <div *ngSwitchCase="'PREVIEW_MODE'" class="col-9 mt-3">
-      <mat-card class="fix-height p-0">
-        <div id="toolBoxPreviewer" class="border border-white" style="height: calc(100vh - 64px - 4.25rem); width: 100%;"></div>
-      </mat-card>
+      <app-preview-mode #preview_mode></app-preview-mode>
     </div>
     <div *ngSwitchCase="'SET_PRIMITIVE_BLOCK'" class="col-9 mt-3">
-      <div *ngIf="!isSpinerDisplay" class="row vertical-center">
-        <div class="col-12">
-          <div class="d-flex flex-column justify-content-center align-items-center">
-            <div class="lds-facebook">
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-            <h1 class="font-weight-bold mt-5">資料讀取中...</h1>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="isSpinerDisplay" class="row">
-        <div [ngClass]="{'mt-3':i>3}" *ngFor="let item of categoryName;let i = index" class="col-3">
-          <mat-card class="category-list">
-            <mat-card-header class="justify-content-center">
-              <mat-card-title class="font-weight-bold">{{item.view}}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div class="frame">
-                <mat-list role="list">
-                  <mat-list-item (click)="previewPrimitiveBlock(block.data)" class="block-item" matRipple *ngFor="let block of toolBox[item.index];let j=index"
-                    role="listitem">{{block.name}} <mat-slide-toggle [checked]="block.selected" (toggleChange)="togglePrimitiveBlock(item.index, j)"
-                      color="primary" class="ml-auto"></mat-slide-toggle>
-                  </mat-list-item>
-                </mat-list>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </div>
+      <app-primitive-mode (preview)="previewPrimitiveBlock($event)"></app-primitive-mode>
     </div>
   </div>
 </div>
-
-<ng-template #hint>
-  <div class="alert alert-success m-0 rounded-0" role="alert">
-    <i class="fas fa-exclamation-circle fa-lg mr-2" ></i>
-    <span class="font-weight-bold">系統訊息：</span> 積木{{isNewBlock ? '新增' : '更新'}}成功!🎊🎊🎊
-  </div>
-</ng-template>
 
 <ng-template #blocklyDialog>
     <h2 mat-dialog-title class="font-weight-bold"><i class="fas fa-exclamation-circle fa-lg mr-2" ></i>注意</h2>

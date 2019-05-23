@@ -28,7 +28,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {ScrollDispatchModule} from '@angular/cdk/scrolling';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatSliderModule} from '@angular/material/slider';
 
 @NgModule({
   imports: [
@@ -59,7 +60,8 @@ import {ScrollDispatchModule} from '@angular/cdk/scrolling';
     MatBottomSheetModule,
     MatCheckboxModule,
     CommonModule,
-    ScrollDispatchModule
+    ScrollingModule,
+    MatSliderModule
   ],
   exports: [
     MatToolbarModule,
@@ -89,7 +91,8 @@ import {ScrollDispatchModule} from '@angular/cdk/scrolling';
     MatBottomSheetModule,
     MatMenuModule,
     MatCheckboxModule,
-    ScrollDispatchModule
+    ScrollingModule,
+    MatSliderModule
   ],
 
 })

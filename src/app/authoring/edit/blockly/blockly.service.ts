@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HierarchyDataState, HierarchyState } from '../../../model/authoring/authoring.model';
+import { blocklyGroup, diveGroup, remixGroup, connectionType, portalType, embeddingNumber, externalType } from './js/rule';
+declare var Blockly: any;
+declare var js_beautify: any;
 
 @Injectable({
   providedIn: 'root',
@@ -8,17 +11,88 @@ import { HierarchyDataState, HierarchyState } from '../../../model/authoring/aut
 export class BlocklyService {
 
   constructor() { }
+  public workspace: any;
+  public categoryOder = new Map()
+    .set('general', 1)
+    .set('logic', 2)
+    .set('controls', 3)
+    .set('math', 4)
+    .set('text', 5)
+    .set('lists', 6)
+    .set('colour', 7)
+    .set('function', 8)
+    .set('variable', 9);
 
-  injectStandardWorkspace(id: string, xmlText: string, workspaceName = 'workspace') {
-    eval(`${workspaceName} = Blockly.inject('${id}',{toolbox:'<xml>${xmlText}</xml>',trashcan:true,grid:{spacing:30,length:3,colour:'#39261f',snap:true},zoom:{controls:true,wheel:true,startScale:1.0,maxScale:1.2,minScale:0.8,scaleSpeed:1.2}})`);
+  public executeCodePreset = 'const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));const diveLinker = new DiveLinker("mainExperiment");(async()=>{@@})();';
+  private standardWorkspaceConfig = {
+    toolbox: '',
+    trashcan: true,
+    grid: {
+      spacing: 30,
+      length: 3,
+      colour: '#39261f',
+      snap: true
+    },
+    zoom: {
+      controls: true,
+      wheel: true,
+      startScale: 1.0,
+      maxScale: 2,
+      minScale: 0.8,
+      scaleSpeed: 1.2
+    }
+  };
+
+  private blocklyPreviewer1Config = {
+    zoom: {
+      wheel: true,
+      startScale: 1,
+      minScale: 1
+    }
+  };
+
+  private blocklyPreviewer2Config = {
+    zoom: {
+      wheel: true,
+      startScale: 1.5,
+      minScale: 1
+    }
+  };
+
+  injectWorkspace(workspaceId: string, xmlText = '') {
+    this.standardWorkspaceConfig.toolbox = `<xml>${xmlText}</xml>`;
+    const configuration = workspaceId === 'blocklyPreviewer1' ? this.blocklyPreviewer1Config
+     : workspaceId === 'blocklyPreviewer2' ? this.blocklyPreviewer2Config
+     : workspaceId === 'blocklyDiv' || workspaceId === 'toolBoxPreviewer' ? this.standardWorkspaceConfig : '';
+    this.workspace = Blockly.inject(workspaceId, configuration);
   }
 
-  injectSimpleWorkspace(id: string, startScale = 1.5, minScale = 1, workspaceName = 'workspace') {
-    eval(`${workspaceName} = Blockly.inject('${id}',{zoom: {wheel: true,startScale:${startScale},minScale:${minScale}}})`);
+  clearWorkspace() {
+    this.workspace.clear();
   }
 
-  appendBlocksToWorkspace(x: number, y: number, workspaceName = 'workspace') {
-    eval(`Blockly.Xml.appendDomToWorkspace(Blockly.Xml.textToDom('<xml><block id="a" type="block_type" x="${x}" y="${y}"></block></xml>'), ${workspaceName});`);
+  appendBlockToWorkspace(type: string, x: number, y: number) {
+    Blockly.Xml.appendDomToWorkspace(Blockly.Xml.textToDom(`<xml><block id="a" type="${type}" x="${x}" y="${y}"></block></xml>`), this.workspace);
+  }
+
+  appendBlocksToWorkspace(xml: string) {
+    Blockly.Xml.appendDomToWorkspace(Blockly.Xml.textToDom(xml), this.workspace);
+  }
+
+  restoreBlockCodeToWorkspace(xml) {
+    Blockly.Xml.appendDomToWorkspace(Blockly.Xml.textToDom(xml), this.workspace);
+  }
+
+  executeCode(code: string) {
+    eval(code);
+  }
+
+  getWorkspaceCode() {
+    return js_beautify(Blockly.JavaScript.workspaceToCode(this.workspace));
+  }
+
+  getBlockCodeState() {
+    return Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(this.workspace));
   }
 
   getDiveState(stateArray: HierarchyState[]) {
@@ -34,8 +108,27 @@ export class BlocklyService {
     return `const diveState = ${JSON.stringify(diveState)};`;
   }
 
-  clearWorkspace(workspace = 'workspace') {
-    eval(`${workspace}.clear();`);
+  blockTypeClassify(content: {viewName: string, blockTypeContent: string}[]) {
+    const finalMap = new Map();
+    const block = content.filter(data => blocklyGroup.includes(data['blockTypeContent']));
+    const dive = content.filter(data => diveGroup.includes(data['blockTypeContent']));
+    const remix = content.filter(data => remixGroup.includes(data['blockTypeContent']));
+    finalMap.set('BLOCKLY', block).set('DIVE', dive).set('REMIX', remix);
+    return finalMap;
+  }
+
+  blockTypeContentFilter(blockDef: any, content: {viewName: string, blockTypeContent: string}[]) {
+    content = blockDef['connectionType'] === 'LEFT_OUTPUT' ? content.filter(data => connectionType['LEFT_OUTPUT'].includes(data['blockTypeContent']))
+    : content.filter(data => connectionType['OTHER'].includes(data['blockTypeContent']));
+    // console.log(content);
+    content = blockDef['portalType'] === 'NONE' ? content.filter(data => portalType['NONE'].includes(data['blockTypeContent']))
+    : blockDef['embeddingNumber'] === 'NUM_1' ? content.filter(data => embeddingNumber['NUM_1'].includes(data['blockTypeContent']))
+    : blockDef['embeddingNumber'] === 'NUM_2' ? content.filter(data => embeddingNumber['NUM_2'].includes(data['blockTypeContent']))
+    : blockDef['externalType'] === 'TYPE_SINGLE' ? content.filter(data => externalType['TYPE_SINGLE'].includes(data['blockTypeContent']))
+    : blockDef['externalType'] === 'TYPE_STATEMENT' ? content.filter(data => externalType['TYPE_STATEMENT'].includes(data['blockTypeContent']))
+    : [];
+    // console.log(content);
+    return this.blockTypeClassify(content);
   }
 
   mergeCategory(categoryName, blocks) {

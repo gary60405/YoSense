@@ -21,12 +21,25 @@ export const ADD_PASS_CONDITION_DATA = 'ADD_PASS_CONDITION_DATA';
 export const SUBMIT_ALL_DATA = 'SUBMIT_ALL_DATA';
 export const INITAIL_AUTHORING_STAGE_STATE = 'INITAIL_AUTHORING_STAGE_STATE';
 
+export const SET_CODE_FONT_SIZE = 'SET_CODE_FONT_SIZE';
+export const SET_BLOCK_CODE_STATE = 'SET_BLOCK_CODE_STATE';
+
 export const ADD_CATEGORY_BLOCK = 'ADD_CATEGORY_BLOCK';
 export const ADD_CUSTOM_BLOCK = 'ADD_CUSTOM_BLOCK';
 export const DELETE_CUSTOM_BLOCK = 'DELETE_CUSTOM_BLOCK';
 export const DELETE_CATEGORY_BLOCK = 'DELETE_CATEGORY_BLOCK';
 export const UPDATE_CUSTOM_BLOCK = 'UPDATE_CUSTOM_BLOCK';
 export const SET_BLOCK_ENABLE_STATE = 'SET_BLOCK_ENABLE_STATE';
+
+
+export class SetCodeFontSize implements Action {
+  readonly type = SET_CODE_FONT_SIZE;
+  constructor(public payload: number) {}
+}
+export class SetBlockCodeState implements Action {
+  readonly type = SET_BLOCK_CODE_STATE;
+  constructor(public payload: string) {}
+}
 
 export class TryAddDiveData implements Action {
   readonly type = TRY_ADD_DIVE_DATA;
@@ -128,6 +141,8 @@ export class SetBlockEnableState implements Action {
 
 export type AuthoringStagesActions = TryLoadSelectedStage |
                                      LoadSelectedStage |
+                                     SetCodeFontSize |
+                                     SetBlockCodeState |
                                      SetDiveLoadedState |
                                      SetCheckedState |
                                      SetDiveIdState |
