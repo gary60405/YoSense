@@ -18,11 +18,9 @@ export const projectSideInfoStateSelector = (index: number) => createSelector(
   (projectDataState: ProjectState[]) => Object.assign({}, projectDataState[index])
 );
 
+// TODO:stageDataStateSelector的問題
 export const stageDataStateSelector = createSelector(
-  (state: AppState) => {
-    const editProjectIndex = state.gloabalData.editProjectIndex;
-    return state.gloabalData.projectData[editProjectIndex]['stages'];
-  },
+  (state: AppState) => state.gloabalData.projectData[state.gloabalData.editProjectIndex]['stages'],
   (stageDataState: StagesState[]) => stageDataState
 );
 export const stageDataSideInfoStateSelector =  (index: number) => createSelector(

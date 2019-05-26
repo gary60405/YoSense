@@ -49,6 +49,7 @@ export interface StagesState {
   lastModify: Date;
   name: string;
   order: number;
+  coverImg: string;
   stageData: StageDataState;
 }
 export interface StagesSideInfoState {
@@ -57,6 +58,7 @@ export interface StagesSideInfoState {
   description: string;
   lastModify: Date;
   name: string;
+  coverImg: string;
   order: number;
 }
 
@@ -67,6 +69,7 @@ export interface ProjectState {
   lastModify: Date;
   name: string;
   uid: string;
+  coverImg: string;
   stages: StagesState[];
 }
 export interface ProjectSideInfoState {
@@ -75,6 +78,7 @@ export interface ProjectSideInfoState {
   description: string;
   lastModify: Date;
   name: string;
+  coverImg: string;
   uid: string;
 }
 

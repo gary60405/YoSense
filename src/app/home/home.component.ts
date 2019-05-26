@@ -18,6 +18,7 @@ import { take } from 'rxjs/operators';
 export class HomeComponent implements OnInit {
   @ViewChild('signUpDialog') signUpDialog;
   @ViewChild('signInDialog') signInDialog;
+  @ViewChild('img') img;
   constructor(private dialog: MatDialog,
               private router: Router,
               private store: Store<AppState>) {
@@ -27,7 +28,7 @@ export class HomeComponent implements OnInit {
   signUpForm: FormGroup;
   stateText$: Observable<string>;
   progressbarState$: Observable<string>;
-
+  text = '';
   ngOnInit() {
     this.signUpForm = new FormGroup({
       email: new FormControl(),
@@ -71,4 +72,5 @@ export class HomeComponent implements OnInit {
   onSignUp() {
     this.store.dispatch(new AuthActions.TrySignup(this.signUpForm.value));
   }
+
 }

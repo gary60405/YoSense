@@ -13,6 +13,8 @@ export const SET_PROJECTS_LOADED_STATE = 'SET_PROJECTS_LOADED_STATE';
 export const SET_STAGE_LOADED_STATE = 'SET_STAGE_LOADED_STATE';
 export const SET_EDIT_PROJECT_INDEX = 'SET_EDIT_PROJECT_INDEX';
 export const SET_EDIT_STAGE_INDEX = 'SET_EDIT_STAGE_INDEX';
+export const SET_PROJECT_COVER_IMAGE = 'SET_PROJECT_COVER_IMAGE';
+export const SET_STAGE_COVER_IMAGE = 'SET_STAGE_COVER_IMAGE';
 export const SET_PROJECT_SIDE_INFO = 'SET_PROJECT_SIDE_INFO';
 export const SET_STAGE_SIDE_INFO = 'SET_STAGE_SIDE_INFO';
 export const INITIAL_STAGE_INFO = 'INITIAL_STAGE_INFO';
@@ -66,6 +68,14 @@ export class SetProjectsLoadedState implements Action {
   constructor(public payload: boolean) {}
 }
 
+export class SetProjectCoverImage implements Action {
+  readonly type = SET_PROJECT_COVER_IMAGE;
+  constructor(public payload: string) {}
+}
+export class SetStageCoverImage implements Action {
+  readonly type = SET_STAGE_COVER_IMAGE;
+  constructor(public payload: string) {}
+}
 export class SetStageLoadedState implements Action {
   readonly type = SET_STAGE_LOADED_STATE;
   constructor(public payload: boolean) {}
@@ -192,6 +202,8 @@ export type AppActions = TryLoadProjectsData |
                          SetStageLoadedState |
                          SetEditProjectIndex |
                          SetEditStageIndex |
+                         SetProjectCoverImage |
+                         SetStageCoverImage |
                          SetProjectSideInfo |
                          SetStageSideInfo |
                          InitailProjectInfo |

@@ -29,13 +29,14 @@ export class AppEffects {
                   addProjectData.projectData.uid = uid;
                   addProjectData.projectData.createDate = new Date();
                   addProjectData.projectData.lastModify = new Date();
+                  addProjectData.projectData.coverImg = 'https://imgur.com/yUti2d2.png';
                   addProjectData.projectData.author = addProjectData.email;
                   addProjectData.project.push(addProjectData.projectData.uid);
                   this.afStore.doc(`user/${addProjectData.email}`).update({ project: addProjectData.project });
                   this.afStore.doc(`project/${addProjectData.projectData.uid}`).set(addProjectData.projectData).then(() => resolve(addProjectData));
-                } else {
-                  submit(this.genUid());
+                  return;
                 }
+                submit(this.genUid());
               })
               .catch(err => console.log(err));
           };
@@ -72,6 +73,7 @@ export class AppEffects {
                   addStageData.stageData.order = addStageData.stagesLength;
                   addStageData.stageData.createDate = new Date();
                   addStageData.stageData.lastModify = new Date();
+                  addStageData.stageData.coverImg = 'https://imgur.com/yUti2d2.png';
                   addStageData.stageData.stageData = {
                     blocklyData: {
                       codeFontSize: 1.5,

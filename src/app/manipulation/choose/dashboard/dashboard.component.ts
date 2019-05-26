@@ -2,11 +2,10 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit, ViewChild  } from '@angular/core';
 
 import * as AppActions from './../../../store/app.actions';
-import * as ManipulationActions from './../../store/manipulation.actions';
 import { AppState } from '../../../model/app/app.model';
 import { UserDataState } from './../../../model/auth/auth.model';
 import { ProjectState, ProjectSideInfoState } from '../../../model/authoring/management.model';

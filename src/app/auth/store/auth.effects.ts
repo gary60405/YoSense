@@ -1,6 +1,6 @@
 import { UserDataState } from './../../model/auth/auth.model';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Injectable } from '@angular/core';
 import { map, switchMap, mergeMap } from 'rxjs/operators';
 import { Actions, Effect, ofType } from '@ngrx/effects';

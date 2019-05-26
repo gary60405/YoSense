@@ -35,6 +35,7 @@ const initialState: GlobalState = {
     createDate: new Date(0),
     description: '',
     lastModify: new Date(0),
+    coverImg: 'https://imgur.com/yUti2d2.png',
     name: '',
     uid: ''
   },
@@ -43,6 +44,7 @@ const initialState: GlobalState = {
     createDate: new Date(0),
     description: '',
     lastModify: new Date(0),
+    coverImg: 'https://imgur.com/yUti2d2.png',
     name: '',
     order: -1
   }
@@ -78,6 +80,26 @@ export function globalDataRuducer(state = initialState, action) {
         ...state,
         isProjectLoaded: action.payload,
       };
+    case AppActions.SET_PROJECT_COVER_IMAGE:
+        state.projectData[state.editProjectIndex].coverImg = action.payload;
+        return {
+          ...state,
+          projectData: [...state.projectData],
+          projectSideInfo: {
+            ...state.projectSideInfo,
+            coverImg: action.payload
+          }
+        };
+    case AppActions.SET_STAGE_COVER_IMAGE:
+        state.projectData[state.editProjectIndex].stages[state.editStageIndex].coverImg = action.payload;
+        return {
+          ...state,
+          projectData: [...state.projectData],
+          stageSideInfo: {
+            ...state.stageSideInfo,
+            coverImg: action.payload
+          }
+        };
     case AppActions.SET_STAGE_LOADED_STATE:
       return {
         ...state,

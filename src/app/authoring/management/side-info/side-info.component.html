@@ -4,69 +4,58 @@
   </mat-card-title>
 </mat-card-header>
 <mat-card-content>
-  <div class="container-fluid">
-    <div class="row justify-content-center">
-      <button type="button"
-              routerLink="/authoring/management/editProject"
-              class="btn btn-primary btn-sm"
-              *ngIf="(editMode$ | async) === 'PROJECT_MODE';else elseBtn">編輯專案</button>
-      <ng-template #elseBtn>
-          <button type="button"
-          (click)="onEditStage()"
-          routerLink="/authoring/edit"
-          class="btn btn-primary btn-sm">編輯關卡</button>
-      </ng-template>
-    </div>
-    <div class="row">
+  <div class="row justify-content-center">
+    <button type="button"
+            routerLink="/authoring/management/editProject"
+            class="btn btn-primary btn-sm"
+            *ngIf="(editMode$ | async) === 'PROJECT_MODE';else elseBtn">編輯專案</button>
+    <ng-template #elseBtn>
+        <button type="button"
+        (click)="onEditStage()"
+        routerLink="/authoring/edit"
+        class="btn btn-primary btn-sm">編輯關卡</button>
+    </ng-template>
+  </div>
+  <div class="row">
       <div class="col p-0">
-          <div class="cover my-3" >
-              <div class="alt-text">暫無圖片</div>
-            </div>
+        <input style="display: none" [type]="(projectInfo$ | async ).uid !== '' || (stageInfo$ | async ).uid !== '' ? 'file' : 'hidden'" (change)="uploadFile($event)" #upload>
+        <div [ngClass]="(projectInfo$ | async ).uid !== '' || (stageInfo$ | async ).uid !== '' ? 'cover' : 'img-block'"
+             [ngStyle]="{'background-image': 'url(\'' + ((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).coverImg : (stageInfo$ | async).coverImg) + '\')'}"
+             (click)="upload.click()"
+             class="my-3">
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col p-0">
-        <h5>{{(editMode$ | async) === 'PROJECT_MODE' ? '專案' : '關卡'}}名稱：</h5>
-        <p class="pl-4 py-1">{{(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).name : (stageInfo$ | async).name}}</p>
-      </div>
-    </div>
-    <div *ngIf="(editMode$ | async) === 'PROJECT_MODE'" class="row">
-        <div class="col p-0">
-            <h5>專案代碼：</h5>
-            <p class="pl-4 py-1">{{(projectInfo$ | async).uid}}</p>
-          </div>
-    </div>
-    <div *ngIf="(editMode$ | async) === 'PROJECT_MODE'" class="row">
-      <div class="col p-0">
-        <h5>專案作者：</h5>
-        <p class="pl-4 py-1">{{(projectInfo$ | async).author}}</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col p-0">
-        <h5>{{(editMode$ | async) === 'PROJECT_MODE' ? '專案' : '關卡'}}描述：</h5>
-        <p class="pl-4 py-1">{{(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).description : (stageInfo$ | async).description}}</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col p-0">
-        <h5>最後修改：</h5>
-        <p class="pl-4 py-1"
-           *ngIf="(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify.getFullYear() !== 1970 : (stageInfo$ | async).lastModify.getFullYear() !== 1970;else emptyDate">
-           {{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify : (stageInfo$ | async).lastModify) | date:'y年M月d日 HH:mm:ss'}}</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col p-0">
-        <h5>建立日期：</h5>
-        <p class="pl-4 py-1"
-           *ngIf="(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate.getFullYear() !== 1970 : (stageInfo$ | async).createDate.getFullYear() !== 1970;else emptyDate">
-           {{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate : (stageInfo$ | async).createDate) | date:'y年M月d日 HH:mm:ss'}}</p>
-      </div>
-    </div>
+  <div class="item d-flex align-items-center">
+    <div class="font-weight-bold">{{(editMode$ | async) === 'PROJECT_MODE' ? '專案' : '關卡'}}名稱：</div>
+    <div>{{(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).name : (stageInfo$ | async).name}}</div>
+  </div>
+  <div class="item d-flex align-items-center">
+    <div class="font-weight-bold">{{(editMode$ | async) === 'PROJECT_MODE' ? '專案' : '關卡'}}描述：</div>
+      <div>{{(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).description : (stageInfo$ | async).description}}</div>
+  </div>
+  <div *ngIf="(editMode$ | async) === 'PROJECT_MODE'" class="item d-flex align-items-center">
+    <div class="font-weight-bold">專案代碼：</div>
+    <div>{{(projectInfo$ | async).uid}}</div>
+  </div>
+  <div *ngIf="(editMode$ | async) === 'PROJECT_MODE'" class="item d-flex align-items-center">
+    <div class="font-weight-bold">專案作者：</div>
+      <div>{{(projectInfo$ | async).author}}</div>
+  </div>
+  <div class="item d-flex align-items-center">
+    <div class="font-weight-bold">最後修改：</div>
+      <div
+          *ngIf="(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify.getFullYear() !== 1970 : (stageInfo$ | async).lastModify.getFullYear() !== 1970;else emptyDate">
+          {{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).lastModify : (stageInfo$ | async).lastModify) | date:'y年M月d日 HH:mm:ss'}}</div>
+  </div>
+  <div class="item d-flex align-items-center">
+    <div class="font-weight-bold">建立日期：</div>
+      <div
+          *ngIf="(editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate.getFullYear() !== 1970 : (stageInfo$ | async).createDate.getFullYear() !== 1970;else emptyDate">
+          {{((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).createDate : (stageInfo$ | async).createDate) | date:'y年M月d日 HH:mm:ss'}}</div>
   </div>
 </mat-card-content>
 
 <ng-template #emptyDate>
-  <p class="pl-4 py-1"></p>
+  <div></div>
 </ng-template>

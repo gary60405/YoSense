@@ -3,7 +3,9 @@ import { EditState } from './edit.model';
 
 
 export interface AuthoringManagementState {
-  nothing: string;
+  toastDisplayState: boolean;
+  toastContent: string;
+  uploadProgress: number;
 }
 
 export interface AuthoringStageState {

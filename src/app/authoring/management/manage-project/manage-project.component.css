@@ -24,6 +24,9 @@
 }
 
 .cover {
+  background-size: 100% auto;
+  background-position: center center;
+  background-repeat: no-repeat;
   background-color: #eee;
   width: 100%;
   height: calc(230px - 49px);
@@ -34,14 +37,6 @@
 .cover:active {
   background-color: #ddd;
   transition: 0.2s;
-}
-
-.alt-text {
-  font-size: 1.5rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .fix-close-position {

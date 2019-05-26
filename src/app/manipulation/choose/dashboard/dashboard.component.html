@@ -25,8 +25,7 @@
             </button>
           </div>
           <div class="card-body p-0">
-            <div class="cover" (click)="onShowSideInfo(i)">
-              <div class="alt-text">暫無圖片</div>
+            <div [ngStyle]="{'background-image': 'url(\'' + project.coverImg + '\')'}" class="cover" (click)="onShowSideInfo(i)">
             </div>
           </div>
         </div>

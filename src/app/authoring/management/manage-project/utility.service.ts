@@ -10,12 +10,26 @@ export class UtilityService {
 
   constructor(public afStore: AngularFirestore) { }
 
-  updateUserFeild(email: string, payload: UserDataState) {
+  updateUserFeild(email: string, payload: any) {
     this.afStore.collection('user').doc(email).update({...payload});
   }
+  updateAllUserFeild(payload: any) {
+    this.getAllUserEmail().then((emails: string[]) => emails.forEach(email => this.afStore.collection('user').doc(email).update({...payload})));
+  }
 
-  updateProjectFeild(uid: string, payload: ProjectState) {
+  updateProjectFeild(uid: string, payload: any) {
     this.afStore.collection('project').doc(uid).update({...payload});
+  }
+
+  updateAllProjectFeild(payload: any) {
+    this.getAllProjectUid().then((uids: string[]) => uids.forEach(uid => this.afStore.collection('project').doc(uid).update({...payload})));
+  }
+
+  getAllProjectUid() {
+    return new Promise(resolve => this.afStore.collection('project').valueChanges().subscribe(projects => resolve(projects.map(project => project['uid']))));
+  }
+  getAllUserEmail() {
+    return new Promise(resolve => this.afStore.collection('user').valueChanges().subscribe(users => resolve(users.map(project => project['email']))));
   }
 
   deleteProject(exceptionUid: string[], exceptionAuthor: string[]) {

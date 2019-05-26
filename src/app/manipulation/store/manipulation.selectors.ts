@@ -3,6 +3,7 @@ import { createSelector } from '@ngrx/store';
 import { UserDataState } from '../../model/auth/auth.model';
 import { StagesState } from '../../model/authoring/management.model';
 import { BlockBuildState } from '../../model/authoring/blockly.model';
+import { HierarchyState } from '../../model/authoring/authoring.model';
 
 export const diveStateSelector = createSelector(
   (state: AppState) => state.manipulation.diveState,
@@ -93,5 +94,14 @@ export const snackBarStateSelector = createSelector(
 
 export const studentDiveLoadedStateSelector = createSelector(
   (state: AppState) => state.manipulation.isDiveLoaded
+);
+
+export const manipulateHierarchyDataSelector = createSelector(
+  (state: AppState) => {
+    const projectIndex = state.gloabalData.editProjectIndex;
+    const stageIndex = state.gloabalData.editStageIndex;
+    return state.gloabalData.projectData[projectIndex].stages[stageIndex].stageData.hierarchyData;
+  },
+  (hierarchyData: HierarchyState[]) => hierarchyData
 );
 

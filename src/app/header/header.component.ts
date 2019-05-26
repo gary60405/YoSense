@@ -47,6 +47,12 @@ export class HeaderComponent implements OnInit {
     this.store
         .pipe(select(userDataStateSelector))
         .subscribe(userData => {
+          if (userData.displayName !== '' &&
+              userData.identification !== '' &&
+              this.userName === userData.displayName &&
+              this.identification === userData.identification) {
+            return;
+          }
           this.userName = userData.displayName;
           this.identification = userData.identification;
           this.redirectPage();
@@ -73,6 +79,10 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  sleep(ms: number) {
+    return new Promise(resolve => setTimeout(() => resolve(), ms));
+  }
+
   displayMenu() {
     if (this.overlayRef && this.overlayRef.hasAttached()) {
       this.overlayRef.detach();
@@ -81,11 +91,17 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  redirectPage() {
+  async redirectPage() {
     switch (this.identification) {
       case 'teacher':
         if (this.route.url.indexOf('management') !== -1) {
-          this.store.dispatch(new AppActions.TryInitialProjectState());
+          if (this.route.url !== '/authoring/management/manageProject') {
+            this.route.navigateByUrl('/authoring');
+            while (this.route.url !== '/authoring/management/manageProject') {
+              await this.sleep(10);
+            }
+            return this.store.dispatch(new AppActions.TryInitialProjectState());
+          }
           return this.route.navigateByUrl('/authoring');
         } else {
           this.store.dispatch(new AppActions.TryInitialStageState());
@@ -93,7 +109,13 @@ export class HeaderComponent implements OnInit {
         }
       case 'student':
         if (this.route.url.indexOf('choose') !== -1) {
-          this.store.dispatch(new AppActions.TryInitialProjectState());
+          if (this.route.url !== '/manipulation/choose/dashboard') {
+            this.route.navigateByUrl('/manipulation');
+            while (this.route.url !== '/manipulation/choose/dashboard') {
+              await this.sleep(10);
+            }
+            return this.store.dispatch(new AppActions.TryInitialProjectState());
+          }
           return this.route.navigateByUrl('/manipulation');
         } else {
           this.store.dispatch(new AppActions.TryInitialStageState());
@@ -115,7 +137,7 @@ export class HeaderComponent implements OnInit {
   onSignOut() {
     this.overlayRef.detach();
     this.store.dispatch(new AppActions.TryLogout);
-    this.redirectPage();
+    // this.redirectPage();
   }
 
 }

@@ -11,8 +11,7 @@
           <h5 class="card-text text-center font-weight-bold">{{stage.name}}</h5>
         </div>
         <div class="card-body p-0">
-          <div class="cover" (click)="onShowSideInfo(i)">
-            <div class="alt-text">暫無圖片</div>
+          <div [ngStyle]="{'background-image': 'url(\'' + stage.coverImg + '\')'}" class="cover" (click)="onShowSideInfo(i)">
           </div>
         </div>
       </div>
