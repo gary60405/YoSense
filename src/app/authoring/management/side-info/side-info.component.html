@@ -18,7 +18,7 @@
   </div>
   <div class="row">
       <div class="col p-0">
-        <input style="display: none" [type]="(projectInfo$ | async ).uid !== '' || (stageInfo$ | async ).uid !== '' ? 'file' : 'hidden'" (change)="uploadFile($event)" #upload>
+        <input style="display: none" [type]="(projectInfo$ | async ).uid !== '' || (stageInfo$ | async ).uid !== '' ? 'file' : 'hidden'" (change)="uploadFile($event)" #upload accept="image/*" />
         <div [ngClass]="(projectInfo$ | async ).uid !== '' || (stageInfo$ | async ).uid !== '' ? 'cover' : 'img-block'"
              [ngStyle]="{'background-image': 'url(\'' + ((editMode$ | async) === 'PROJECT_MODE' ? (projectInfo$ | async).coverImg : (stageInfo$ | async).coverImg) + '\')'}"
              (click)="upload.click()"
