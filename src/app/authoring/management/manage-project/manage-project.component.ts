@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
@@ -20,8 +20,8 @@ import { projectLoadedStateSelector, projectDataStateSelector, addProjectSelecto
   styleUrls: ['./manage-project.component.css']
 })
 export class ManageProjectComponent implements OnInit {
-  @ViewChild('projectDialog') projectDialog;
-  @ViewChild('deleteProjectDialog') deleteProjectDialog;
+  @ViewChild('projectDialog', { static: true }) projectDialog;
+  @ViewChild('deleteProjectDialog', { static: true }) deleteProjectDialog;
   projectForm: FormGroup;
   projectData$: Observable<ProjectState[]>;
   isProjectLoaded$: Observable<boolean>;

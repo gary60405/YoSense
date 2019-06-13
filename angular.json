@@ -27,9 +27,6 @@
               "node_modules/intro.js/minified/introjs.min.css"
             ],
             "scripts": [
-              "src/assets/acorn.js",
-              "src/assets/interpreter.js",
-              "src/assets/acorn_interpreter.js",
               "src/assets/blockly_compressed.js",
               "src/assets/blocks_compressed.js",
               "src/assets/javascript_compressed.js",

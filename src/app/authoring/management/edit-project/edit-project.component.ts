@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 
@@ -18,8 +18,8 @@ import { StagesSideInfoState } from '../../../model/authoring/management.model';
   styleUrls: ['./edit-project.component.css']
 })
 export class EditProjectComponent implements OnInit {
-  @ViewChild('stageDialog') stageDialog;
-  @ViewChild('deleteStageDialog') deleteStageDialog;
+  @ViewChild('stageDialog', { static: true }) stageDialog;
+  @ViewChild('deleteStageDialog', { static: true }) deleteStageDialog;
   deleteIndex = -1;
   stageForm: FormGroup;
   isStageLoaded$: Observable<boolean>;

@@ -1,6 +1,6 @@
 import { AppState } from './../model/app/app.model';
 import { Observable } from 'rxjs';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,9 +16,9 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('signUpDialog') signUpDialog;
-  @ViewChild('signInDialog') signInDialog;
-  @ViewChild('img') img;
+  @ViewChild('signUpDialog', { static: true }) signUpDialog;
+  @ViewChild('signInDialog', { static: true }) signInDialog;
+  @ViewChild('img', { static: false }) img;
   constructor(private dialog: MatDialog,
               private router: Router,
               private store: Store<AppState>) {

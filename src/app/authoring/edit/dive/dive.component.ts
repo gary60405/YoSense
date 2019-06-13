@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { AppState } from '../../../model/app/app.model';
@@ -17,8 +17,8 @@ declare var DiveLinker: any;
   styleUrls: ['./dive.component.css']
 })
 export class DiveComponent implements OnInit {
-  @ViewChild('diveDialog') diveDialog;
-  @ViewChild('code') code;
+  @ViewChild('diveDialog', { static: true }) diveDialog;
+  @ViewChild('code', { static: false }) code;
   diveId$: Observable<number>;
   isDiveLoaded$: Observable<boolean>; // Dive是否讀取完成
   isChecked$: Observable<boolean>; // 是否填完DIVE ID

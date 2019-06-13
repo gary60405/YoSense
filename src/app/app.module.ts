@@ -24,7 +24,7 @@ import { AppEffects } from './store/app.effects';
 import { BlocklyEffects } from './authoring/edit/blockly/store/blockly.effects';
 import { BlocklyService } from './authoring/edit/blockly/blockly.service';
 import { CustomSerializer } from './app-routing.serializer';
-import { GestureConfig } from '@angular/material';
+import { GestureConfig } from '@angular/material/core';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBoTwHjqBNIluVzQJUyHu2spnB2AtlkNY8',

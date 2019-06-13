@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { isDiveObjectName, isDiveObjectAction, isDiveLocked } from './../js/rule';
 import { blockTypeContents, getPureBlock, getBlockContent, sendNameIntoBlock, sendValueIntoBlock, compareTwoBlocksValue, getDiveValueWithState, getDiveValueWithName, sendValueIntoDiveWithState, sendDiveWithStateName, sendDiveWithBlockValue, sendDiveWithNameAndBlockValue, getStateNameToCompareWithDiveValue, compareStateWithDiveValue} from './../js/blockCodeGen';
 import { isNewSelector, portalTypeSelector, embeddingNumberSelector, blockTempTextSelector, blockTypeSelector, diveStateNamesSelector, blockTypeContentSelector, diveStateNameSelector, diveStateActionSelector, isAsyncSelector, payloadSelector, connectionTypeSelector, externalTypeSelector, blockNameSelector, submitBlockDataSelector, appendBlockToWorkspaceSelector, diveStateSelector, blockDefSelector } from '../store/blockly.selectors';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { take } from 'rxjs/operators';
 import { BlockBuildState } from '../../../../model/authoring/blockly.model';
 import { BlocklyService } from '../blockly.service';
@@ -67,9 +67,9 @@ export class CustomModeComponent implements OnInit, OnDestroy {
   messageState = true;
   isInitialWorkPanel = true;
 
-  @ViewChild('hint') hint: any;
-  @ViewChild('stepper') stepper: any;
-  @ViewChild('blocklyPreviewer2') blocklyPreviewer2: any;
+  @ViewChild('hint', { static: true }) hint: any;
+  @ViewChild('stepper', { static: true }) stepper: any;
+  @ViewChild('blocklyPreviewer2', { static: true }) blocklyPreviewer2: any;
 
   ngOnInit() {
     this.blockTypeContents = this.blocklyService.blockTypeClassify(blockTypeContents);

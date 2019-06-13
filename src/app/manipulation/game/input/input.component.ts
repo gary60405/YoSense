@@ -1,7 +1,7 @@
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 
 import * as AppActions from './../../../store/app.actions';
@@ -17,8 +17,8 @@ import { BlockBuildState } from '../../../model/authoring/blockly.model';
   styleUrls: ['./input.component.css']
 })
 export class InputComponent implements OnInit, OnDestroy {
-  @ViewChild('passDialog') passDialog;
-  @ViewChild('failDialog') failDialog;
+  @ViewChild('passDialog', { static: false }) passDialog;
+  @ViewChild('failDialog', { static: false }) failDialog;
   constructor(private dialog: MatDialog,
               private store: Store<AppState>,
               private blocklyService: BlocklyService) { }

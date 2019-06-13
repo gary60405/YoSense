@@ -1,7 +1,7 @@
 import { HierarchyState, HierarchyDataState } from './../../../model/authoring/authoring.model';
 import { DiveDataState } from './../../../model/authoring/management.model';
 import { take } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormControl, AbstractControl, FormArray } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
@@ -17,7 +17,7 @@ import { hierarchyDataSelector } from '../store/authoringStage.selectors';
   styleUrls: ['./hierarchy.component.css']
 })
 export class HierarchyComponent implements OnInit {
-  @ViewChild('hierarchyDialog') hierarchyDialog;
+  @ViewChild('hierarchyDialog', { static: true }) hierarchyDialog;
   constructor(private dialog: MatDialog, private store: Store<AppState>) {
     this.diveData$ = store.select(diveDataSelector);
    }

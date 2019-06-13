@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../../model/app/app.model';
 import { take } from 'rxjs/operators';
 import { codeFontSizeSelector, blockCodeStateSelector, buildPreviewWorkspaceSelector } from '../store/blockly.selectors';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Observable } from 'rxjs';
 import { BlocklyService } from '../blockly.service';
 import { ClipboardService } from 'ngx-clipboard';
@@ -31,9 +31,9 @@ export class PreviewModeComponent implements OnInit {
       this.fontSize$ = store.pipe(select(codeFontSizeSelector));
   }
 
-  @ViewChild('preview')preview: any;
-  @ViewChild('view_code')viewCode: any;
-  @ViewChild('iframe')iframe: any;
+  @ViewChild('preview', { static: true })preview: any;
+  @ViewChild('view_code', { static: true })viewCode: any;
+  @ViewChild('iframe', { static: false })iframe: any;
 
   diveId$: Observable<number>;
   fontSize$: Observable<number>;

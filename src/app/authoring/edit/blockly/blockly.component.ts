@@ -9,7 +9,7 @@ import { AppState } from '../../../model/app/app.model';
 import { blocklyModeStateSelector, customBlockSelector, customBlockNameSelector } from './store/blockly.selectors';
 
 import { BlockBuildState } from '../../../model/authoring/blockly.model';
-import { MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -26,10 +26,10 @@ export class BlocklyComponent implements OnInit {
     this.customBlocksName$ = store.pipe(select(customBlockNameSelector));
   }
 
-  @ViewChild('blocklyDialog') blocklyDialog: any;
-  @ViewChild('blocklyPreviewer1') blocklyPreviewer1: any;
-  @ViewChild('custom_mode') customMode: any;
-  @ViewChild('preview_mode') previewMode: any;
+  @ViewChild('blocklyDialog', { static: true }) blocklyDialog: any;
+  @ViewChild('blocklyPreviewer1', { static: false }) blocklyPreviewer1: any;
+  @ViewChild('custom_mode', { static: false }) customMode: any;
+  @ViewChild('preview_mode', { static: false }) previewMode: any;
 
 
   blocklyMode$: Observable<string>;

@@ -20,8 +20,8 @@ import { stepDisplayStateSelector } from './store/header.selectors';
 })
 export class HeaderComponent implements OnInit {
 
-  @ViewChild('toolbar') toolbar;
-  @ViewChild('menuTmpl') menuTmpl;
+  @ViewChild('toolbar', { static: true }) toolbar;
+  @ViewChild('menuTmpl', { static: true }) menuTmpl;
 
   isLogin$: Observable<boolean>;
   stepDisplayState$: Observable<StepDisplayState>;

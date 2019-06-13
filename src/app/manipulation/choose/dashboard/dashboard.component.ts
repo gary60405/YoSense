@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Component, OnInit, ViewChild  } from '@angular/core';
 
@@ -22,9 +22,9 @@ import { projectSideInfoStateSelector } from '../../../store/app.selectors';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild('projectDialog') projectDialog;
-  @ViewChild('repeatDialog') repeatDialog;
-  @ViewChild('deleteProjectDialog') deleteProjectDialog;
+  @ViewChild('projectDialog', { static: true }) projectDialog;
+  @ViewChild('repeatDialog', { static: true }) repeatDialog;
+  @ViewChild('deleteProjectDialog', { static: true }) deleteProjectDialog;
   constructor(private afStore: AngularFirestore,
               private dialog: MatDialog,
               private store: Store<AppState>) {

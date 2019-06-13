@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { WizardComponent } from '../wizard/wizard.component';
 import { Subscription, Observable } from 'rxjs';
 import { AppState } from '../../../model/app/app.model';
