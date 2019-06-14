@@ -1,9 +1,10 @@
 import { AppState } from './../../model/app/app.model';
 import { createSelector } from '@ngrx/store';
 import { UserDataState } from '../../model/auth/auth.model';
-import { StagesState } from '../../model/authoring/management.model';
+import { StagesState, PassConditionState, ConditionDataState } from '../../model/authoring/management.model';
 import { BlockBuildState } from '../../model/authoring/blockly.model';
 import { HierarchyState } from '../../model/authoring/authoring.model';
+import { SnackBarState } from '../../model/manipulation/manipulation.model';
 
 export const diveStateSelector = createSelector(
   (state: AppState) => state.manipulation.diveState,
@@ -40,7 +41,8 @@ export const deleteProjectSelector = createSelector(
         uid: state.gloabalData.projectData[props].uid
       };
     }
-  }
+  },
+  (deleteProject: {email: string, uid: string}) => deleteProject
 );
 
 export const stageLengthSelector  = createSelector(
@@ -48,7 +50,9 @@ export const stageLengthSelector  = createSelector(
     const editProjectIndex = state.gloabalData.editProjectIndex;
     const selectedProject = state.gloabalData.projectData[editProjectIndex];
     return selectedProject.stages.length;
-  });
+  },
+  (length: number) => length
+  );
 
 export const selectedStageSelector  = createSelector(
   (state: AppState) => {
@@ -65,7 +69,8 @@ export const passConditionSelector = createSelector(
     const editStageIndex = state.gloabalData.editStageIndex;
     const selectedStage = state.gloabalData.projectData[editProjectIndex].stages[editStageIndex];
     return selectedStage.stageData.passcondition;
-  }
+  },
+  (passcondition: PassConditionState[]) => passcondition
 );
 
 export const diagnosisSelector = createSelector(
@@ -75,7 +80,8 @@ export const diagnosisSelector = createSelector(
     const selectedProject = state.gloabalData.projectData[editProjectIndex];
     const selectedStage = selectedProject.stages[editStageIndex];
     return selectedStage.stageData.conditionData;
-  }
+  },
+  (conditionData: ConditionDataState[]) => conditionData
 );
 
 export const diveIdSelector = createSelector(
@@ -85,15 +91,18 @@ export const diveIdSelector = createSelector(
     const selectedProject = state.gloabalData.projectData[editProjectIndex];
     const selectedStage = selectedProject.stages[editStageIndex];
     return selectedStage.stageData.diveId;
-  }
+  },
+  (diveId: string) => diveId
 );
 
 export const snackBarStateSelector = createSelector(
-  (state: AppState) => state.manipulation.snackBarState
+  (state: AppState) => state.manipulation.snackBarState,
+  (snackBarState: SnackBarState) => snackBarState
 );
 
 export const studentDiveLoadedStateSelector = createSelector(
-  (state: AppState) => state.manipulation.isDiveLoaded
+  (state: AppState) => state.manipulation.isDiveLoaded,
+  (isDiveLoaded: boolean) => isDiveLoaded
 );
 
 export const manipulateHierarchyDataSelector = createSelector(

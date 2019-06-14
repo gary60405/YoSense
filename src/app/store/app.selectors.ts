@@ -4,6 +4,7 @@ import { UserDataState } from './../model/auth/auth.model';
 import { StagesState } from './../model/authoring/management.model';
 import { ProjectState, StageDataState } from './../model/authoring/management.model';
 import * as fromRouter from '@ngrx/router-store';
+import { AddStageState } from '../model/selector/selector.model';
 
 export const getRouterState = createFeatureSelector<
   fromRouter.RouterReducerState<RouterStateUrl>
@@ -55,7 +56,8 @@ export const deleteDataSetSelector = createSelector(
     const stage = state.gloabalData.projectData.filter(res => res.uid === projectUid)[0].stages[props];
     const stageUid = stage === undefined ? '' : stage.uid;
     return {projectUid: projectUid, stageUid: stageUid};
-  }
+  },
+  (uid: {projectUid: string, stageUid: string}) => uid
 );
 
 export const projectLoadedStateSelector = createSelector(
@@ -103,14 +105,17 @@ export const addStageSelector = createSelector(
       stagesLength: state.gloabalData.projectData[editProjectIndex]['stages'].length,
       stageData: props
     };
-  }
+  },
+  (stage: AddStageState) => stage
 );
 
 export const editProjectIndexSelector = createSelector(
-  (state: AppState) => state.gloabalData.editProjectIndex
+  (state: AppState) => state.gloabalData.editProjectIndex,
+  (editProjectIndex: number) => editProjectIndex
 );
 
 export const editStageIndexSelector = createSelector(
-  (state: AppState) => state.gloabalData.editStageIndex
+  (state: AppState) => state.gloabalData.editStageIndex,
+  (editStageIndex: number) => editStageIndex
 );
 
