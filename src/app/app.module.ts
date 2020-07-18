@@ -3,7 +3,7 @@ import { reducers } from './store/app.reducers';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app-routing.module';
-import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -24,7 +24,6 @@ import { AppEffects } from './store/app.effects';
 import { BlocklyEffects } from './authoring/edit/blockly/store/blockly.effects';
 import { BlocklyService } from './authoring/edit/blockly/blockly.service';
 import { CustomSerializer } from './app-routing.serializer';
-import { GestureConfig } from '@angular/material/core';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBoTwHjqBNIluVzQJUyHu2spnB2AtlkNY8',
@@ -55,7 +54,6 @@ export const firebaseConfig = {
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [
-    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
