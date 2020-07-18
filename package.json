@@ -54,7 +54,7 @@
     "libxmljs": "^0.19.5",
     "ngx-clipboard": "^12.2.0",
     "node-pre-gyp": "^0.13.0",
-    "rxjs": "^6.5.2",
+    "rxjs": "^6.6.0",
     "rxjs-compat": "^6.5.2",
     "static-eval": "^2.0.2",
     "tslib": "^1.10.0",
