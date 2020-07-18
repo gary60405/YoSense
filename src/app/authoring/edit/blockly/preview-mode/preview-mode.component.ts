@@ -12,6 +12,7 @@ import { BlocklyService } from '../blockly.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { diveIdStateSelector, hierarchyDataSelector } from '../../store/authoringStage.selectors';
 import { BlockBuildState } from '../../../../model/authoring/blockly.model';
+import { isNgTemplate } from '@angular/compiler';
 
 declare var DiveLinker: any;
 
@@ -37,11 +38,11 @@ export class PreviewModeComponent implements OnInit {
 
   diveId$: Observable<number>;
   fontSize$: Observable<number>;
+  diveLinker: any;
   blockCode: string[];
   copyMsg = 'NO_COPY';
   saveMsg = 'UNSAVED';
   isDiveLoaded = false;
-
   ngOnInit() {
     this.store.dispatch(new BlocklyActions.TryBuildPreviewWorkspace());
     const initialPromise = new Promise((resolve, reject) => {
@@ -63,9 +64,9 @@ export class PreviewModeComponent implements OnInit {
   openPreview() {
     const bottomRef = this.bottomSheet.open(this.preview, {panelClass: ['p-0', 'dive-preview', 'rounded']});
     bottomRef.afterOpened().pipe(take(1)).subscribe(async () => {
-      const diveLinker = new DiveLinker('mainExperiment');
+      this.diveLinker = new DiveLinker('mainExperiment', {'autoShakehand': false});
       const diveLoadedPromise = new Promise(async resolve => {
-        while (!diveLinker.getLoadingStatus()) {
+        while (!this.diveLinker.getLoadingStatus()) {
           await this.sleep(50);
         }
         resolve();
@@ -84,14 +85,19 @@ export class PreviewModeComponent implements OnInit {
     await this.sleep(1000);
     this.isDiveLoaded = true;
   }
-
   executeCode() {
+    // console.log(this.diveLinker.getIOList());
+    // this.diveLinker.setInput('60e2c7b2dced4a2b8c8421105276e72b', 1);
+    // this.diveLinker.setInput('097b0cba9d024aeb886960f85752fe1a', 1);
+    // this.diveLinker.setInput('ec3728d5414b4deabe8b55521236aa05', 1);
+    // this.diveLinker.setInput('1549874304508', 1);
+
     this.store.pipe(select(hierarchyDataSelector), take(1))
       .subscribe((hierarchyData) => {
         const diveState = this.blocklyService.getDiveState(hierarchyData);
         const rawCode = this.blocklyService.getWorkspaceCode();
         const presetCode = this.blocklyService.executeCodePreset;
-        const finalCode =  diveState + presetCode.replace('@@', rawCode);
+        const finalCode =  diveState + presetCode.replace('@@', rawCode).replace('DIVE_LINKER_ID', this.diveLinker.id);
         this.blocklyService.executeCode(finalCode);
       });
   }
@@ -118,6 +124,7 @@ export class PreviewModeComponent implements OnInit {
   openTextCode() {
     this.blockCode = this.blocklyService.getWorkspaceCode()
       .replace(/await sleep\(100\)\;\n/g, '')
+      .replace(/if(isStop==1){rerturn\;}\n/g, '')
       .split('\n').map(text => text === '' ? 'THIS_LINE_IS_EMPTY' : text);
     if (this.blockCode[this.blockCode.length - 1] === 'THIS_LINE_IS_EMPTY') { this.blockCode.pop(); }
     this.bottomSheet.open(this.viewCode, {panelClass: ['p-0', 'text-code-preview', 'rounded']});

@@ -22,8 +22,16 @@ export class BlocklyService {
     .set('colour', 7)
     .set('function', 8)
     .set('variable', 9);
-
-  public executeCodePreset = 'const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));const diveLinker = new DiveLinker("mainExperiment");(async()=>{@@})();';
+  public executeCodePreset =
+    `
+      let isStop = 0;
+      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      document.getElementById("closePreviewBtn").addEventListener("click", () => isStop = 1, {once: true});
+      document.getElementById("reloadPreviewBtn").addEventListener("click", () => isStop = 1, {once: true});
+      const diveLinker = new DiveLinker('mainExperiment', {'autoShakehand': false});
+      diveLinker.id = 'DIVE_LINKER_ID';
+      (async()=>{@@})();
+    `;
   private standardWorkspaceConfig = {
     toolbox: '',
     trashcan: true,
@@ -84,6 +92,7 @@ export class BlocklyService {
   }
 
   executeCode(code: string) {
+    console.log(js_beautify(code));
     eval(code);
   }
 

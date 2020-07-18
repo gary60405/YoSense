@@ -120,12 +120,12 @@ export function sendDiveWithNameAndBlockValue(stateActionSelected, isAsync=false
     try {
       const valueInput1 = Blockly.JavaScript.statementToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim().replace(/^'/,"").replace(/'$/,"");
       const valueInput2 = Blockly.JavaScript.valueToCode(block, 'valueInput2', Blockly.JavaScript.ORDER_ATOMIC);
-      return \`diveLinker.setInput(diveState["\${valueInput1}"]["${stateActionSelected}"]["diveID"],\${valueInput2},${isAsync});\`;
+      return \`diveLinker.setInput(diveState[\${valueInput1}]["${stateActionSelected}"]["diveID"],\${valueInput2},${isAsync});\`;
     }
     catch (e) {
       const valueInput1 = Blockly.JavaScript.valueToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim();
       const valueInput2 = Blockly.JavaScript.valueToCode(block, 'valueInput2', Blockly.JavaScript.ORDER_ATOMIC);
-      return \`diveLinker.setInput(diveState["\${valueInput1}"]["${stateActionSelected}"]["diveID"],\${valueInput2},${isAsync});\`;
+      return \`diveLinker.setInput(diveState[\${valueInput1}]["${stateActionSelected}"]["diveID"],\${valueInput2},${isAsync});\`;
     }
   };`;
 }

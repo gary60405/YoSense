@@ -7,11 +7,11 @@
 </mat-card>
 
 <ng-template #preview>
-  <button mat-mini-fab class="bg-danger position-absolute close-button" (click)="closePreview()">
+  <button id="closePreviewBtn" mat-mini-fab class="bg-danger position-absolute close-button" (click)="closePreview()">
     <mat-icon>close</mat-icon>
   </button>
   <mat-button-toggle-group *ngIf="isDiveLoaded" class="function-group bg-secondary" vertical="true">
-    <mat-button-toggle (click)="resetDive()" class="bg-secondary text-white" matTooltip="重新載入"
+    <mat-button-toggle id="reloadPreviewBtn" (click)="resetDive()" class="bg-secondary text-white" matTooltip="重新載入"
       matTooltipPosition="right" value="reload">
       <mat-icon>replay</mat-icon>
     </mat-button-toggle>
@@ -21,6 +21,9 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
   <div class="mask">
+    <!-- <iframe #iframe class="iframe border-0" [ngClass]="{'fix-dive-scale': !isDiveLoaded}"
+      [src]="'http://dive.nutn.edu.tw:8080/Experiment/kaleTestExperiment5.jsp?eid=' + (diveId$ | async) | safe"
+      name="mainExperiment"></iframe> -->
     <iframe #iframe class="iframe border-0" [ngClass]="{'fix-dive-scale': !isDiveLoaded}"
       [src]="'http://dive.nutn.edu.tw:8080/Experiment/kaleTestExperiment5.jsp?eid=' + (diveId$ | async) | safe"
       name="mainExperiment"></iframe>
