@@ -1,4 +1,3 @@
-import { GlobalState } from './app.model';
 import { AuthoringManagementState, AuthoringStageState } from './../authoring/authoring.model';
 import { AuthState } from './../auth/auth.model';
 import { ManipulationState } from '../manipulation/manipulation.model';

@@ -5,9 +5,10 @@ import { HomeComponent } from './home/home.component';
 const routes: Routes = [
   // {path: '', redirectTo: 'authoring', pathMatch: 'full'},
   {path: '', component: HomeComponent},
-  {path: 'authoring', loadChildren: 'app/authoring/authoring.module#AuthoringModule'},
-  {path: 'manipulation', loadChildren: 'app/manipulation/manipulation.module#ManipulationModule'},
-  { path: '**', redirectTo: '/', pathMatch: 'full' }
+  // Lazy loading
+  {path: 'authoring', loadChildren: () => import('./authoring/authoring.module').then(m => m.AuthoringModule)},
+  {path: 'manipulation', loadChildren: () => import('./manipulation/manipulation.module').then(m => m.ManipulationModule)},
+  {path: '**', redirectTo: '/', pathMatch: 'full' }
 ];
 
 @NgModule({

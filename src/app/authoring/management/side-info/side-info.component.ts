@@ -21,8 +21,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 export class SideInfoComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
-              private httpClient: HttpClient,
-              private afStore: AngularFirestore) {
+    private httpClient: HttpClient,
+    private afStore: AngularFirestore) {
     this.editMode$ = store.select(editModeSelector);
     this.projectInfo$ = store.select(projectSideInfoSelector);
     this.stageInfo$ = store.select(stageSideInfoSelector);
@@ -31,7 +31,7 @@ export class SideInfoComponent implements OnInit {
   projectInfo$: Observable<ProjectState>;
   stageInfo$: Observable<StagesState>;
   tempEvent: any;
-  ngOnInit() {}
+  ngOnInit() { }
 
   sleep(ms: number) {
     return new Promise((resolve => setTimeout(() => resolve(), ms)));
@@ -39,11 +39,11 @@ export class SideInfoComponent implements OnInit {
 
   onEditStage() {
     this.store
-        .pipe(select(selectedStageDataSelector), take(1))
-        .subscribe(selectedStage => {
-          this.store.dispatch(new AuthoringStageActions.TryLoadSelectedStage(selectedStage));
-          this.store.dispatch(new AppActions.InitailStageInfo());
-        });
+      .pipe(select(selectedStageDataSelector), take(1))
+      .subscribe(selectedStage => {
+        this.store.dispatch(new AuthoringStageActions.TryLoadSelectedStage(selectedStage));
+        this.store.dispatch(new AppActions.InitailStageInfo());
+      });
   }
 
   async uploadFile(event) {
@@ -65,7 +65,7 @@ export class SideInfoComponent implements OnInit {
     return new Promise(resolve => {
       if (mode === 'PROJECT_MODE') {
         return this.store.pipe(select(uploadProjectInfoSelector), take(1))
-          .subscribe((data: {email: string, uid: string}) => {
+          .subscribe((data: { email: string, uid: string }) => {
             const formData = new FormData();
             formData.append('image', <File>event.target.files[0]);
             formData.append('title', `${data.email}的專案`);
@@ -75,65 +75,67 @@ export class SideInfoComponent implements OnInit {
           });
       }
       this.store.pipe(select(uploadStageInfoSelector), take(1))
-          .subscribe((data: {email: string, projectUid: string, stageUid: string}) => {
-            const formData = new FormData();
-            formData.append('image', <File>event.target.files[0]);
-            formData.append('title', `${data.email}的關卡`);
-            formData.append('description', `上傳者：${data.email}\n專案編號：${data.projectUid}\n關卡編號：${data.stageUid}\n上傳時間：${this.getCurrentTime()}`);
-            formData.append('album', 'NvLeTiV');
-            resolve(formData);
-          });
+        .subscribe((data: { email: string, projectUid: string, stageUid: string }) => {
+          const formData = new FormData();
+          formData.append('image', <File>event.target.files[0]);
+          formData.append('title', `${data.email}的關卡`);
+          formData.append('description', `上傳者：${data.email}\n專案編號：${data.projectUid}\n關卡編號：${data.stageUid}\n上傳時間：${this.getCurrentTime()}`);
+          formData.append('album', 'NvLeTiV');
+          resolve(formData);
+        });
     });
   }
 
   getTokenData() {
     return new Promise(resolve => {
       this.afStore.collection('token').doc('imgur').valueChanges().pipe(take(1))
-          .subscribe(res => resolve(res));
+        .subscribe(res => resolve(res));
     });
   }
 
   async uploadToImgur(mode: string, token: string, formData: FormData) {
     await this.deleteCurrentCover(mode);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`).append('Accept', 'application/json');
-    this.httpClient.post('https://api.imgur.com/3/image', formData, {headers: headers, observe: 'events', reportProgress: true})
-      .pipe(catchError(res => of({type: -1, body: res['error']['data']['error']})))
+    this.httpClient.post('https://api.imgur.com/3/image', formData, { headers: headers, observe: 'events', reportProgress: true })
+      .pipe(catchError(res => of({ type: -1, body: res['error']['data']['error'] })))
       .subscribe(async (res: HttpEvent<HttpEventType>) => {
-        if (res.type === -1) {
-          return this.processError(res['body']);
-        }
         if (res.type === HttpEventType.UploadProgress) {
           return this.processProgress(res);
         }
         if (res.type === HttpEventType.Response) {
           return this.processResponse(mode, res);
         }
-  });
+        if (res.type === -1) {
+          return this.processError(res['body']);
+        }
+      });
   }
 
   async deleteCurrentCover(mode: string) {
+    console.log(mode);
     return new Promise(resolve => {
-      this.store.pipe(select(mode === 'PROJECT_MODE' ? projectSideInfoSelector : stageSideInfoSelector))
-          .pipe(take(1))
-          .subscribe(async data => {
-            let token = '';
-            await this.getTokenData().then(res => token = res['access_token']);
-            const imgHash = data['coverImg'].split('/')[3].split('.')[0];
-            if (imgHash === 'yUti2d2') {
-              return;
-            }
-            const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-            this.httpClient.delete(`https://api.imgur.com/3/image/${imgHash}`, {headers: headers})
-                .pipe(catchError(res => of()))
-                .subscribe(res => resolve(res));
-          });
+      // this.store.pipe(select(mode === 'PROJECT_MODE' ? projectSideInfoSelector : stageSideInfoSelector))
+      this.store.pipe(select(projectSideInfoSelector))
+        .pipe(take(1))
+        .subscribe(async data => {
+          let token = '';
+          await this.getTokenData().then(res => token = res['access_token']);
+          const imgHash = data['coverImg'].split('/')[3].split('.')[0];
+          if (imgHash === 'yUti2d2') {
+            return;
+          }
+          const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+          this.httpClient.delete(`https://api.imgur.com/3/image/${imgHash}`, { headers: headers })
+            .pipe(catchError(res => of()))
+            .subscribe(res => resolve(res));
+        });
 
     });
   }
 
   async processError(msg: string) {
     this.httpClient.post(`https://us-central1-yosense-de69d.cloudfunctions.net/sendErrorMail?msg=${msg}`, {})
-        .pipe(take(1), catchError(res => of(res))).subscribe(res => res);
+      .pipe(take(1), catchError(res => of(res))).subscribe(res => res);
     if (msg === 'The access token provided is invalid.') {
       let mode = '', token = '';
       let formData: FormData;
@@ -142,16 +144,16 @@ export class SideInfoComponent implements OnInit {
       await this.getFileFormData(mode, this.tempEvent).then((data: FormData) => formData = data);
       await this.deleteCurrentCover(mode);
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`).append('Accept', 'application/json');
-      this.httpClient.post('https://api.imgur.com/3/image', formData, {headers: headers, observe: 'events'})
-          .subscribe((res: HttpEvent<HttpEventType>) => {
-            if (res.type === HttpEventType.Response) {
-              this.processResponse(mode, res);
-            }
-          });
+      this.httpClient.post('https://api.imgur.com/3/image', formData, { headers: headers, observe: 'events' })
+        .subscribe((res: HttpEvent<HttpEventType>) => {
+          if (res.type === HttpEventType.Response) {
+            this.processResponse(mode, res);
+          }
+        });
     }
   }
 
-   applyToken() {
+  applyToken() {
     return new Promise(async resolve => {
       let tokenData: TokenData;
       await this.getTokenData().then((data: TokenData) => tokenData = data);
@@ -161,10 +163,10 @@ export class SideInfoComponent implements OnInit {
       formData.append('client_secret', tokenData.client_secret);
       formData.append('grant_type', 'refresh_token');
       this.httpClient.post('https://api.imgur.com/oauth2/token', formData)
-          .subscribe(async res => {
-            await this.afStore.collection('token').doc('imgur').update({access_token: res['access_token'], refresh_token: res['refresh_token']});
-            resolve(res['access_token']);
-          });
+        .subscribe(async res => {
+          await this.afStore.collection('token').doc('imgur').update({ access_token: res['access_token'], refresh_token: res['refresh_token'] });
+          resolve(res['access_token']);
+        });
     });
   }
 

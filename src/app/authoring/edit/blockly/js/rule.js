@@ -1,3 +1,6 @@
+// 選擇不同積木選項出現不同的對應選項之規則
+// 目的：為了避免使用者亂選做出完全不能用的積木，因此只顯示可用的選項
+
 // 積木類別分群
 export const blocklyGroup = [
   'GET_BLOCK_CONTENT',

@@ -55,7 +55,7 @@ trySubmitBlockDataEffect = this.action$
         {
           type: BlocklyActions.INITAIL_BUILD_BLOCK_STATE
         },
-             {
+        {
           type: BlocklyActions.SET_BLOCK_RESULT
         },
       ];

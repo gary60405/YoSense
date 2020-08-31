@@ -1,3 +1,5 @@
+// 不同積木造型的程式碼
+
 export const blockModel = {
   connection: {
     left_output: 'this.setOutput(true,null);',

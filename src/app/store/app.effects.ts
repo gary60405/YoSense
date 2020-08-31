@@ -117,7 +117,7 @@ export class AppEffects {
           .subscribe(projectData => {
             this.afStore.doc(`user/${projectData['author']}`).valueChanges()
               .pipe(take(1))
-              .subscribe(userInfo => {
+              .subscribe((userInfo: object) => {
                 const index = userInfo['project'].indexOf(uid);
                 userInfo['project'].splice(index, 1);
                 this.afStore.doc(`user/${projectData['author']}`).update({ ...userInfo });
@@ -281,7 +281,7 @@ export class AppEffects {
       mergeMap((deleteProjectSet: DeleteProjectState) => {
         this.afStore.doc(`user/${deleteProjectSet.email}`).valueChanges()
           .pipe(take(1))
-          .subscribe(userInfo => {
+          .subscribe((userInfo: object) => {
             const index = userInfo['project'].indexOf(deleteProjectSet.uid);
             userInfo['project'].splice(index, 1);
             this.afStore.doc(`user/${deleteProjectSet.email}`).update({ ...userInfo });

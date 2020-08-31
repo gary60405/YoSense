@@ -1,3 +1,4 @@
+// Blockly toolbox的程式碼
 export const categoryName = [
   {view: '邏輯', index: 'logic'},
   {view: '流程', index: 'controls'},

@@ -22,7 +22,6 @@ import { ManagementEffects } from './authoring/management/store/management.effec
 import { ManipulationEffects } from './manipulation/store/manipulation.effects';
 import { AppEffects } from './store/app.effects';
 import { BlocklyEffects } from './authoring/edit/blockly/store/blockly.effects';
-import { BlocklyService } from './authoring/edit/blockly/blockly.service';
 import { CustomSerializer } from './app-routing.serializer';
 
 export const firebaseConfig = {

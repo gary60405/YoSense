@@ -1,3 +1,5 @@
+// 客製化每個積木的執行的程式碼功能
+
 export const blockTypeContents = [
     {viewName: '取得積木的內容', blockTypeContent: 'GET_BLOCK_CONTENT',},
     {viewName: '輸出名稱', blockTypeContent: 'SEND_NAME_INTO_BLOCK',},
@@ -13,11 +15,11 @@ export const blockTypeContents = [
     {viewName: '以狀態樹比較積木與DIVE值', blockTypeContent: 'COMPARE_STATE_WITH_DIVE_VALUE',}
   ];
 
-  export function getPureBlock() {
+  export function getPureBlock() { // 純積木無功能，單純表達語意
     return `Blockly.JavaScript['block_type'] = (block) => '';`;
   };
 
-  export function getBlockContent() {
+  export function getBlockContent() { // 取得積木欄位中的值
     return `Blockly.JavaScript['block_type'] = (block) => {
       try {
         return Blockly.JavaScript.statementToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim().replace(/^'/,"").replace(/'$/,"");
@@ -28,15 +30,15 @@ export const blockTypeContents = [
     };`;
   }
 
-  export function sendNameIntoBlock(stateSelected) {
+  export function sendNameIntoBlock(stateSelected) { // 使該積木能在積木產生的程式碼中，回傳stateSelected內的值(字串)
     return `Blockly.JavaScript['block_type'] = (block) => "${stateSelected}";`;
   }
 
-  export function sendValueIntoBlock(stateSelected, stateActionSelected) {
+  export function sendValueIntoBlock(stateSelected, stateActionSelected) { // 使該積木能在積木產生的程式碼中，回傳積木設計者所選擇的選項(物件名稱、物件動作)取得diveState的值
     return `Blockly.JavaScript['block_type'] = (block) => 'diveState["${stateSelected}"]["${stateActionSelected}"]["value"]';`;
   }
 
-  export function compareTwoBlocksValue() {
+  export function compareTwoBlocksValue() { // 比較兩個積木中兩個欄位中的值是否相等(回傳boolean)
     return `Blockly.JavaScript['block_type'] = (block) => {
       let valueInput1, valueInput2;
       try {
@@ -61,7 +63,7 @@ export const blockTypeContents = [
     };`
   }
 
-  export function getDiveValueWithState(stateSelected, stateActionSelected) {
+  export function getDiveValueWithState(stateSelected, stateActionSelected) { // 透過diveState取得dive某個屬性的值
     return `Blockly.JavaScript['block_type'] = (block) => {
       try {
         return \`diveLinker.getAttr(diveState["${stateSelected}"]["${stateActionSelected}"]["diveID"]);\`;
@@ -72,11 +74,11 @@ export const blockTypeContents = [
     };`;
   }
 
-  export function sendValueIntoDiveWithState(stateSelected, stateActionSelected, isAsync=false) {
+  export function sendValueIntoDiveWithState(stateSelected, stateActionSelected, isAsync=false) { // 透過diveState傳值給DIVE，使用者不須填資料(積木設計者需欲選物件名稱與物件動作名稱)
     return `Blockly.JavaScript['block_type'] = (block) => 'diveLinker.setInput(diveState["${stateSelected}"]["${stateActionSelected}"]["diveID"],diveState["${stateSelected}"]["${stateActionSelected}"]["value"], ${isAsync});';`;
   }
 
-  export function getDiveValueWithName(stateActionSelected) {
+  export function getDiveValueWithName(stateActionSelected) { // 透過dive ID取得屬性值(積木使用者所填入的積木值為物件名稱，設計者則要先預選物件動作名稱)
     return `Blockly.JavaScript['block_type'] = (block) => {
       try {
         const valueInput1 = Blockly.JavaScript.statementToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim().replace(/^'/,"").replace(/'$/,"");
@@ -89,7 +91,7 @@ export const blockTypeContents = [
     };`;
   }
 
-export function sendDiveWithStateName(stateActionSelected, isAsync=false) {
+export function sendDiveWithStateName(stateActionSelected, isAsync=false) { // 透過diveState傳值給dive的屬性(積木設計者預選好物件動作名稱，使用者所填入的積木值為物件名稱)
   return `Blockly.JavaScript['block_type'] = (block) => {
     try {
       const valueInput1 = Blockly.JavaScript.statementToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim().replace(/^'/,"").replace(/'$/,"");
@@ -102,7 +104,7 @@ export function sendDiveWithStateName(stateActionSelected, isAsync=false) {
   };`;
 }
 
-export function sendDiveWithBlockValue(stateSelected, stateActionSelected, isAsync=false) {
+export function sendDiveWithBlockValue(stateSelected, stateActionSelected, isAsync=false) { // 透過積木使用者自行輸入的值傳入dive中(積木設計者預選好物件與物件動作名稱，使用者則是透過積木或自行填值)
   return `Blockly.JavaScript['block_type'] = (block) => {
     try {
       const valueInput1 = Blockly.JavaScript.statementToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim().replace(/^'/,"").replace(/'$/,"");
@@ -115,7 +117,7 @@ export function sendDiveWithBlockValue(stateSelected, stateActionSelected, isAsy
   };`;
 }
 
-export function sendDiveWithNameAndBlockValue(stateActionSelected, isAsync=false) {
+export function sendDiveWithNameAndBlockValue(stateActionSelected, isAsync=false) { // 積木有兩個洞，積木使用者填入物件名稱與欲傳進DIVE的值(積木使用者輸入物件名稱與欲傳入DIVE的值的欄位，設計者則預選物件動作)
   return `Blockly.JavaScript['block_type'] = (block) => {
     try {
       const valueInput1 = Blockly.JavaScript.statementToCode(block, 'valueInput1', Blockly.JavaScript.ORDER_ATOMIC).trim().replace(/^'/,"").replace(/'$/,"");
@@ -130,7 +132,7 @@ export function sendDiveWithNameAndBlockValue(stateActionSelected, isAsync=false
   };`;
 }
 
-export function getStateNameToCompareWithDiveValue(stateActionSelected) {
+export function getStateNameToCompareWithDiveValue(stateActionSelected) { // 比較某個屬性的值在diveState與當前DIV中的值是否相等(積木使用者填入物件名稱，設計者則需預選動作名稱)
   return `Blockly.JavaScript['block_type'] = (block) => {
     function sendFunction(state) {
       const diveValue = \`diveState[\${state}]["${stateActionSelected}"]["value"]\`;
@@ -148,6 +150,6 @@ export function getStateNameToCompareWithDiveValue(stateActionSelected) {
   };`;
 }
 
-export function compareStateWithDiveValue(stateSelected, stateActionSelected) {
+export function compareStateWithDiveValue(stateSelected, stateActionSelected) { // 比較同一個dive物件的同一個屬性「目前在diveState的值」與「目前dive內部最新的值」
   return `Blockly.JavaScript['block_type'] = (block) => diveState["${stateSelected}"]["${stateActionSelected}"]["value"] == eval('diveLinker.getAttr(diveState["${stateSelected}"]["${stateActionSelected}"]["diveID"])');`;
 }

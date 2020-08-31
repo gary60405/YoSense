@@ -70,8 +70,8 @@ export class BlocklyService {
   injectWorkspace(workspaceId: string, xmlText = '') {
     this.standardWorkspaceConfig.toolbox = `<xml>${xmlText}</xml>`;
     const configuration = workspaceId === 'blocklyPreviewer1' ? this.blocklyPreviewer1Config
-     : workspaceId === 'blocklyPreviewer2' ? this.blocklyPreviewer2Config
-     : workspaceId === 'blocklyDiv' || workspaceId === 'toolBoxPreviewer' ? this.standardWorkspaceConfig : '';
+      : workspaceId === 'blocklyPreviewer2' ? this.blocklyPreviewer2Config
+      : workspaceId === 'blocklyDiv' || workspaceId === 'toolBoxPreviewer' ? this.standardWorkspaceConfig : '';
     this.workspace = Blockly.inject(workspaceId, configuration);
   }
 
